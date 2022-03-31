@@ -12,7 +12,6 @@ import WalletVerifyModal from './WalletVerifyModal'
 
 export * from './WalletButtons'
 export * from './WalletDelegates'
-export * from './WalletExchange'
 export * from './WalletHeading'
 export * from './WalletIpfs'
 export * from './WalletSidebar'

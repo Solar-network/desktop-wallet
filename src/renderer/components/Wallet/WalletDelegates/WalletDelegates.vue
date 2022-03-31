@@ -157,7 +157,7 @@ export default {
     },
 
     votingUrl () {
-      return 'https://guides.ark.dev/usage-guides/desktop-wallet-voting'
+      return 'https://docs.solar.org/desktop-wallet/introduction-to-solar-rewards'
     }
   },
 

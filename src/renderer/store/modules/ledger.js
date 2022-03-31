@@ -3,7 +3,7 @@ import { keyBy } from 'lodash'
 import logger from 'electron-log'
 import Vue from 'vue'
 import semver from 'semver'
-import { Identities } from '@arkecosystem/crypto'
+import { Identities } from '@alessiodf/crypto'
 import i18n from '@/i18n'
 import eventBus from '@/plugins/event-bus'
 import ledgerService from '@/services/ledger-service'
@@ -140,17 +140,17 @@ export default {
 
   actions: {
     /**
-     * Reset store for new session.
-     */
+         * Reset store for new session.
+         */
     reset ({ commit }) {
       commit('RESET')
     },
 
     /**
-     * Initialise ledger service with ark-ledger library.
-     * @param {Number} slip44
-     */
-    async init ({ dispatch, getters }, slip44) {
+         * Initialise ledger service with ark-ledger library.
+         * @param {Number} slip44
+         */
+    /* --hidden-- async init ({ dispatch, getters }, slip44) {
       dispatch('setSlip44', slip44)
       dispatch('ensureConnection')
 
@@ -160,11 +160,11 @@ export default {
       if (!getters.needsUpdate && neededUpdate !== getters.needsUpdate) {
         eventBus.emit('ledger:connected')
       }
-    },
+    }, */
 
     /**
-     * Update flag to determine if ledger app needs update.
-     */
+         * Update flag to determine if ledger app needs update.
+         */
     async updateVersion ({ commit, dispatch, rootGetters, state }) {
       if (!state.isConnected) {
         return
@@ -185,10 +185,10 @@ export default {
     },
 
     /**
-     * Try connecting to ledger device.
-     * @return {Boolean} true if connected, false if failed
-     */
-    async connect ({ commit, dispatch, getters }) {
+         * Try connecting to ledger device.
+         * @return {Boolean} true if connected, false if failed
+         */
+    /* --hidden-- async connect ({ commit, dispatch, getters }) {
       if (!await ledgerService.connect()) {
         return false
       }
@@ -204,12 +204,12 @@ export default {
       await dispatch('reloadWallets', {})
 
       return true
-    },
+    }, */
 
     /**
-     * Flag ledger as disconnected.
-     * @return {void}
-     */
+         * Flag ledger as disconnected.
+         * @return {void}
+         */
     async disconnect ({ commit, dispatch }) {
       await commit('STOP_ALL_LOADING_PROCESSES')
       commit('SET_CONNECTED', false)
@@ -220,11 +220,11 @@ export default {
     },
 
     /**
-     * Start connect process.
-     * @param {Object} [obj]
-     * @param  {Number} [obj.delay=2000] Delay in between connection attempts.
-     * @return {void}
-     */
+         * Start connect process.
+         * @param {Object} [obj]
+         * @param  {Number} [obj.delay=2000] Delay in between connection attempts.
+         * @return {void}
+         */
     async ensureConnection ({ commit, dispatch, getters, state }, { delay, reRun } = { delay: 2000, reRun: false }) {
       if (!reRun && getters.isEnsureConnectionRunning) {
         return
@@ -249,9 +249,9 @@ export default {
     },
 
     /**
-     * Check we're still connected to the Ledger.
-     * @return {Boolean}
-     */
+         * Check we're still connected to the Ledger.
+         * @return {Boolean}
+         */
     async checkConnected ({ state }) {
       if (!state.isConnected) {
         return false
@@ -261,26 +261,23 @@ export default {
     },
 
     /**
-     * Set slip44 value.
-     * @param  {Number} slip44
-     * @return {void}
-     */
+         * Set slip44 value.
+         * @param  {Number} slip44
+         * @return {void}
+         */
     setSlip44 ({ commit }, slip44) {
       commit('SET_SLIP44', slip44)
     },
 
     /**
-     * Reload wallets into store.
-     * @param {Object} [obj]
-     * @param  {Boolean} [obj.clearFirst=false] Clear ledger wallets from store before reloading
-     * @param  {Boolean} [obj.forceLoad=false] Force ledger to load wallets, cancelling in-progress processes
-     * @param  {(Number|null)} [obj.quantity=null] Force load a specific number of wallets
-     * @return {Object}
-     */
-    async reloadWallets (
-      { commit, dispatch, getters, rootGetters },
-      { clearFirst, forceLoad, quantity } = { clearFirst: false, forceLoad: false, quantity: null }
-    ) {
+         * Reload wallets into store.
+         * @param {Object} [obj]
+         * @param  {Boolean} [obj.clearFirst=false] Clear ledger wallets from store before reloading
+         * @param  {Boolean} [obj.forceLoad=false] Force ledger to load wallets, cancelling in-progress processes
+         * @param  {(Number|null)} [obj.quantity=null] Force load a specific number of wallets
+         * @return {Object}
+         */
+    async reloadWallets ({ commit, dispatch, getters, rootGetters }, { clearFirst, forceLoad, quantity } = { clearFirst: false, forceLoad: false, quantity: null }) {
       if (!getters.isConnected) {
         return {}
       }
@@ -421,8 +418,8 @@ export default {
     },
 
     /**
-     * Store ledger wallets in the cache.
-     */
+         * Store ledger wallets in the cache.
+         */
     async updateWallet ({ commit, dispatch, getters }, updatedWallet) {
       commit('SET_WALLET', updatedWallet)
       eventBus.emit('ledger:wallets-updated', getters.walletsObject)
@@ -430,8 +427,8 @@ export default {
     },
 
     /**
-     * Store several Ledger wallets at once and cache them.
-     */
+         * Store several Ledger wallets at once and cache them.
+         */
     async updateWallets ({ commit, dispatch, getters }, walletsToUpdate) {
       commit('SET_WALLETS', {
         ...getters.walletsObject,
@@ -442,10 +439,10 @@ export default {
     },
 
     /**
-     * Store ledger wallets in the cache.
-     * @param  {Number} accountIndex Index of wallet to get address for.
-     * @return {(String|Boolean)}
-     */
+         * Store ledger wallets in the cache.
+         * @param  {Number} accountIndex Index of wallet to get address for.
+         * @return {(String|Boolean)}
+         */
     async cacheWallets ({ commit, getters, rootGetters }) {
       if (rootGetters['session/ledgerCache']) {
         commit('CACHE_WALLETS', {
@@ -456,19 +453,19 @@ export default {
     },
 
     /**
-     * Clear all ledger wallets from cache.
-     * @param  {Number} accountIndex Index of wallet to get address for.
-     * @return {(String|Boolean)}
-     */
+         * Clear all ledger wallets from cache.
+         * @param  {Number} accountIndex Index of wallet to get address for.
+         * @return {(String|Boolean)}
+         */
     async clearWalletCache ({ commit, rootGetters }) {
       commit('CLEAR_WALLET_CACHE', rootGetters['session/profileId'])
     },
 
     /**
-     * Get address and public key from ledger wallet.
-     * @param  {Number} accountIndex Index of wallet to get data for.
-     * @return {Promise<string>}
-     */
+         * Get address and public key from ledger wallet.
+         * @param  {Number} accountIndex Index of wallet to get data for.
+         * @return {Promise<string>}
+         */
     async getVersion ({ dispatch }) {
       try {
         return await dispatch('action', {
@@ -481,10 +478,10 @@ export default {
     },
 
     /**
-     * Get address and public key from ledger wallet.
-     * @param  {Number} accountIndex Index of wallet to get data for.
-     * @return {(String|Boolean)}
-     */
+         * Get address and public key from ledger wallet.
+         * @param  {Number} accountIndex Index of wallet to get data for.
+         * @return {(String|Boolean)}
+         */
     async getWallet ({ dispatch }, accountIndex) {
       try {
         return await dispatch('action', {
@@ -498,10 +495,10 @@ export default {
     },
 
     /**
-     * Get address from ledger wallet.
-     * @param  {Number} accountIndex Index of wallet to get address for.
-     * @return {(String|Boolean)}
-     */
+         * Get address from ledger wallet.
+         * @param  {Number} accountIndex Index of wallet to get address for.
+         * @return {(String|Boolean)}
+         */
     async getAddress ({ dispatch }, accountIndex) {
       try {
         return await dispatch('action', {
@@ -515,10 +512,10 @@ export default {
     },
 
     /**
-     * Get public key from ledger wallet.
-     * @param  {Number} [accountIndex] Index of wallet to get public key for.
-     * @return {Promise<string>}
-     */
+         * Get public key from ledger wallet.
+         * @param  {Number} [accountIndex] Index of wallet to get public key for.
+         * @return {Promise<string>}
+         */
     async getPublicKey ({ dispatch }, accountIndex) {
       try {
         return await dispatch('action', {
@@ -532,12 +529,12 @@ export default {
     },
 
     /**
-     * Sign transaction for ledger wallet using ecdsa signatures.
-     * @param  {Object} obj
-     * @param  {Buffer} obj.transactionBytes Bytes of transaction.
-     * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
-     * @return {Promise<string>}
-     */
+         * Sign transaction for ledger wallet using ecdsa signatures.
+         * @param  {Object} obj
+         * @param  {Buffer} obj.transactionBytes Bytes of transaction.
+         * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
+         * @return {Promise<string>}
+         */
     async signTransaction ({ dispatch }, { transactionBytes, accountIndex } = {}) {
       try {
         return await dispatch('action', {
@@ -552,12 +549,12 @@ export default {
     },
 
     /**
-     * Sign transaction for ledger wallet using schnorr signatures.
-     * @param  {Object} obj
-     * @param  {String} obj.transactionBytes Bytes of transaction.
-     * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
-     * @return {(String|Boolean)}
-     */
+         * Sign transaction for ledger wallet using schnorr signatures.
+         * @param  {Object} obj
+         * @param  {String} obj.transactionBytes Bytes of transaction.
+         * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
+         * @return {(String|Boolean)}
+         */
     async signTransactionWithSchnorr ({ dispatch }, { transactionBytes, accountIndex } = {}) {
       try {
         return await dispatch('action', {
@@ -572,12 +569,12 @@ export default {
     },
 
     /**
-     * Sign message for ledger wallet using ecdsa signatures.
-     * @param  {Object} obj
-     * @param  {Buffer} obj.messageBytes Bytes to sign.
-     * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
-     * @return {Promise<string>}
-     */
+         * Sign message for ledger wallet using ecdsa signatures.
+         * @param  {Object} obj
+         * @param  {Buffer} obj.messageBytes Bytes to sign.
+         * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
+         * @return {Promise<string>}
+         */
     async signMessage ({ dispatch }, { messageBytes, accountIndex } = {}) {
       try {
         return await dispatch('action', {
@@ -592,12 +589,12 @@ export default {
     },
 
     /**
-     * Sign message for ledger wallet using schnorr signatures.
-     * @param  {Object} obj
-     * @param  {String} obj.messageBytes Bytes to sign.
-     * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
-     * @return {(String|Boolean)}
-     */
+         * Sign message for ledger wallet using schnorr signatures.
+         * @param  {Object} obj
+         * @param  {String} obj.messageBytes Bytes to sign.
+         * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
+         * @return {(String|Boolean)}
+         */
     async signMessageWithSchnorr ({ dispatch }, { messageBytes, accountIndex } = {}) {
       try {
         return await dispatch('action', {
@@ -612,13 +609,13 @@ export default {
     },
 
     /**
-     * Action method to act as a wrapper for ledger methods
-     * @param {Object} obj
-     * @param  {String} obj.action       Action to perform
-     * @param  {Number} obj.accountIndex Index of wallet to access.
-     * @param  {*}      obj.data         Data used for any actions that need it.
-     * @return {String}
-     */
+         * Action method to act as a wrapper for ledger methods
+         * @param {Object} obj
+         * @param  {String} obj.action       Action to perform
+         * @param  {Number} obj.accountIndex Index of wallet to access.
+         * @param  {*}      obj.data         Data used for any actions that need it.
+         * @return {String}
+         */
     async action ({ state, dispatch, rootGetters }, { action, accountIndex, data } = {}) {
       if (action !== 'getVersion' && (accountIndex === undefined || !Number.isFinite(accountIndex))) {
         throw new Error('accountIndex must be a Number')

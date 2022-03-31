@@ -3,7 +3,7 @@
 
 const bip38 = require('bip38')
 const wif = require('wif')
-const { Identities } = require('@arkecosystem/crypto')
+const { Identities } = require('@alessiodf/crypto')
 
 process.on('message', message => {
   if (message.passphrase) {

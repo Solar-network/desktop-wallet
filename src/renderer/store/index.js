@@ -51,7 +51,7 @@ const vuexMigrations = new VuexPersistMigrations({
 const modulesWithoutPersistence = pullAll(Object.keys(modules), ['delegate', 'market', 'updater'])
 
 const vuexPersist = new VuexPersistence({
-  key: 'ark-desktop',
+  key: 'solar-desktop',
   storage: localforage,
   reducer: state => {
     const networks = Object.values(state.network.all).concat(

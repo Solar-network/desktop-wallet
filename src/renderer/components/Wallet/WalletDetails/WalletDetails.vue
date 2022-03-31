@@ -242,14 +242,6 @@ export default {
           componentName: 'WalletSignVerify',
           text: this.$t('PAGES.WALLET.SIGN_VERIFY')
         })
-
-        if (this.currentNetwork && this.currentNetwork.market && this.currentNetwork.market.enabled) {
-          tabs.push({
-            component: 'WalletExchange',
-            componentName: 'WalletExchange',
-            text: this.$t('PAGES.WALLET.PURCHASE', { ticker: this.currentNetwork.market.ticker })
-          })
-        }
       }
 
       if (this.currentNetwork.constants && this.currentNetwork.constants.aip11) {

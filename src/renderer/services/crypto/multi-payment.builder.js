@@ -1,25 +1,24 @@
-import { Transactions } from '@arkecosystem/crypto'
+import { Transactions } from '@alessiodf/crypto'
 import { TRANSACTION_TYPES } from '@config'
 import store from '@/store'
 import { CryptoUtils } from './utils'
 import { TransactionSigner } from './transaction-signer'
 
 export class MultiPaymentBuilder {
-  static async build (
-    {
-      address,
-      recipients,
-      fee,
-      vendorField,
-      passphrase,
-      secondPassphrase,
-      wif,
-      networkWif,
-      multiSignature,
-      nonce
-    },
-    isAdvancedFee = false,
-    returnObject = false
+  static async build ({
+    address,
+    recipients,
+    fee,
+    vendorField,
+    passphrase,
+    secondPassphrase,
+    wif,
+    networkWif,
+    multiSignature,
+    nonce
+  },
+  isAdvancedFee = false,
+  returnObject = false
   ) {
     if (!store.getters['session/network'].constants.aip11) {
       throw new Error('AIP-11 transaction not supported on network')
@@ -31,7 +30,7 @@ export class MultiPaymentBuilder {
     )
     if (!isAdvancedFee && fee.gt(staticFee)) {
       throw new Error(
-               `Multi-Payment fee should be smaller than ${staticFee}`
+                `Multi-Payment fee should be smaller than ${staticFee}`
       )
     }
 
@@ -47,18 +46,17 @@ export class MultiPaymentBuilder {
     passphrase = CryptoUtils.normalizePassphrase(passphrase)
     secondPassphrase = CryptoUtils.normalizePassphrase(secondPassphrase)
 
-    return TransactionSigner.sign(
-      {
-        address,
-        transaction,
-        passphrase,
-        secondPassphrase,
-        wif,
-        networkWif,
-        multiSignature,
-        nonce
-      },
-      returnObject
+    return TransactionSigner.sign({
+      address,
+      transaction,
+      passphrase,
+      secondPassphrase,
+      wif,
+      networkWif,
+      multiSignature,
+      nonce
+    },
+    returnObject
     )
   }
 }

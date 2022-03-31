@@ -1,23 +1,22 @@
-import { Transactions } from '@arkecosystem/crypto'
+import { Transactions } from '@alessiodf/crypto'
 import { TRANSACTION_TYPES } from '@config'
 import store from '@/store'
 import { CryptoUtils } from './utils'
 import { TransactionSigner } from './transaction-signer'
 
 export class SecondSignatureRegistrationBuilder {
-  static async build (
-    {
-      address,
-      fee,
-      passphrase,
-      secondPassphrase,
-      wif,
-      networkWif,
-      multiSignature,
-      nonce
-    },
-    isAdvancedFee = false,
-    returnObject = false
+  static async build ({
+    address,
+    fee,
+    passphrase,
+    secondPassphrase,
+    wif,
+    networkWif,
+    multiSignature,
+    nonce
+  },
+  isAdvancedFee = false,
+  returnObject = false
   ) {
     const staticFee = store.getters['transaction/staticFee'](
       TRANSACTION_TYPES.GROUP_1.SECOND_SIGNATURE,
@@ -25,7 +24,7 @@ export class SecondSignatureRegistrationBuilder {
     )
     if (!isAdvancedFee && fee.gt(staticFee)) {
       throw new Error(
-               `Second signature fee should be smaller than ${staticFee}`
+                `Second signature fee should be smaller than ${staticFee}`
       )
     }
 
@@ -35,17 +34,16 @@ export class SecondSignatureRegistrationBuilder {
 
     passphrase = CryptoUtils.normalizePassphrase(passphrase)
 
-    return TransactionSigner.sign(
-      {
-        address,
-        transaction,
-        passphrase,
-        wif,
-        networkWif,
-        multiSignature,
-        nonce
-      },
-      returnObject
+    return TransactionSigner.sign({
+      address,
+      transaction,
+      passphrase,
+      wif,
+      networkWif,
+      multiSignature,
+      nonce
+    },
+    returnObject
     )
   }
 }

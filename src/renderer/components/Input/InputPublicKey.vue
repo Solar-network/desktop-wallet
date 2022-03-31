@@ -13,7 +13,7 @@
 
 <script>
 import InputText from './InputText'
-import { Identities } from '@arkecosystem/crypto'
+import { Identities } from '@alessiodf/crypto'
 
 export default {
   name: 'InputPublicKey',

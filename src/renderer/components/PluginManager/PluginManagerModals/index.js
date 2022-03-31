@@ -5,7 +5,6 @@ import PluginInstallModal from './PluginInstallModal'
 import PluginManageBlacklistModal from './PluginManageBlacklistModal'
 import PluginPermissionsModal from './PluginPermissionsModal'
 import PluginRemovalModal from './PluginRemovalModal'
-import PluginUrlModal from './PluginUrlModal'
 
 export {
   PluginBlacklistDisclaimerModal,
@@ -14,6 +13,5 @@ export {
   PluginInstallModal,
   PluginManageBlacklistModal,
   PluginPermissionsModal,
-  PluginRemovalModal,
-  PluginUrlModal
+  PluginRemovalModal
 }

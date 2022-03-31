@@ -1,4 +1,4 @@
-import { Identities, Transactions } from '@arkecosystem/crypto'
+import { Identities, Transactions } from '@alessiodf/crypto'
 import { dayjs } from '@/services/datetime'
 import store from '@/store'
 import TransactionService from '@/services/transaction'
@@ -6,18 +6,17 @@ import WalletService from '@/services/wallet'
 import { CryptoUtils } from './utils'
 
 export class TransactionSigner {
-  static async sign (
-    {
-      transaction,
-      passphrase,
-      secondPassphrase,
-      wif,
-      networkWif,
-      networkId,
-      multiSignature,
-      nonce
-    },
-    returnObject = false
+  static async sign ({
+    transaction,
+    passphrase,
+    secondPassphrase,
+    wif,
+    networkWif,
+    networkId,
+    multiSignature,
+    nonce
+  },
+  returnObject = false
   ) {
     let network
     if (networkId) {
@@ -68,7 +67,7 @@ export class TransactionSigner {
         }
       } else if (
         TransactionService.isMultiSignatureRegistration(transaction.data) &&
-        !transaction.data.signatures
+                !transaction.data.signatures
       ) {
         transaction.data.signatures = []
       }
@@ -115,8 +114,7 @@ export class TransactionSigner {
 
   // todo: why is this async? it doesn't make any use of promises or await
   static async multiSign (
-    transaction,
-    { multiSignature, networkWif, passphrase, secondPassphrase, wif }
+    transaction, { multiSignature, networkWif, passphrase, secondPassphrase, wif }
   ) {
     if (!passphrase && !wif) {
       throw new Error('No passphrase or wif provided')
@@ -138,13 +136,12 @@ export class TransactionSigner {
       keys = Identities.Keys.fromWIF(wif, { wif: networkWif })
     }
 
-    const isReady = TransactionService.isMultiSignatureReady(
-      {
-        ...transaction,
-        multiSignature,
-        signatures: [...transaction.signatures]
-      },
-      true
+    const isReady = TransactionService.isMultiSignatureReady({
+      ...transaction,
+      multiSignature,
+      signatures: [...transaction.signatures]
+    },
+    true
     )
 
     if (!isReady) {

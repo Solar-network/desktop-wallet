@@ -121,7 +121,7 @@ export default {
 
   methods: {
     getNetworks () {
-      const defaultNetworkIds = ['ark.mainnet', 'ark.devnet']
+      const defaultNetworkIds = ['solar.mainnet', 'solar.testnet']
 
       this.networks = Object.values(this.$store.getters['network/all']).map(network => {
         return {

@@ -226,6 +226,8 @@ export default {
   transition-property: transform, border, box-shadow;
   transition-duration: .2s;
   transition-timing-function: ease;
+  border: 1px solid #ed5c1554;
+  border-radius: 10px;
 }
 .WalletGrid__wallet:hover {
   @apply rounded-lg z-10;
@@ -247,7 +249,7 @@ export default {
   @apply px-5 py-2 border-l border-theme-wallet-overview-border;
 }
 .WalletGrid__wallet__name {
-  color: #037cff;
+  color: #ff3f03;
 }
 .WalletGrid__wallet .identicon {
   opacity: 0.5;

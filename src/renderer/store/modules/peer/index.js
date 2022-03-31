@@ -1,5 +1,5 @@
 import { random, shuffle } from 'lodash'
-import { PeerDiscovery } from '@arkecosystem/peers'
+import { PeerDiscovery } from '@solar-network/peers'
 import ClientService from '@/services/client'
 import config from '@config'
 import i18n from '@/i18n'
@@ -322,8 +322,8 @@ export default {
       }
 
       const networkLookup = {
-        'ark.mainnet': 'mainnet',
-        'ark.devnet': 'devnet'
+        'solar.mainnet': 'mainnet',
+        'solar.testnet': 'testnet'
       }
 
       if (networkLookup[network.id]) {
@@ -363,8 +363,8 @@ export default {
         }
 
         const networkLookup = {
-          'ark.mainnet': 'mainnet',
-          'ark.devnet': 'devnet'
+          'solar.mainnet': 'mainnet',
+          'solar.testnet': 'testnet'
         }
 
         if (network && networkLookup[network.id]) {
@@ -376,7 +376,7 @@ export default {
             try {
               const seeds = fallbackSeeds[network.id]
               const seed = seeds[Math.floor(Math.random() * seeds.length)]
-              const peerDiscovery = await PeerDiscovery.new({ networkOrHost: `http://${seed.ip}:4003/api/peers` })
+              const peerDiscovery = await PeerDiscovery.new({ networkOrHost: `http://${seed.ip}:6003/api/peers` })
 
               peers = await discoverPeers(peerDiscovery)
 

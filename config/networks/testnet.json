@@ -1,0 +1,63 @@
+{
+    "id": "solar.testnet",
+    "name": "Solar Testnet",
+    "title": "Solar Testnet",
+    "server": "https://sxp.testnet.sh",
+    "description": "The SXP Testnet is usually used for R&D.",
+    "imagePath": "networks/ark.devnet.svg",
+    "apiVersion": 2,
+    "slip44": "1",
+    "market": {
+        "enabled": false,
+        "ticker": null
+    },
+    "feeStatistics": [{
+            "type": 0,
+            "fees": {
+                "avgFee": 10000000,
+                "maxFee": 10000000,
+                "minFee": 10000000
+            }
+        },
+        {
+            "type": 1,
+            "fees": {
+                "avgFee": 500000000,
+                "maxFee": 500000000,
+                "minFee": 500000000
+            }
+        },
+        {
+            "type": 2,
+            "fees": {
+                "avgFee": 2500000000,
+                "maxFee": 2500000000,
+                "minFee": 2500000000
+            }
+        },
+        {
+            "type": 3,
+            "fees": {
+                "avgFee": 100000000,
+                "maxFee": 100000000,
+                "minFee": 100000000
+            }
+        }
+    ],
+    "constants": {
+        "activeDelegates": 53,
+        "epoch": "2022-03-16T18:00:00.000Z"
+    },
+    "vendorField": {
+        "maxLength": 255
+    },
+    "nethash": "72db1365ae549683980a8e29ff744c6d4d9920c3cd215e462f40a58da3f13dce",
+    "explorer": "https://texplorer.solar.org",
+    "knownWalletsUrl": "https://raw.githubusercontent.com/Solar-network/peers/main/testnet/known-wallets.json",
+    "token": "tSXP",
+    "subunit": "satoshi",
+    "symbol": "tSXP",
+    "fractionDigits": 8,
+    "version": 30,
+    "wif": 252
+}

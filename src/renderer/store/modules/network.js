@@ -1,6 +1,6 @@
 import BaseModule from '../base'
 import { cloneDeep } from 'lodash'
-import { Managers } from '@arkecosystem/crypto'
+import { Managers } from '@alessiodf/crypto'
 import { NETWORKS } from '@config'
 import { isEmpty } from '@/utils'
 import eventBus from '@/plugins/event-bus'
@@ -55,8 +55,8 @@ export default new BaseModule(NetworkModel, {
       if (!isEmpty(all)) {
         // Update API server on existing networks
         const servers = {
-          'ark.devnet': 'https://dwallets.ark.io',
-          'ark.mainnet': 'https://wallets.ark.io'
+          'solar.testnet': 'https://sxp.testnet.sh',
+          'solar.mainnet': 'https://sxp.mainnet.sh'
         }
         const sanitizedAll = all.map(network => {
           const server = servers[network.id] || network.server

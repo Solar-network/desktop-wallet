@@ -6,11 +6,6 @@ const includes = (objects, find) => objects.map(a => a.id).includes(find.id)
 const includesMessage = (objects, find) => objects.map(a => a.timestamp).includes(find.timestamp)
 const sanitizeWallet = (wallet) => {
   if (wallet.attributes) {
-    if (wallet.attributes.business && wallet.attributes.business.businessAsset) {
-      wallet.business = wallet.attributes.business.businessAsset
-      wallet.business.resigned = !!wallet.attributes.business.resigned
-    }
-
     if (wallet.attributes.delegate) {
       wallet.isDelegate = true
       wallet.isResigned = wallet.attributes.delegate.resigned

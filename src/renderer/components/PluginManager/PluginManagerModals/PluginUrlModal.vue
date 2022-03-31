@@ -15,7 +15,7 @@
       ref="url"
       v-model="$v.form.url.$model"
       :label="$t('COMMON.URL')"
-      placeholder="https://github.com/ark-ecosystem-desktop-plugins/explorer"
+      placeholder="https://github.com/desktop-plugins/explorer"
       :is-invalid="$v.form.url.$dirty && $v.form.url.$invalid"
       :helper-text="urlError"
       name="url"

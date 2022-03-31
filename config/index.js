@@ -3,22 +3,22 @@ const os = require('os')
 const path = require('path')
 
 exports.APP = {
-  website: 'https://ark.io',
+  website: 'https://solar.org',
   transactionExpiryMinutes: 45
 }
 
 exports.NETWORKS = [
   require('./networks/mainnet.json'),
-  require('./networks/devnet.json')
+  require('./networks/testnet.json')
 ]
 
 exports.PEERS = {
-  'ark.mainnet': require('./peers/mainnet.json'),
-  'ark.devnet': require('./peers/devnet.json')
+  'solar.mainnet': require('./peers/mainnet.json'),
+  'solar.testnet': require('./peers/testnet.json')
 }
 
 exports.ANNOUNCEMENTS = {
-  rssUrl: 'https://blog.ark.io/feed'
+  rssUrl: 'https://blog.solar.org/feed'
 }
 
 exports.VENDOR_FIELD = {
@@ -68,35 +68,7 @@ exports.TRANSACTION_TYPES = {
     HTLC_REFUND: 10
   },
 
-  GROUP_2: {
-    BUSINESS_REGISTRATION: 0,
-    BUSINESS_RESIGNATION: 1,
-    BUSINESS_UPDATE: 2,
-    BRIDGECHAIN_REGISTRATION: 3,
-    BRIDGECHAIN_RESIGNATION: 4,
-    BRIDGECHAIN_UPDATE: 5,
-    ENTITY: 6
-  }
-}
-
-exports.TRANSACTION_TYPES_ENTITY = {
-  TYPE: {
-    BUSINESS: 0,
-    PRODUCT: 1,
-    PLUGIN: 2,
-    MODULE: 3,
-    DELEGATE: 4
-  },
-
-  SUBTYPE: {
-    NONE: 0
-  },
-
-  ACTION: {
-    REGISTER: 0,
-    UPDATE: 1,
-    RESIGN: 2
-  }
+  GROUP_2: {}
 }
 
 exports.INTERVALS = {
@@ -135,10 +107,10 @@ exports.MARKET = {
 }
 
 // This section handles fetching Desktop-Wallet Plugins from the NPM registry.
-// It should remain "ARK" unless intentionally implementing a custom package.
+// It should remain "SXP" unless intentionally implementing a custom package.
 exports.PLUGINS = {
   adapters: ['npm'],
-  pluginsUrl: 'https://raw.githubusercontent.com/ark-ecosystem-desktop-plugins/config/master/plugins.json',
+  pluginsUrl: 'https://raw.githubusercontent.com/Solar-network/desktop-wallet-plugins/master/plugins.json',
   categories: [
     'gaming',
     'theme',
@@ -146,18 +118,18 @@ exports.PLUGINS = {
     'utility',
     'other'
   ],
-  devPath: path.resolve(os.homedir(), '.ark-desktop/plugins-dev'),
+  devPath: path.resolve(os.homedir(), '.solar-desktop/plugins-dev'),
   maxKeywords: 5,
   keywords: [
     '@arkecosystem',
     'desktop-wallet',
     'plugin'
   ],
-  officialScope: 'arkecosystem',
+  officialScope: 'solar-network',
   officialAuthor: 'ARK Ecosystem',
-  path: path.resolve(os.homedir(), '.ark-desktop/plugins'),
-  reportUrl: 'https://ark.io/contact',
-  sharePath: path.resolve(os.homedir(), '.ark-desktop/share'),
+  path: path.resolve(os.homedir(), '.solar-desktop/plugins'),
+  reportUrl: 'https://solar.org/community',
+  sharePath: path.resolve(os.homedir(), '.solar-desktop/share'),
   updateInterval: {
     value: 1,
     unit: 'day'
@@ -165,15 +137,14 @@ exports.PLUGINS = {
   validation: require('./plugin-validation.json')
 }
 
-exports.THEMES = [
-  {
-    id: 'light',
-    title: 'Light theme' // TODO translate
-  },
-  {
-    id: 'dark',
-    title: 'Dark theme' // TODO translate
-  }
+exports.THEMES = [{
+  id: 'light',
+  title: 'Light theme' // TODO translate
+},
+{
+  id: 'dark',
+  title: 'Dark theme' // TODO translate
+}
 ]
 
 exports.V1 = {
@@ -192,13 +163,6 @@ exports.V1 = {
       0 * 1e8 // HTLC Refund
     ],
 
-    GROUP_2: [
-      50 * 1e8, // Business Registration
-      50 * 1e8, // Business Resignation
-      50 * 1e8, // Business Update
-      50 * 1e8, // Bridgechain Registration
-      50 * 1e8, // Bridgechain Resignation
-      50 * 1e8 // Bridgechain Update
-    ]
+    GROUP_2: []
   }
 }

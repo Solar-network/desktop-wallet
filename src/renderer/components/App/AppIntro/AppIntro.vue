@@ -26,7 +26,7 @@
               place="APP"
               class="font-black text-3xl"
             >
-              {{ $t('COMMON.APP_NAME_SHORT') }}
+              {{ $t('COMMON.APP_NAME') }}
             </p>
           </i18n>
           <p>
@@ -226,6 +226,6 @@ export default {
 
 <style lang="postcss" scoped>
 .AppIntro__1 .AppIntroScreen__container__left {
-  background-color: #c9292c;
+  background-color: #ed5c15;
 }
 </style>

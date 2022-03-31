@@ -18,11 +18,11 @@ export default {
 
   data: () => ({
     text: '',
-    url: 'https://ark.io'
-  }),
+    url: 'https://solar.org'
+  })
 
-  created () {
+  /* created () {
     this.text = this.$t('APP_FOOTER.TEXT')
-  }
+  } */
 }
 </script>

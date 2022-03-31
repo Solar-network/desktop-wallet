@@ -1,4 +1,4 @@
-import { Transactions } from '@arkecosystem/crypto'
+import { Transactions } from '@alessiodf/crypto'
 import { TRANSACTION_TYPES } from '@config'
 import store from '@/store'
 import { CryptoUtils } from './utils'

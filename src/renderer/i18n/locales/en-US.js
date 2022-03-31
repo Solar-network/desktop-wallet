@@ -3,10 +3,10 @@ export default {
     ADAPTER: 'Adapter',
     ADDRESS: 'Address',
     ALL: 'All',
-    APP_NAME: 'ARK Desktop Wallet',
-    APP_NAME_SHORT: 'ARK Desktop',
+    APP_NAME: 'Solar Desktop Wallet',
+    APP_NAME_SHORT: 'Solar Desktop',
     APPEARANCE: 'Appearance',
-    ARK: 'ARK',
+    ARK: 'Solar',
     AVATAR: 'Avatar',
     BACK: 'Back',
     BACKGROUND: 'Background',
@@ -92,29 +92,29 @@ export default {
       OWNER: 'This also brings greater responsibility for you, the account owner.',
       WARNING: {
         ACCOUNT: 'Unlike your traditional bank account, {CANNOT_RESTORE}.',
-        CANNOT_RESTORE: 'lost passwords, passphrases or stolen funds cannot be restored by the delegates, ARK.io team, or anyone else'
+        CANNOT_RESTORE: 'lost passwords, passphrases or stolen funds cannot be restored by the delegates, Solar team, or anyone else'
       },
       SECURITY: 'The security of your account is solely up to you.'
     },
     RESPONSIBILITY: {
       TITLE: 'Your Responsibility',
       STORAGE: {
-        EXPLANATION: 'The {PASSPHRASE} of each wallet address is able to sign transactions and move funds. This means if your computer dies but you have your passphrase, you can still access your funds. The ARK Desktop Wallet has an additional feature that lets you set an {ENCRYPTED} as well, for easier management. If your computer dies, you cannot use the encrypted password to access your funds from a different machine. {NEED}.',
+        EXPLANATION: 'The {PASSPHRASE} of each wallet address is able to sign transactions and move funds. This means if your computer dies but you have your passphrase, you can still access your funds. The Solar Desktop Wallet has an additional feature that lets you set an {ENCRYPTED} as well, for easier management. If your computer dies, you cannot use the encrypted password to access your funds from a different machine. {NEED}.',
         PASSPHRASE: 'passphrase',
         ENCRYPTED: 'encrypted password',
         NEED: 'You will need the passphrase'
       },
       BACKUP: {
         ALWAYS: 'Always backup your passphrase and keep it in a safe place.',
-        OPTIONS: 'You can write it down on thick paper and store multiple copies in secure locations. You can also store it on an encrypted flash drive. Alternatively, you can use a Ledger Nano S USB hardware device, available at Ledger.com, to store and access your funds and the ARK Desktop Wallet. You can plug your Ledger Nano S into your computer and access the ARK blockchain without needing to enter your passphrase.'
+        OPTIONS: 'You can write it down on thick paper and store multiple copies in secure locations. You can also store it on an encrypted flash drive. Alternatively, you can use a Ledger Nano S USB hardware device, available at Ledger.com, to store and access your funds and the Solar Desktop Wallet. You can plug your Ledger Nano S into your computer and access the Solar blockchain without needing to enter your passphrase.'
       },
       REMEMBER: 'Remember, anyone who has your passphrase can access your funds. Never share your account with anyone and avoid storing it in locations that are susceptible to hacks, such as the Cloud.'
     },
     TURN: {
       TITLE: 'Your Turn',
-      KNOWLEDGE: 'Now, armed with the knowledge of how important it is to keep your passphrases safe, you are ready to claim your financial autonomy with the ARK Desktop Wallet.',
-      SUPPORT: 'ARK is an open-source ecosystem and if you need assistance, the ARK community and team is here to help. Create a post on reddit.ark.io, or join the real-time chat system at slack.ark.io.',
-      CONCLUSION: 'Everyone here on the ARK.io team hopes you enjoy using the ARK Desktop Wallet to participate in the blockchain revolution!'
+      KNOWLEDGE: 'Now, armed with the knowledge of how important it is to keep your passphrases safe, you are ready to claim your financial autonomy with the Solar Desktop Wallet.',
+      SUPPORT: 'Solar is an open-source network and if you need assistance, the Solar community and team are here to help.',
+      CONCLUSION: 'Everyone here on the Solar.org team hopes you enjoy using the Solar Desktop Wallet to participate in the blockchain revolution!'
     }
   },
 
@@ -140,7 +140,7 @@ export default {
   },
 
   LEDGER: {
-    NEEDS_UPDATE: 'Ledger update available! Please update the ARK app via Ledger Live to send transactions on this network'
+    NEEDS_UPDATE: 'Ledger update available! Please update the Solar app via Ledger Live to send transactions on this network'
   },
 
   PEER: {
@@ -263,7 +263,7 @@ export default {
   },
 
   APP_FOOTER: {
-    TEXT: 'Made with ♥ by ARK'
+    TEXT: 'Made with ♥ by Solar'
   },
 
   APP_SIDEMENU: {
@@ -716,7 +716,7 @@ export default {
         BLACKLIST: 'The plugin \'{plugin}\' was added to the blacklist',
         RELOAD: 'The plugin repository was reloaded successfully'
       },
-      DISCLAIMER: '<b>Disclaimer:</b> The availability of this plugin in the ARK Desktop Wallet does not mean that either ARK.io or ARK SCIC is directly involved in the development or affiliated with the developer providing this plugin. By installing it on your wallet, you assume every responsibility.',
+      DISCLAIMER: '<b>Disclaimer:</b> The availability of this plugin in the Solar Desktop Wallet does not mean that Solar.org is directly involved in the development or affiliated with the developer providing this plugin. By installing it on your wallet, you assume every responsibility.',
       REPORT: 'Report this plugin',
       BLACKLISTED: 'This plugin is already blacklisted',
       VERSION_MISMATCH: 'This plugin is not compatible with your wallet version'
@@ -791,13 +791,12 @@ export default {
       ADVANCED_MODE: {
         DECLINE: 'I Decline',
         ACCEPT: 'I Accept',
-        QUESTION: 'By enabling Advanced Mode you hereby assume the risk associated with downloading files and installing said files from a direct URL link. The aforementioned links have neither been tested nor approved by ARK.io and ARK SCIC. We make no warranties, expressed or implied, as to the sustainability, availability, security, of these URLs. We are not responsible for any consequences which may occur from downloading, viewing, or installing files directly from a URL or feature that is activated via toggling on Advanced Mode. ARK.io and ARK SCIC shall bear no liability for any loss suffered by users who bypass certain measures by toggling on Advanced Mode. By clicking “I Accept” you acknowledge that enabling Advanced Mode may result in you downloading, viewing, or installing content that may have bugs, glitches, lack of functionality, or can cause damage to your machine or result in the loss of data.',
+        QUESTION: 'By enabling Advanced Mode you hereby assume the risk associated with downloading files and installing said files from a direct URL link. The aforementioned links have neither been tested nor approved by Solar. We make no warranties, expressed or implied, as to the sustainability, availability, security, of these URLs. We are not responsible for any consequences which may occur from downloading, viewing, or installing files directly from a URL or feature that is activated via toggling on Advanced Mode. Solar shall bear no liability for any loss suffered by users who bypass certain measures by toggling on Advanced Mode. By clicking “I Accept” you acknowledge that enabling Advanced Mode may result in you downloading, viewing, or installing content that may have bugs, glitches, lack of functionality, or can cause damage to your machine or result in the loss of data.',
         TITLE: 'Advanced Mode Disclaimer'
       }
     },
 
     WALLET: {
-      BUSINESS: 'Business',
       TRANSACTIONS: 'Transactions',
       DELEGATES: 'Delegates',
       IPFS: 'IPFS',
@@ -806,17 +805,6 @@ export default {
       STATISTICS: 'Statistics',
       SIGN_VERIFY: 'Sign',
       PURCHASE: 'Purchase {ticker}'
-    },
-
-    WALLET_EXCHANGE: {
-      CHANGELLY_TERMS: {
-        TITLE: 'Purchase {ticker} directly within ARK Desktop Wallet with our Changelly integration',
-        CONTENT: 'Changelly lets you exchange other cryptocurrencies into {ticker} and has an option to buy {ticker} directly with your credit or debit cards.',
-        CONFIRMATION: 'I have read and I agree with the {terms} and the {privacy} from Changelly. By clicking {button}, I acknowledge and understand that my transaction may trigger AML/KYC verification according to Changelly {kyc}.',
-        TERMS_OF_USE: 'terms of use',
-        PRIVACY_POLICY: 'privacy policy',
-        KYC: 'AML/KYC'
-      }
     },
 
     WALLET_ALL: {
@@ -986,41 +974,7 @@ export default {
       DELEGATE_RESIGNATION: 'Delegate Resignation',
       HTLC_LOCK: 'Timelock',
       HTLC_CLAIM: 'Timelock Claim',
-      HTLC_REFUND: 'Timelock Refund',
-      BUSINESS_REGISTRATION: 'Business Registration',
-      BUSINESS_RESIGNATION: 'Business Resignation',
-      BUSINESS_UPDATE: 'Business Update',
-      BRIDGECHAIN_REGISTRATION: 'Bridgechain Registration',
-      BRIDGECHAIN_RESIGNATION: 'Bridgechain Resignation',
-      BRIDGECHAIN_UPDATE: 'Bridgechain Update',
-      // Magistrate 2.0
-      BUSINESS_ENTITY_REGISTRATION: 'Business Registration',
-      BUSINESS_ENTITY_RESIGNATION: 'Business Resignation',
-      BUSINESS_ENTITY_UPDATE: 'Business Update',
-      PRODUCT_ENTITY_REGISTRATION: 'Product Registration',
-      PRODUCT_ENTITY_RESIGNATION: 'Product Resignation',
-      PRODUCT_ENTITY_UPDATE: 'Product Update',
-      PLUGIN_ENTITY_REGISTRATION: 'Plugin Registration',
-      PLUGIN_ENTITY_RESIGNATION: 'Plugin Resignation',
-      PLUGIN_ENTITY_UPDATE: 'Plugin Update',
-      MODULE_ENTITY_REGISTRATION: 'Module Registration',
-      MODULE_ENTITY_RESIGNATION: 'Module Resignation',
-      MODULE_ENTITY_UPDATE: 'Module Update',
-      DELEGATE_ENTITY_REGISTRATION: 'Delegate Registration (AIP36)',
-      DELEGATE_ENTITY_RESIGNATION: 'Delegate Resignation (AIP36)',
-      DELEGATE_ENTITY_UPDATE: 'Delegate Update',
-      // Magistrate 1.0
-      LEGACY_BUSINESS_REGISTRATION: 'Business Registration (Legacy)',
-      LEGACY_BUSINESS_RESIGNATION: 'Business Resignation (Legacy)',
-      LEGACY_BUSINESS_UPDATE: 'Business Update (Legacy)',
-      LEGACY_BRIDGECHAIN_REGISTRATION: 'Bridgechain Registration (Legacy)',
-      LEGACY_BRIDGECHAIN_RESIGNATION: 'Bridgechain Resignation (Legacy)',
-      LEGACY_BRIDGECHAIN_UPDATE: 'Bridgechain Update (Legacy)',
-      // Unknown type
-      UNDEFINED_REGISTRATION: 'Undefined Registration',
-      UNDEFINED_RESIGNATION: 'Undefined Resignation',
-      UNDEFINED_UPDATE: 'Undefined Update',
-      UNDEFINED: 'Undefined'
+      HTLC_REFUND: 'Timelock Refund'
     },
     ERROR: {
       VALIDATION: {
@@ -1131,8 +1085,6 @@ export default {
     },
     AMOUNT: 'Amount',
     BLOCK_ID: 'Block ID',
-    BRIDGECHAIN_NAME: 'Bridgechain Name',
-    BUSINESS_NAME: 'Business Name',
     BUTTON_ADD: 'Add',
     BUTTON_ADD_RECIPIENT: 'Add Recipient #{number}',
     CONFIRMATION_COUNT: '{confirmations} Confirmations',
@@ -1216,14 +1168,6 @@ export default {
       NEW_DELEGATE_RESIGNATION: 'New delegate resignation: {address} registered as {username}',
       NEW_TRANSFER_SENT: 'New transfer: {amount} sent from {sender} to {recipient}',
       NEW_TRANSFER_RECEIVED: 'New transfer: {amount} received from {sender} to {recipient}'
-    },
-    GROUP_2: {
-      NEW_BUSINESS_REGISTRATION: 'New business registration: {address} business {name}',
-      NEW_BUSINESS_RESIGNATION: 'New business resignation: {address}',
-      NEW_BUSINESS_UPDATE: 'New business update: {address}',
-      NEW_BRIDGECHAIN_REGISTRATION: 'New bridgechain registration: {address}, bridgechain {bridgechain}',
-      NEW_BRIDGECHAIN_RESIGNATION: 'New bridgechain resignation: {address}, bridgechain {bridgechain}',
-      NEW_BRIDGECHAIN_UPDATE: 'New bridgechain update: {address}, bridgechain {bridgechain}'
     }
   },
 
@@ -1309,7 +1253,7 @@ export default {
     ALREADY_REGISTERED: 'This wallet is already registered as a delegate',
     NOT_REGISTERED: 'This wallet is not registered as a delegate',
     BLOG: 'Voting Guide',
-    EXPLANATION: 'Voting is an optional, but important mechanism that keeps the ARK network secure. The {delegates} delegates with the most votes from the network are responsible for verifying and forging transactions into new blocks. This page can be used to cast your vote for a delegate that you support. Learn more about voting for a delegate by clicking on the following link:',
+    EXPLANATION: 'Voting is an optional, but important mechanism that keeps the Solar network secure. The {delegates} delegates with the most votes from the network are responsible for verifying and forging transactions into new blocks. This page can be used to cast your vote for a delegate that you support. Learn more about voting for a delegate by clicking on the following link:',
     VOTE_DELEGATE: 'Vote Delegate {delegate}',
     UNVOTE_DELEGATE: 'Unvote Delegate {delegate}',
     CURRENTLY_VOTED: 'You are currently voting for {delegate}',
@@ -1384,7 +1328,7 @@ export default {
 
   BLACKLIST_DISCLAIMER_CONFIRMATION: {
     QUESTION: 'Are you sure you want to disable the blacklist?',
-    NOTE: 'Warning: By turning off filtering, you will be viewing third-party plugins that have not been tested and approved by ARK.io and ARK SCIC. We make no warranties, expressed or implied, as to the sustainability, availability, security, of the third-party plugin. We are not responsible for any of the content presented as a result of viewing, installing, or running any of these third-party plugins. ARK.io and ARK SCIC shall bear no liability for any loss suffered by using third-party plugins. By clicking "I Accept" you acknowledge that unverified third-party plugins may have bugs, glitches, lack of functionality, or can cause damage to your machine or result in the loss of data.',
+    NOTE: 'Warning: By turning off filtering, you will be viewing third-party plugins that have not been tested and approved by Solar. We make no warranties, expressed or implied, as to the sustainability, availability, security, of the third-party plugin. We are not responsible for any of the content presented as a result of viewing, installing, or running any of these third-party plugins. Solar shall bear no liability for any loss suffered by using third-party plugins. By clicking "I Accept" you acknowledge that unverified third-party plugins may have bugs, glitches, lack of functionality, or can cause damage to your machine or result in the loss of data.',
     ACCEPT: 'I Accept',
     CANCEL: 'Cancel'
   },
