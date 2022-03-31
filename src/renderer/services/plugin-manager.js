@@ -280,49 +280,6 @@ export class PluginManager {
     this.app.$store.dispatch('plugin/setAvailable', plugins)
   }
 
-  parsePluginUrl (url) {
-    const matches = /https?:\/\/github.com\/([A-Za-z0-9_.-]+)\/([A-Za-z0-9_.-]+)[/]?$/.exec(url)
-
-    return {
-      owner: matches[1],
-      repository: matches[2],
-      branch: 'master'
-    }
-  }
-
-  async fetchPluginFromUrl (url) {
-    const { owner, repository, branch } = this.parsePluginUrl(url)
-
-    const baseUrl = `https://raw.githubusercontent.com/${owner}/${repository}/${branch}`
-    const { body } = await reqwest(`${baseUrl}/package.json`, { json: true })
-
-    let plugin
-
-    try {
-      plugin = await PluginConfiguration.sanitize(body)
-    } catch (error) {
-      throw new errors.PluginConfigError(error.message)
-    }
-
-    plugin.source = `https://github.com/${owner}/${repository}/archive/${branch}.zip`
-
-    plugin.isGrant = this.app.$store.getters['plugin/isGrant'](plugin.id)
-
-    try {
-      plugin.logo = await this.fetchLogo(plugin.logo)
-    } catch (error) {
-      plugin.logo = null
-    }
-
-    try {
-      plugin.images = await this.fetchImages(plugin.images)
-    } catch (error) {
-      plugin.images = []
-    }
-
-    return plugin
-  }
-
   async fetchPlugins (force = false) {
     const requests = [this.fetchPluginsFromPath()]
 

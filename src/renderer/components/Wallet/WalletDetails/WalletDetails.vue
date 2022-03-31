@@ -164,7 +164,6 @@ import { ButtonGeneric } from '@/components/Button'
 import { TransactionModal } from '@/components/Transaction'
 import {
   WalletDelegates,
-  WalletExchange,
   WalletHeading,
   WalletIpfs,
   WalletMultiSignature,
@@ -183,7 +182,6 @@ export default {
     MenuTabItem,
     TransactionModal,
     WalletDelegates,
-    WalletExchange,
     WalletHeading,
     WalletIpfs,
     WalletMultiSignature,

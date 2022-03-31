@@ -160,12 +160,6 @@
       @confirm="setModal('install')"
     />
 
-    <PluginUrlModal
-      v-if="showUrlModal"
-      @close="resetModal"
-      @fetch-plugin="fetchPluginData"
-    />
-
     <PluginInstallModal
       v-if="showInstallModal"
       :plugin="selectedPlugin"
@@ -210,8 +204,7 @@ import {
   PluginManagerSideMenu,
   PluginManagerTable,
   PluginPermissionsModal,
-  PluginRemovalModal,
-  PluginUrlModal
+  PluginRemovalModal
 } from '@/components/PluginManager'
 import { ModalLoader } from '@/components/Modal'
 import {
@@ -236,8 +229,7 @@ export default {
     PluginManagerSideMenu,
     PluginManagerTable,
     PluginPermissionsModal,
-    PluginRemovalModal,
-    PluginUrlModal
+    PluginRemovalModal
   },
 
   data: () => ({
