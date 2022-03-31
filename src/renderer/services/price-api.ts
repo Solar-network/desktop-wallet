@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/ban-ts-ignore */
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import logger from 'electron-log'
 import i18n from '@/i18n'
 import { capitalize } from '@/utils'

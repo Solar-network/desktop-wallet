@@ -55,6 +55,7 @@ const createLoadingWindow = () => {
     autoHideMenuBar: true,
     resizable: false,
     webPreferences: {
+      contextIsolation: false,
       nodeIntegration: true
     }
   })
@@ -128,6 +129,8 @@ function createWindow () {
     center: true,
     show: false,
     webPreferences: {
+      contextIsolation: false,
+      enableRemoteModule: true,
       nodeIntegration: true,
       webviewTag: true
     }
@@ -205,6 +208,7 @@ if (!gotTheLock) {
 }
 
 app.on('ready', () => {
+  app.allowRendererProcessReuse = false
   createLoadingWindow()
   createWindow()
   setupPluginManager({ sendToWindow, windows, ipcMain })

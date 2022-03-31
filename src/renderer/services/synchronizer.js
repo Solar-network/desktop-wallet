@@ -99,7 +99,7 @@ export default class Synchronizer {
     if (typeof actionFn !== 'function') {
       throw new Error('[$synchronizer] action is not a function')
     }
-    ;['default', 'focus'].forEach(mode => {
+    ['default', 'focus'].forEach(mode => {
       const { interval } = config[mode]
       if (!interval && interval !== null) {
         throw new Error(`[$synchronizer] \`interval\` for \`${mode}\` mode should be a Number bigger than 0 (or \`null\` to ignore it)`)

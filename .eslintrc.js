@@ -13,7 +13,7 @@ module.exports = {
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:vue/recommended',
-    'standard',
+    'standard'
   ],
   globals: {
     __static: true
@@ -26,9 +26,12 @@ module.exports = {
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
     'vue/component-name-in-template-casing': ['warn', 'PascalCase', {
-      'ignores': ['i18n']
+      ignores: ['i18n']
     }],
+    '@typescript-eslint/ban-ts-comment': 0,
     '@typescript-eslint/camelcase': 0,
-    '@typescript-eslint/explicit-function-return-type': 0
+    '@typescript-eslint/explicit-function-return-type': 0,
+    '@typescript-eslint/no-empty-function': 0,
+    '@typescript-eslint/no-var-requires': 0
   }
 }

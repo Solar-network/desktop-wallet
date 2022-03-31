@@ -22,6 +22,7 @@
       "@/*": ["./src/renderer/*"]
     },
     "resolveJsonModule": true,
-    "allowJs": true
+    "allowJs": true,
+    "useUnknownInCatchVariables": false
   }
 }
