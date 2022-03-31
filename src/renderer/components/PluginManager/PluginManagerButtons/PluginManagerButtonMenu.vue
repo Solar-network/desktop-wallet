@@ -15,27 +15,27 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'PluginManagerButtonMenu',
+    name: "PluginManagerButtonMenu",
 
-  components: {
-    SvgIcon
-  },
+    components: {
+        SvgIcon
+    },
 
-  props: {
-    isOpen: {
-      type: Boolean,
-      required: false,
-      default: true
+    props: {
+        isOpen: {
+            type: Boolean,
+            required: false,
+            default: true
+        }
+    },
+
+    methods: {
+        emitClick () {
+            this.$emit("click");
+        }
     }
-  },
-
-  methods: {
-    emitClick () {
-      this.$emit('click')
-    }
-  }
-}
+};
 </script>

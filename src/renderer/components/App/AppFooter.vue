@@ -14,15 +14,15 @@
 
 <script>
 export default {
-  name: 'AppFooter',
+    name: "AppFooter",
 
-  data: () => ({
-    text: '',
-    url: 'https://solar.org'
-  })
+    data: () => ({
+        text: "",
+        url: "https://solar.org"
+    })
 
-  /* created () {
+    /* created () {
     this.text = this.$t('APP_FOOTER.TEXT')
   } */
-}
+};
 </script>

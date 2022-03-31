@@ -1,89 +1,89 @@
-import BigNumberInstance from 'bignumber.js'
+import BigNumberInstance from "bignumber.js";
 
 // Avoid scientific notation
 // https://github.com/MikeMcl/bignumber.js/blob/master/bignumber.d.ts#L97
-const BigNumber = BigNumberInstance.clone({ DECIMAL_PLACES: 8, EXPONENTIAL_AT: 1e+9 })
+const BigNumber = BigNumberInstance.clone({ DECIMAL_PLACES: 8, EXPONENTIAL_AT: 1e+9 });
 
 export class NumberBuilder {
-  /**
+    /**
    * @param {Number|String|BigNumber} value
    */
-  constructor (value) {
-    this.value = new BigNumber(value)
-    this.decimalPlaces()
-  }
+    constructor (value) {
+        this.value = new BigNumber(value);
+        this.decimalPlaces();
+    }
 
-  /**
+    /**
    * The maximum number of decimal places
    * @param {Number} digits
    * @returns NumberBuilder
    */
-  decimalPlaces (digits = 8) {
-    this.fractionDigits = Math.pow(10, digits)
-    this.value = this.value.decimalPlaces(digits, null)
-    return this
-  }
+    decimalPlaces (digits = 8) {
+        this.fractionDigits = Math.pow(10, digits);
+        this.value = this.value.decimalPlaces(digits, null);
+        return this;
+    }
 
-  /**
+    /**
    * Converts the number from satoshi to human
    * @returns NumberBuilder
    */
-  toHuman () {
-    this.value = this.value.dividedBy(this.fractionDigits)
-    return this
-  }
+    toHuman () {
+        this.value = this.value.dividedBy(this.fractionDigits);
+        return this;
+    }
 
-  /**
+    /**
    * Converts the number from human to satoshi
    * @returns NumberBuilder
    */
-  toArktoshi () {
-    this.value = this.value.multipliedBy(this.fractionDigits)
-    return this
-  }
+    toArktoshi () {
+        this.value = this.value.multipliedBy(this.fractionDigits);
+        return this;
+    }
 
-  /**
+    /**
    * @param {Number|String|BigNumber} value
    * @returns NumberBuilder
    */
-  add (value) {
-    this.value = this.value.plus(value)
-    return this
-  }
+    add (value) {
+        this.value = this.value.plus(value);
+        return this;
+    }
 
-  /**
+    /**
    * @param {Number|String|BigNumber} value
    * @returns NumberBuilder
    */
-  subtract (value) {
-    this.value = this.value.minus(value)
-    return this
-  }
+    subtract (value) {
+        this.value = this.value.minus(value);
+        return this;
+    }
 
-  /**
+    /**
    * @param {Number|String|BigNumber} value
    * @returns NumberBuilder
    */
-  multiply (value) {
-    this.value = this.value.multipliedBy(value)
-    return this
-  }
+    multiply (value) {
+        this.value = this.value.multipliedBy(value);
+        return this;
+    }
 
-  /**
+    /**
    * @param {Number|String|BigNumber} value
    * @returns Boolean
    */
-  isEqualTo (value) {
-    return this.value.eq(value)
-  }
+    isEqualTo (value) {
+        return this.value.eq(value);
+    }
 
-  /**
+    /**
    * Returns the value as a string
    * @returns String
    */
-  toString () {
-    return this.value.toString()
-  }
+    toString () {
+        return this.value.toString();
+    }
 }
 
-export default BigNumber
+export default BigNumber;

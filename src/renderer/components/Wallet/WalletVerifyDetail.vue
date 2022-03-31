@@ -21,26 +21,26 @@
 </template>
 
 <script>
-import { WalletIdenticon } from './'
+import { WalletIdenticon } from "./";
 
 export default {
-  name: 'WalletVerifyDetail',
+    name: "WalletVerifyDetail",
 
-  components: {
-    WalletIdenticon
-  },
-
-  props: {
-    address: {
-      type: String,
-      required: true
+    components: {
+        WalletIdenticon
     },
-    isVerified: {
-      type: Boolean,
-      required: true
+
+    props: {
+        address: {
+            type: String,
+            required: true
+        },
+        isVerified: {
+            type: Boolean,
+            required: true
+        }
     }
-  }
-}
+};
 </script>
 
 <style>

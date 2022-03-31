@@ -29,26 +29,26 @@
 </template>
 
 <script>
-import WalletHeadingPrimaryActions from './WalletHeadingPrimaryActions'
-import WalletHeadingSecondaryActions from './WalletHeadingSecondaryActions'
-import SvgIcon from '@/components/SvgIcon'
-import { mapGetters } from 'vuex'
+import WalletHeadingPrimaryActions from "./WalletHeadingPrimaryActions";
+import WalletHeadingSecondaryActions from "./WalletHeadingSecondaryActions";
+import SvgIcon from "@/components/SvgIcon";
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'WalletHeadingActions',
+    name: "WalletHeadingActions",
 
-  components: {
-    WalletHeadingPrimaryActions,
-    WalletHeadingSecondaryActions,
-    SvgIcon
-  },
+    components: {
+        WalletHeadingPrimaryActions,
+        WalletHeadingSecondaryActions,
+        SvgIcon
+    },
 
-  computed: {
-    ...mapGetters('wallet', ['secondaryButtonsVisible']),
+    computed: {
+        ...mapGetters("wallet", ["secondaryButtonsVisible"]),
 
-    currentWallet () {
-      return this.wallet_fromRoute
+        currentWallet () {
+            return this.wallet_fromRoute;
+        }
     }
-  }
-}
+};
 </script>

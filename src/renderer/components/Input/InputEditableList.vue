@@ -48,94 +48,94 @@
 </template>
 
 <script>
-import { ButtonClose } from '@/components/Button'
+import { ButtonClose } from "@/components/Button";
 
 export default {
-  name: 'InputEditableList',
+    name: "InputEditableList",
 
-  components: {
-    ButtonClose
-  },
-
-  props: {
-    title: {
-      type: String,
-      required: false,
-      default: null
+    components: {
+        ButtonClose
     },
 
-    showCount: {
-      type: Boolean,
-      required: false,
-      default: false
+    props: {
+        title: {
+            type: String,
+            required: false,
+            default: null
+        },
+
+        showCount: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+
+        maxItems: {
+            type: Number,
+            required: false,
+            default: null
+        },
+
+        value: {
+            type: Array,
+            required: true
+        },
+
+        required: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+
+        readonly: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+
+        helperText: {
+            type: String,
+            required: false,
+            default: null
+        },
+
+        isInvalid: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+
+        noItemsMessage: {
+            type: String,
+            required: false,
+            default: function () {
+                return this.$t("INPUT_EDITABLE_LIST.NO_ITEMS");
+            }
+        }
     },
 
-    maxItems: {
-      type: Number,
-      required: false,
-      default: null
+    data: vm => ({
+        items: vm.value
+    }),
+
+    computed: {
+        requiredAndEmpty () {
+            return this.required && (!this.items || !this.items.length);
+        }
     },
 
-    value: {
-      type: Array,
-      required: true
+    watch: {
+        value (newValue) {
+            this.items = newValue;
+        }
     },
 
-    required: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-
-    readonly: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-
-    helperText: {
-      type: String,
-      required: false,
-      default: null
-    },
-
-    isInvalid: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-
-    noItemsMessage: {
-      type: String,
-      required: false,
-      default: function () {
-        return this.$t('INPUT_EDITABLE_LIST.NO_ITEMS')
-      }
+    methods: {
+        emitRemove (index) {
+            this.$emit("remove", index);
+        }
     }
-  },
-
-  data: vm => ({
-    items: vm.value
-  }),
-
-  computed: {
-    requiredAndEmpty () {
-      return this.required && (!this.items || !this.items.length)
-    }
-  },
-
-  watch: {
-    value (newValue) {
-      this.items = newValue
-    }
-  },
-
-  methods: {
-    emitRemove (index) {
-      this.$emit('remove', index)
-    }
-  }
-}
+};
 </script>
 
 <style scoped>

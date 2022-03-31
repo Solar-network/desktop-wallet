@@ -16,19 +16,19 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'SearchFilterButton',
+    name: "SearchFilterButton",
 
-  components: {
-    SvgIcon
-  },
+    components: {
+        SvgIcon
+    },
 
-  methods: {
-    emitClick () {
-      this.$emit('click')
+    methods: {
+        emitClick () {
+            this.$emit("click");
+        }
     }
-  }
-}
+};
 </script>

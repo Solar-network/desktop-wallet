@@ -1,5 +1,5 @@
-import ProgressBar from './ProgressBar'
+import ProgressBar from "./ProgressBar";
 
 export {
-  ProgressBar
-}
+    ProgressBar
+};

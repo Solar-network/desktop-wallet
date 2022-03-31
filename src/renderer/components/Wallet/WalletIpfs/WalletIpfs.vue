@@ -33,27 +33,27 @@
 </template>
 
 <script>
-import { ButtonModal } from '@/components/Button'
-import { TransactionModal } from '@/components/Transaction'
-import WalletTransactions from '@/components/Wallet/WalletTransactions'
+import { ButtonModal } from "@/components/Button";
+import { TransactionModal } from "@/components/Transaction";
+import WalletTransactions from "@/components/Wallet/WalletTransactions";
 
 export default {
-  name: 'WalletIpfs',
+    name: "WalletIpfs",
 
-  components: {
-    ButtonModal,
-    TransactionModal,
-    WalletTransactions
-  },
+    components: {
+        ButtonModal,
+        TransactionModal,
+        WalletTransactions
+    },
 
-  methods: {
-    closeTransactionModal (toggleMethod, isOpen) {
-      if (isOpen && typeof toggleMethod === 'function') {
-        toggleMethod()
-      }
+    methods: {
+        closeTransactionModal (toggleMethod, isOpen) {
+            if (isOpen && typeof toggleMethod === "function") {
+                toggleMethod();
+            }
+        }
     }
-  }
-}
+};
 </script>
 
 <style>

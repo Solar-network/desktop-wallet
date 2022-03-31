@@ -1,7 +1,7 @@
-import WalletSignVerify from './WalletSignVerify'
+import WalletSignVerify from "./WalletSignVerify";
 
-export default WalletSignVerify
+export default WalletSignVerify;
 
 export {
-  WalletSignVerify
-}
+    WalletSignVerify
+};

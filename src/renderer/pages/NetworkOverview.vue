@@ -94,54 +94,54 @@
 </template>
 
 <script>
-import { NetworkModal } from '@/components/Network'
-import { SvgIcon } from '@/components/SvgIcon'
-import SelectionNetworkButton from '@/components/Selection/SelectionNetworkButton'
+import { NetworkModal } from "@/components/Network";
+import { SvgIcon } from "@/components/SvgIcon";
+import SelectionNetworkButton from "@/components/Selection/SelectionNetworkButton";
 
 export default {
-  name: 'NetworkOverview',
+    name: "NetworkOverview",
 
-  components: {
-    NetworkModal,
-    SelectionNetworkButton,
-    SvgIcon
-  },
+    components: {
+        NetworkModal,
+        SelectionNetworkButton,
+        SvgIcon
+    },
 
-  props: {
-  },
+    props: {
+    },
 
-  data: () => ({
-    networks: [],
-    selected: null
-  }),
+    data: () => ({
+        networks: [],
+        selected: null
+    }),
 
-  mounted () {
-    this.getNetworks()
-  },
+    mounted () {
+        this.getNetworks();
+    },
 
-  methods: {
-    getNetworks () {
-      const defaultNetworkIds = ['solar.mainnet', 'solar.testnet']
+    methods: {
+        getNetworks () {
+            const defaultNetworkIds = ["solar.mainnet", "solar.testnet"];
 
-      this.networks = Object.values(this.$store.getters['network/all']).map(network => {
-        return {
-          ...network,
-          isDefault: defaultNetworkIds.indexOf(network.id) > -1
+            this.networks = Object.values(this.$store.getters["network/all"]).map(network => {
+                return {
+                    ...network,
+                    isDefault: defaultNetworkIds.indexOf(network.id) > -1
+                };
+            });
+        },
+        openNetwork (network) {
+            this.selected = network;
+        },
+        openAddNetwork () {
+            this.selected = "openAddNetwork";
+        },
+        toggle () {
+            this.selected = null;
+            this.getNetworks(); // Refresh list
         }
-      })
-    },
-    openNetwork (network) {
-      this.selected = network
-    },
-    openAddNetwork () {
-      this.selected = 'openAddNetwork'
-    },
-    toggle () {
-      this.selected = null
-      this.getNetworks() // Refresh list
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss">

@@ -12,68 +12,68 @@
 </template>
 
 <script>
-import WalletHeadingInfo from './WalletHeadingInfo'
-import WalletHeadingActions from './WalletHeadingActions'
-import { mapGetters } from 'vuex'
+import WalletHeadingInfo from "./WalletHeadingInfo";
+import WalletHeadingActions from "./WalletHeadingActions";
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'WalletHeading',
+    name: "WalletHeading",
 
-  components: {
-    WalletHeadingInfo,
-    WalletHeadingActions
-  },
-
-  data: () => ({
-    activeWalletAddress: null
-  }),
-
-  computed: {
-    ...mapGetters('wallet', ['secondaryButtonsVisible']),
-
-    currentWallet () {
-      return this.wallet_fromRoute
+    components: {
+        WalletHeadingInfo,
+        WalletHeadingActions
     },
 
-    justifyClass () {
-      return this.secondaryButtonsVisible ? 'justify-end' : 'justify-between'
-    }
-  },
+    data: () => ({
+        activeWalletAddress: null
+    }),
 
-  watch: {
-    currentWallet () {
-      if (this.activeWalletAddress !== this.currentWallet.address) {
-        this.resetHeading()
-      }
-    }
-  },
+    computed: {
+        ...mapGetters("wallet", ["secondaryButtonsVisible"]),
 
-  async created () {
-    this.$eventBus.on('ledger:disconnected', this.refreshWallet)
-  },
+        currentWallet () {
+            return this.wallet_fromRoute;
+        },
 
-  beforeDestroy () {
-    this.$eventBus.off('ledger:disconnected', this.refreshWallet)
-  },
-
-  mounted () {
-    this.resetHeading()
-  },
-
-  methods: {
-    resetHeading () {
-      this.activeWalletAddress = this.currentWallet.address
-      this.$store.dispatch('wallet/setSecondaryButtonsVisible', false)
-      this.refreshWallet()
+        justifyClass () {
+            return this.secondaryButtonsVisible ? "justify-end" : "justify-between";
+        }
     },
 
-    refreshWallet () {
-      this.$nextTick(() => {
-        this.$refs.heading.refreshWallet()
-      })
+    watch: {
+        currentWallet () {
+            if (this.activeWalletAddress !== this.currentWallet.address) {
+                this.resetHeading();
+            }
+        }
+    },
+
+    async created () {
+        this.$eventBus.on("ledger:disconnected", this.refreshWallet);
+    },
+
+    beforeDestroy () {
+        this.$eventBus.off("ledger:disconnected", this.refreshWallet);
+    },
+
+    mounted () {
+        this.resetHeading();
+    },
+
+    methods: {
+        resetHeading () {
+            this.activeWalletAddress = this.currentWallet.address;
+            this.$store.dispatch("wallet/setSecondaryButtonsVisible", false);
+            this.refreshWallet();
+        },
+
+        refreshWallet () {
+            this.$nextTick(() => {
+                this.$refs.heading.refreshWallet();
+            });
+        }
     }
-  }
-}
+};
 </script>
 
 <style>

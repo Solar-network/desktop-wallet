@@ -1,5 +1,5 @@
-import AnnouncementsPost from './AnnouncementsPost'
+import AnnouncementsPost from "./AnnouncementsPost";
 
 export {
-  AnnouncementsPost
-}
+    AnnouncementsPost
+};

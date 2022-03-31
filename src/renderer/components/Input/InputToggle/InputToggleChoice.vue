@@ -16,44 +16,44 @@
 
 <script>
 export default {
-  name: 'InputToggleChoice',
+    name: "InputToggleChoice",
 
-  props: {
-    choice: {
-      type: String,
-      required: true
+    props: {
+        choice: {
+            type: String,
+            required: true
+        },
+        selectedChoice: {
+            type: String,
+            required: true
+        },
+        index: {
+            type: Number,
+            required: true
+        },
+        length: {
+            type: Number,
+            required: true
+        }
     },
-    selectedChoice: {
-      type: String,
-      required: true
+    computed: {
+        isSelected () {
+            return this.choice === this.selectedChoice;
+        },
+
+        isFirst () {
+            return this.index === 0;
+        },
+
+        isLast () {
+            return this.index === this.length - 1;
+        }
     },
-    index: {
-      type: Number,
-      required: true
-    },
-    length: {
-      type: Number,
-      required: true
+
+    methods: {
+        emitSelect (choice) {
+            this.$emit("select", choice);
+        }
     }
-  },
-  computed: {
-    isSelected () {
-      return this.choice === this.selectedChoice
-    },
-
-    isFirst () {
-      return this.index === 0
-    },
-
-    isLast () {
-      return this.index === this.length - 1
-    }
-  },
-
-  methods: {
-    emitSelect (choice) {
-      this.$emit('select', choice)
-    }
-  }
-}
+};
 </script>

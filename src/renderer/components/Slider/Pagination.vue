@@ -15,26 +15,26 @@
 
 <script>
 export default {
-  name: 'Pagination',
+    name: "Pagination",
 
-  props: {
-    currentIndex: {
-      type: Number,
-      required: true
+    props: {
+        currentIndex: {
+            type: Number,
+            required: true
+        },
+
+        pageCount: {
+            type: Number,
+            required: true
+        }
     },
 
-    pageCount: {
-      type: Number,
-      required: true
+    methods: {
+        goToPage (page) {
+            this.$emit("paginationclick", page);
+        }
     }
-  },
-
-  methods: {
-    goToPage (page) {
-      this.$emit('paginationclick', page)
-    }
-  }
-}
+};
 </script>
 
 <style scoped>

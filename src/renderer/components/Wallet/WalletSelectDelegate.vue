@@ -28,48 +28,48 @@
 </template>
 
 <script>
-import { InputDelegate } from '@/components/Input'
-import { ModalWindow } from '@/components/Modal'
+import { InputDelegate } from "@/components/Input";
+import { ModalWindow } from "@/components/Modal";
 
 export default {
-  name: 'ModalSelectDelegate',
+    name: "ModalSelectDelegate",
 
-  components: {
-    InputDelegate,
-    ModalWindow
-  },
-
-  data: () => ({
-    form: {
-      delegate: ''
-    },
-    isValid: false
-  }),
-
-  methods: {
-    emitCancel () {
-      this.$emit('cancel')
+    components: {
+        InputDelegate,
+        ModalWindow
     },
 
-    emitConfirm () {
-      this.$emit('confirm', this.$v.form.delegate.$model)
-    },
+    data: () => ({
+        form: {
+            delegate: ""
+        },
+        isValid: false
+    }),
 
-    onValid (value) {
-      this.isValid = value
-    }
-  },
+    methods: {
+        emitCancel () {
+            this.$emit("cancel");
+        },
 
-  validations: {
-    form: {
-      delegate: {
-        isValid () {
-          return this.isValid
+        emitConfirm () {
+            this.$emit("confirm", this.$v.form.delegate.$model);
+        },
+
+        onValid (value) {
+            this.isValid = value;
         }
-      }
+    },
+
+    validations: {
+        form: {
+            delegate: {
+                isValid () {
+                    return this.isValid;
+                }
+            }
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss">

@@ -61,29 +61,29 @@
 </template>
 
 <script>
-import { TRANSACTION_TYPES } from '@config'
-import { ListDivided, ListDividedItem } from '@/components/ListDivided'
+import { TRANSACTION_TYPES } from "@config";
+import { ListDivided, ListDividedItem } from "@/components/ListDivided";
 
 export default {
-  name: 'TransactionConfirmTransfer',
+    name: "TransactionConfirmTransfer",
 
-  transactionType: TRANSACTION_TYPES.GROUP_1.TRANSFER,
+    transactionType: TRANSACTION_TYPES.GROUP_1.TRANSFER,
 
-  inject: ['currentWallet', 'transaction'],
+    inject: ["currentWallet", "transaction"],
 
-  components: {
-    ListDivided,
-    ListDividedItem
-  },
-
-  computed: {
-    recipientLabel () {
-      return this.wallet_formatAddress(this.transaction.recipientId)
+    components: {
+        ListDivided,
+        ListDividedItem
     },
 
-    senderLabel () {
-      return this.wallet_formatAddress(this.currentWallet.address)
+    computed: {
+        recipientLabel () {
+            return this.wallet_formatAddress(this.transaction.recipientId);
+        },
+
+        senderLabel () {
+            return this.wallet_formatAddress(this.currentWallet.address);
+        }
     }
-  }
-}
+};
 </script>

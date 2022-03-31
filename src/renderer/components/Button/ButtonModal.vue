@@ -20,63 +20,63 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'ButtonModal',
+    name: "ButtonModal",
 
-  components: {
-    SvgIcon
-  },
-
-  props: {
-    classes: {
-      type: String,
-      required: false,
-      default: null
+    components: {
+        SvgIcon
     },
 
-    icon: {
-      type: String,
-      required: false,
-      default: null
+    props: {
+        classes: {
+            type: String,
+            required: false,
+            default: null
+        },
+
+        icon: {
+            type: String,
+            required: false,
+            default: null
+        },
+
+        viewBox: {
+            type: String,
+            required: false,
+            default: "0 0 20 20"
+        },
+
+        label: {
+            type: String,
+            required: true
+        },
+
+        disabled: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
     },
 
-    viewBox: {
-      type: String,
-      required: false,
-      default: '0 0 20 20'
-    },
+    data: () => ({
+        isOpen: false
+    }),
 
-    label: {
-      type: String,
-      required: true
-    },
+    methods: {
+        emitToggle () {
+            this.$emit("toggle", this.isOpen);
+        },
 
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false
+        toggle () {
+            if (this.disabled) {
+                return;
+            }
+
+            this.isOpen = !this.isOpen;
+            this.emitToggle();
+        }
     }
-  },
-
-  data: () => ({
-    isOpen: false
-  }),
-
-  methods: {
-    emitToggle () {
-      this.$emit('toggle', this.isOpen)
-    },
-
-    toggle () {
-      if (this.disabled) {
-        return
-      }
-
-      this.isOpen = !this.isOpen
-      this.emitToggle()
-    }
-  }
-}
+};
 </script>

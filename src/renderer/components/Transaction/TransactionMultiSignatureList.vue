@@ -26,67 +26,67 @@
 </template>
 
 <script>
-import { InputEditableList } from '@/components/Input'
-import truncateMiddle from '@/filters/truncate-middle'
+import { InputEditableList } from "@/components/Input";
+import truncateMiddle from "@/filters/truncate-middle";
 
 export default {
-  name: 'TransactionMultiSignatureList',
+    name: "TransactionMultiSignatureList",
 
-  components: {
-    InputEditableList
-  },
-
-  props: {
-    title: {
-      type: String,
-      required: false,
-      default: 'Public Keys'
+    components: {
+        InputEditableList
     },
 
-    items: {
-      type: Array,
-      required: true
+    props: {
+        title: {
+            type: String,
+            required: false,
+            default: "Public Keys"
+        },
+
+        items: {
+            type: Array,
+            required: true
+        },
+
+        showCount: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+
+        readonly: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+
+        required: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+
+        helperText: {
+            type: String,
+            required: false,
+            default: null
+        },
+
+        isInvalid: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
     },
 
-    showCount: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
+    methods: {
+        emitRemove (index) {
+            this.$emit("remove", index);
+        },
 
-    readonly: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-
-    required: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-
-    helperText: {
-      type: String,
-      required: false,
-      default: null
-    },
-
-    isInvalid: {
-      type: Boolean,
-      required: false,
-      default: false
+        formatItem (value, limit = 10) {
+            return truncateMiddle(value, limit);
+        }
     }
-  },
-
-  methods: {
-    emitRemove (index) {
-      this.$emit('remove', index)
-    },
-
-    formatItem (value, limit = 10) {
-      return truncateMiddle(value, limit)
-    }
-  }
-}
+};
 </script>

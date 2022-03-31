@@ -1,8 +1,8 @@
-import MarketChart from './MarketChart'
-import MarketChartHeader from './MarketChartHeader'
+import MarketChart from "./MarketChart";
+import MarketChartHeader from "./MarketChartHeader";
 
-export default MarketChart
+export default MarketChart;
 export {
-  MarketChart,
-  MarketChartHeader
-}
+    MarketChart,
+    MarketChartHeader
+};

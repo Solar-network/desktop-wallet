@@ -22,25 +22,25 @@
 </template>
 
 <script>
-import { TRANSACTION_TYPES } from '@config'
-import { ListDivided, ListDividedItem } from '@/components/ListDivided'
+import { TRANSACTION_TYPES } from "@config";
+import { ListDivided, ListDividedItem } from "@/components/ListDivided";
 
 export default {
-  name: 'TransactionConfirmDelegateResignation',
+    name: "TransactionConfirmDelegateResignation",
 
-  transactionType: TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION,
+    transactionType: TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION,
 
-  inject: ['currentWallet'],
+    inject: ["currentWallet"],
 
-  components: {
-    ListDivided,
-    ListDividedItem
-  },
+    components: {
+        ListDivided,
+        ListDividedItem
+    },
 
-  computed: {
-    senderLabel () {
-      return this.wallet_formatAddress(this.currentWallet.address)
+    computed: {
+        senderLabel () {
+            return this.wallet_formatAddress(this.currentWallet.address);
+        }
     }
-  }
-}
+};
 </script>

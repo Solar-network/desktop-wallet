@@ -13,42 +13,42 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'ButtonIconGeneric',
+    name: "ButtonIconGeneric",
 
-  components: {
-    SvgIcon
-  },
+    components: {
+        SvgIcon
+    },
 
-  props: {
-    icon: {
-      type: String,
-      required: true
+    props: {
+        icon: {
+            type: String,
+            required: true
+        },
+        viewBox: {
+            type: String,
+            required: true
+        },
+        disabled: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        isSmall: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
     },
-    viewBox: {
-      type: String,
-      required: true
-    },
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isSmall: {
-      type: Boolean,
-      required: false,
-      default: false
+
+    methods: {
+        emitClick () {
+            this.$emit("click");
+        }
     }
-  },
-
-  methods: {
-    emitClick () {
-      this.$emit('click')
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

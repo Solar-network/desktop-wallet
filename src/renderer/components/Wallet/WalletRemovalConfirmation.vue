@@ -28,39 +28,39 @@
 </template>
 
 <script>
-import { ModalConfirmation } from '@/components/Modal'
-import { WalletIdenticon } from './'
+import { ModalConfirmation } from "@/components/Modal";
+import { WalletIdenticon } from "./";
 
 export default {
-  name: 'WalletRemovalConfirmation',
+    name: "WalletRemovalConfirmation",
 
-  components: {
-    WalletIdenticon,
-    ModalConfirmation
-  },
-
-  props: {
-    wallet: {
-      type: Object,
-      required: true
-    }
-  },
-
-  methods: {
-    removeWallet () {
-      this.$store.dispatch('wallet/delete', this.wallet)
-      this.emitRemoved()
+    components: {
+        WalletIdenticon,
+        ModalConfirmation
     },
 
-    emitCancel () {
-      this.$emit('cancel')
+    props: {
+        wallet: {
+            type: Object,
+            required: true
+        }
     },
 
-    emitRemoved () {
-      this.$emit('removed')
+    methods: {
+        removeWallet () {
+            this.$store.dispatch("wallet/delete", this.wallet);
+            this.emitRemoved();
+        },
+
+        emitCancel () {
+            this.$emit("cancel");
+        },
+
+        emitRemoved () {
+            this.$emit("removed");
+        }
     }
-  }
-}
+};
 </script>
 
 <style>

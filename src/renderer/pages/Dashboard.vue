@@ -49,97 +49,97 @@
 </template>
 
 <script>
-import { DashboardTransactions } from '@/components/Dashboard'
-import { MarketChart, MarketChartHeader } from '@/components/MarketChart'
-import { WalletSidebar, WalletButtonCreate, WalletButtonImport } from '@/components/Wallet'
-import store from '@/store'
+import { DashboardTransactions } from "@/components/Dashboard";
+import { MarketChart, MarketChartHeader } from "@/components/MarketChart";
+import { WalletSidebar, WalletButtonCreate, WalletButtonImport } from "@/components/Wallet";
+import store from "@/store";
 
 export default {
-  name: 'Dashboard',
+    name: "Dashboard",
 
-  components: {
-    DashboardTransactions,
-    MarketChart,
-    MarketChartHeader,
-    WalletSidebar,
-    WalletButtonCreate,
-    WalletButtonImport
-  },
+    components: {
+        DashboardTransactions,
+        MarketChart,
+        MarketChartHeader,
+        WalletSidebar,
+        WalletButtonCreate,
+        WalletButtonImport
+    },
 
-  computed: {
-    isMarketEnabled () {
-      return this.session_network && this.session_network.market && this.session_network.market.enabled
-    },
-    currency () {
-      return this.$store.getters['session/currency']
-    },
-    ticker () {
-      return this.session_network.market.ticker
-    },
-    isChartEnabled () {
-      return this.marketChartOptions.isEnabled
-    },
-    isChartExpanded () {
-      return this.marketChartOptions.isExpanded
-    },
-    period () {
-      return this.marketChartOptions.period
-    },
-    marketChartOptions: {
-      get () {
-        return this.$store.getters['session/marketChartOptions']
-      },
-      set (options) {
-        this.$store.dispatch('session/setMarketChartOptions', options)
+    computed: {
+        isMarketEnabled () {
+            return this.session_network && this.session_network.market && this.session_network.market.enabled;
+        },
+        currency () {
+            return this.$store.getters["session/currency"];
+        },
+        ticker () {
+            return this.session_network.market.ticker;
+        },
+        isChartEnabled () {
+            return this.marketChartOptions.isEnabled;
+        },
+        isChartExpanded () {
+            return this.marketChartOptions.isExpanded;
+        },
+        period () {
+            return this.marketChartOptions.period;
+        },
+        marketChartOptions: {
+            get () {
+                return this.$store.getters["session/marketChartOptions"];
+            },
+            set (options) {
+                this.$store.dispatch("session/setMarketChartOptions", options);
 
-        this.$store.dispatch('profile/update', {
-          ...this.session_profile,
-          marketChartOptions: options
-        })
-      }
-    }
-  },
+                this.$store.dispatch("profile/update", {
+                    ...this.session_profile,
+                    marketChartOptions: options
+                });
+            }
+        }
+    },
 
-  /**
+    /**
    * Redirect to the profile creation page unless there is at least 1 profile
    */
-  beforeRouteEnter (to, from, next) {
-    const chooseNext = async () => {
-      const profiles = await store.getters['profile/all']
+    beforeRouteEnter (to, from, next) {
+        const chooseNext = async () => {
+            const profiles = await store.getters["profile/all"];
 
-      if (to.name === 'profile-new') {
-        next()
-      } else if (profiles.length > 0) {
-        next(async vm => {
-          vm.$synchronizer.trigger('wallets')
-          vm.$synchronizer.focus('wallets', 'market')
-        })
-      } else {
-        next({ name: 'profile-new' })
-      }
-    }
+            if (to.name === "profile-new") {
+                next();
+            } else if (profiles.length > 0) {
+                next(async vm => {
+                    vm.$synchronizer.trigger("wallets");
+                    vm.$synchronizer.focus("wallets", "market");
+                });
+            } else {
+                next({ name: "profile-new" });
+            }
+        };
 
-    store._IS_READY
-      ? chooseNext()
-      : store._vm.$root.$on('vuex-persist:ready', chooseNext)
-  },
-
-  methods: {
-    toggleChart (value) {
-      this.marketChartOptions = {
-        ...this.marketChartOptions,
-        isExpanded: value
-      }
+        store._IS_READY
+            ? chooseNext()
+            : store._vm.$root.$on("vuex-persist:ready", chooseNext);
     },
 
-    onPeriodChange (period) {
-      this.marketChartOptions = {
-        ...this.marketChartOptions,
-        period
-      }
+    methods: {
+        toggleChart (value) {
+            this.marketChartOptions = {
+                ...this.marketChartOptions,
+                isExpanded: value
+            };
+        },
+
+        onPeriodChange (period) {
+            this.marketChartOptions = {
+                ...this.marketChartOptions,
+                period
+            };
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss">

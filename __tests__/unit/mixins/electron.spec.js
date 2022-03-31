@@ -1,174 +1,174 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils'
-import useI18n from '../__utils__/i18n'
-import ElectronMixin from '@/mixins/electron'
-import electron from 'electron'
+import { createLocalVue, shallowMount } from "@vue/test-utils";
+import useI18n from "../__utils__/i18n";
+import ElectronMixin from "@/mixins/electron";
+import electron from "electron";
 
-jest.mock('electron', () => ({
-  remote: {
-    dialog: {
-      showOpenDialog: jest.fn(),
-      showSaveDialog: jest.fn()
+jest.mock("electron", () => ({
+    remote: {
+        dialog: {
+            showOpenDialog: jest.fn(),
+            showSaveDialog: jest.fn()
+        }
     }
-  }
-}))
+}));
 
-jest.mock('fs', () => ({
-  writeFileSync: jest.fn(),
-  readFileSync: jest.fn()
-}))
+jest.mock("fs", () => ({
+    writeFileSync: jest.fn(),
+    readFileSync: jest.fn()
+}));
 
-describe('Mixins > Electron', () => {
-  let wrapper
-
-  beforeEach(() => {
-    const localVue = createLocalVue()
-    const i18n = useI18n(localVue)
-
-    const TestComponent = {
-      name: 'TestComponent',
-      template: '<div/>'
-    }
-
-    wrapper = shallowMount(TestComponent, {
-      localVue,
-      i18n,
-      mixins: [ElectronMixin]
-    })
-  })
-
-  describe('electron_writeFile', () => {
-    let showSaveDialogMock
+describe("Mixins > Electron", () => {
+    let wrapper;
 
     beforeEach(() => {
-      showSaveDialogMock = jest.spyOn(electron.remote.dialog, 'showSaveDialog').mockImplementation(() => ({
-        filePath: 'filePath'
-      }))
-    })
+        const localVue = createLocalVue();
+        const i18n = useI18n(localVue);
 
-    afterEach(() => {
-      showSaveDialogMock.mockRestore()
-    })
+        const TestComponent = {
+            name: "TestComponent",
+            template: "<div/>"
+        };
 
-    it('should return early when the obtained filePath is falsy', async () => {
-      showSaveDialogMock = jest.spyOn(electron.remote.dialog, 'showSaveDialog').mockImplementation(() => ({
-        filePath: undefined
-      }))
+        wrapper = shallowMount(TestComponent, {
+            localVue,
+            i18n,
+            mixins: [ElectronMixin]
+        });
+    });
 
-      await expect(wrapper.vm.electron_writeFile()).resolves.toEqual(undefined)
-    })
+    describe("electron_writeFile", () => {
+        let showSaveDialogMock;
 
-    describe('when passing filters', () => {
-      const defaultFilters = [
-        { name: 'JSON', extensions: ['json'] },
-        { name: 'All Files', extensions: ['*'] }
-      ]
+        beforeEach(() => {
+            showSaveDialogMock = jest.spyOn(electron.remote.dialog, "showSaveDialog").mockImplementation(() => ({
+                filePath: "filePath"
+            }));
+        });
 
-      it('should not modify a FileFilter array', async () => {
-        const filters = [{
-          name: 'FOOBAR', extensions: ['foobar']
-        }]
+        afterEach(() => {
+            showSaveDialogMock.mockRestore();
+        });
 
-        await wrapper.vm.electron_writeFile('raw', 'path', { filters })
+        it("should return early when the obtained filePath is falsy", async () => {
+            showSaveDialogMock = jest.spyOn(electron.remote.dialog, "showSaveDialog").mockImplementation(() => ({
+                filePath: undefined
+            }));
 
-        expect(showSaveDialogMock).toHaveBeenCalledWith({
-          defaultPath: 'path',
-          filters
-        })
-      })
+            await expect(wrapper.vm.electron_writeFile()).resolves.toEqual(undefined);
+        });
 
-      it('should parse a single string correctly', async () => {
-        const filters = [{
-          name: 'FOOBAR', extensions: ['foobar']
-        }]
+        describe("when passing filters", () => {
+            const defaultFilters = [
+                { name: "JSON", extensions: ["json"] },
+                { name: "All Files", extensions: ["*"] }
+            ];
 
-        await wrapper.vm.electron_writeFile('raw', 'path', { filters: 'foobar' })
+            it("should not modify a FileFilter array", async () => {
+                const filters = [{
+                    name: "FOOBAR", extensions: ["foobar"]
+                }];
 
-        expect(showSaveDialogMock).toHaveBeenCalledWith({
-          defaultPath: 'path',
-          filters
-        })
-      })
+                await wrapper.vm.electron_writeFile("raw", "path", { filters });
 
-      it('should parse an array of strings correctly', async () => {
-        const filters = [
-          { name: 'FOO', extensions: ['foo'] },
-          { name: 'BAR', extensions: ['bar'] }
-        ]
+                expect(showSaveDialogMock).toHaveBeenCalledWith({
+                    defaultPath: "path",
+                    filters
+                });
+            });
 
-        await wrapper.vm.electron_writeFile('raw', 'path', { filters: ['foo', 'bar'] })
+            it("should parse a single string correctly", async () => {
+                const filters = [{
+                    name: "FOOBAR", extensions: ["foobar"]
+                }];
 
-        expect(showSaveDialogMock).toHaveBeenCalledWith({
-          defaultPath: 'path',
-          filters
-        })
-      })
+                await wrapper.vm.electron_writeFile("raw", "path", { filters: "foobar" });
 
-      it.each([null, undefined])('should fallback to the default filters when filters is falsy', async (filters) => {
-        await wrapper.vm.electron_writeFile('raw', 'path', { filters })
+                expect(showSaveDialogMock).toHaveBeenCalledWith({
+                    defaultPath: "path",
+                    filters
+                });
+            });
 
-        expect(showSaveDialogMock).toHaveBeenCalledWith({
-          defaultPath: 'path',
-          filters: defaultFilters
-        })
-      })
-    })
+            it("should parse an array of strings correctly", async () => {
+                const filters = [
+                    { name: "FOO", extensions: ["foo"] },
+                    { name: "BAR", extensions: ["bar"] }
+                ];
 
-    describe('when restricting the file path', () => {
-      it('should not throw an error if the given filepath is valid', async () => {
-        showSaveDialogMock = jest.spyOn(electron.remote.dialog, 'showSaveDialog').mockImplementation(() => ({
-          filePath: '/home/foo/bar'
-        }))
+                await wrapper.vm.electron_writeFile("raw", "path", { filters: ["foo", "bar"] });
 
-        await expect(wrapper.vm.electron_writeFile(null, null, { restrictToPath: '/home/foo' })).resolves.not.toThrow()
-      })
+                expect(showSaveDialogMock).toHaveBeenCalledWith({
+                    defaultPath: "path",
+                    filters
+                });
+            });
 
-      it('should throw an error if the given filepath is invalid', async () => {
-        showSaveDialogMock = jest.spyOn(electron.remote.dialog, 'showSaveDialog').mockImplementation(() => ({
-          filePath: '/home/bar/foo'
-        }))
+            it.each([null, undefined])("should fallback to the default filters when filters is falsy", async (filters) => {
+                await wrapper.vm.electron_writeFile("raw", "path", { filters });
 
-        await expect(wrapper.vm.electron_writeFile(null, null, { restrictToPath: '/home/foo' })).rejects.toThrow()
-      })
-    })
-  })
+                expect(showSaveDialogMock).toHaveBeenCalledWith({
+                    defaultPath: "path",
+                    filters: defaultFilters
+                });
+            });
+        });
 
-  describe('electron_readFile', () => {
-    let showOpenDialogMock
+        describe("when restricting the file path", () => {
+            it("should not throw an error if the given filepath is valid", async () => {
+                showSaveDialogMock = jest.spyOn(electron.remote.dialog, "showSaveDialog").mockImplementation(() => ({
+                    filePath: "/home/foo/bar"
+                }));
 
-    beforeEach(() => {
-      showOpenDialogMock = jest.spyOn(electron.remote.dialog, 'showOpenDialog').mockImplementation(() => ({
-        filePaths: ['filePath']
-      }))
-    })
+                await expect(wrapper.vm.electron_writeFile(null, null, { restrictToPath: "/home/foo" })).resolves.not.toThrow();
+            });
 
-    afterEach(() => {
-      showOpenDialogMock.mockRestore()
-    })
+            it("should throw an error if the given filepath is invalid", async () => {
+                showSaveDialogMock = jest.spyOn(electron.remote.dialog, "showSaveDialog").mockImplementation(() => ({
+                    filePath: "/home/bar/foo"
+                }));
 
-    it('should return early when the obtained filePaths is falsy', async () => {
-      showOpenDialogMock = jest.spyOn(electron.remote.dialog, 'showOpenDialog').mockImplementation(() => ({
-        filePaths: undefined
-      }))
+                await expect(wrapper.vm.electron_writeFile(null, null, { restrictToPath: "/home/foo" })).rejects.toThrow();
+            });
+        });
+    });
 
-      await expect(wrapper.vm.electron_readFile()).resolves.toEqual(undefined)
-    })
+    describe("electron_readFile", () => {
+        let showOpenDialogMock;
 
-    describe('when restricting the file path', () => {
-      it('should not throw an error if the given filepath is valid', async () => {
-        showOpenDialogMock = jest.spyOn(electron.remote.dialog, 'showOpenDialog').mockImplementation(() => ({
-          filePaths: ['/home/foo/bar']
-        }))
+        beforeEach(() => {
+            showOpenDialogMock = jest.spyOn(electron.remote.dialog, "showOpenDialog").mockImplementation(() => ({
+                filePaths: ["filePath"]
+            }));
+        });
 
-        await expect(wrapper.vm.electron_readFile(null, { restrictToPath: '/home/foo' })).resolves.not.toThrow()
-      })
+        afterEach(() => {
+            showOpenDialogMock.mockRestore();
+        });
 
-      it('should throw an error if the given filepath is invalid', async () => {
-        showOpenDialogMock = jest.spyOn(electron.remote.dialog, 'showOpenDialog').mockImplementation(() => ({
-          filePaths: ['/home/bar/foo']
-        }))
+        it("should return early when the obtained filePaths is falsy", async () => {
+            showOpenDialogMock = jest.spyOn(electron.remote.dialog, "showOpenDialog").mockImplementation(() => ({
+                filePaths: undefined
+            }));
 
-        await expect(wrapper.vm.electron_readFile(null, { restrictToPath: '/home/foo' })).rejects.toThrow()
-      })
-    })
-  })
-})
+            await expect(wrapper.vm.electron_readFile()).resolves.toEqual(undefined);
+        });
+
+        describe("when restricting the file path", () => {
+            it("should not throw an error if the given filepath is valid", async () => {
+                showOpenDialogMock = jest.spyOn(electron.remote.dialog, "showOpenDialog").mockImplementation(() => ({
+                    filePaths: ["/home/foo/bar"]
+                }));
+
+                await expect(wrapper.vm.electron_readFile(null, { restrictToPath: "/home/foo" })).resolves.not.toThrow();
+            });
+
+            it("should throw an error if the given filepath is invalid", async () => {
+                showOpenDialogMock = jest.spyOn(electron.remote.dialog, "showOpenDialog").mockImplementation(() => ({
+                    filePaths: ["/home/bar/foo"]
+                }));
+
+                await expect(wrapper.vm.electron_readFile(null, { restrictToPath: "/home/foo" })).rejects.toThrow();
+            });
+        });
+    });
+});

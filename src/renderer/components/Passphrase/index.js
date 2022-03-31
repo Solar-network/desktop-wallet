@@ -1,9 +1,9 @@
-import PassphraseInput from './PassphraseInput'
-import PassphraseVerification from './PassphraseVerification'
-import PassphraseWords from './PassphraseWords'
+import PassphraseInput from "./PassphraseInput";
+import PassphraseVerification from "./PassphraseVerification";
+import PassphraseWords from "./PassphraseWords";
 
 export {
-  PassphraseInput,
-  PassphraseVerification,
-  PassphraseWords
-}
+    PassphraseInput,
+    PassphraseVerification,
+    PassphraseWords
+};

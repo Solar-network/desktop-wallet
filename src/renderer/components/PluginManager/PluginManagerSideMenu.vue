@@ -39,46 +39,46 @@
 </template>
 
 <script>
-import { PLUGINS } from '@config'
-import { PluginManagerButtonMenu } from '@/components/PluginManager/PluginManagerButtons'
+import { PLUGINS } from "@config";
+import { PluginManagerButtonMenu } from "@/components/PluginManager/PluginManagerButtons";
 
 export default {
-  name: 'PluginManagerSideMenu',
+    name: "PluginManagerSideMenu",
 
-  components: {
-    PluginManagerButtonMenu
-  },
-
-  props: {
-    activeCategory: {
-      type: String,
-      required: false,
-      default: 'all'
-    }
-  },
-
-  computed: {
-    pluginCategories () {
-      return ['all'].concat(PLUGINS.categories.filter(category => !['theme', 'language'].includes(category)))
+    components: {
+        PluginManagerButtonMenu
     },
 
-    otherCategories () {
-      return ['theme', 'language']
-    }
-  },
-
-  methods: {
-    emitToggle () {
-      this.$emit('toggle')
+    props: {
+        activeCategory: {
+            type: String,
+            required: false,
+            default: "all"
+        }
     },
 
-    emitCategory (category) {
-      if (category !== this.activeCategory) {
-        this.$emit('category-change', category)
-      }
+    computed: {
+        pluginCategories () {
+            return ["all"].concat(PLUGINS.categories.filter(category => !["theme", "language"].includes(category)));
+        },
+
+        otherCategories () {
+            return ["theme", "language"];
+        }
+    },
+
+    methods: {
+        emitToggle () {
+            this.$emit("toggle");
+        },
+
+        emitCategory (category) {
+            if (category !== this.activeCategory) {
+                this.$emit("category-change", category);
+            }
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

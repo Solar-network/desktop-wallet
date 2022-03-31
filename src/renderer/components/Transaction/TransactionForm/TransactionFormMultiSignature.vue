@@ -182,316 +182,316 @@
 </template>
 
 <script>
-import { required } from 'vuelidate/lib/validators'
-import { TRANSACTION_TYPES } from '@config'
-import { ButtonGeneric } from '@/components/Button'
-import { InputAddress, InputFee, InputPublicKey, InputPassword, InputText } from '@/components/Input'
-import { ListDivided, ListDividedItem } from '@/components/ListDivided'
-import { MenuTab, MenuTabItem } from '@/components/Menu'
-import { ModalLoader } from '@/components/Modal'
-import { PassphraseInput } from '@/components/Passphrase'
-import TransactionMultiSignatureList from '@/components/Transaction/TransactionMultiSignatureList'
-import mixin from './mixin'
+import { required } from "vuelidate/lib/validators";
+import { TRANSACTION_TYPES } from "@config";
+import { ButtonGeneric } from "@/components/Button";
+import { InputAddress, InputFee, InputPublicKey, InputPassword, InputText } from "@/components/Input";
+import { ListDivided, ListDividedItem } from "@/components/ListDivided";
+import { MenuTab, MenuTabItem } from "@/components/Menu";
+import { ModalLoader } from "@/components/Modal";
+import { PassphraseInput } from "@/components/Passphrase";
+import TransactionMultiSignatureList from "@/components/Transaction/TransactionMultiSignatureList";
+import mixin from "./mixin";
 
 export default {
-  name: 'TransactionFormMultiSignature',
+    name: "TransactionFormMultiSignature",
 
-  transactionType: TRANSACTION_TYPES.GROUP_1.MULTI_SIGNATURE,
+    transactionType: TRANSACTION_TYPES.GROUP_1.MULTI_SIGNATURE,
 
-  components: {
-    ButtonGeneric,
-    InputAddress,
-    InputFee,
-    InputPassword,
-    InputPublicKey,
-    InputText,
-    ListDivided,
-    ListDividedItem,
-    MenuTab,
-    MenuTabItem,
-    ModalLoader,
-    PassphraseInput,
-    TransactionMultiSignatureList
-  },
-
-  mixins: [mixin],
-
-  data: () => ({
-    step: 1,
-    currentTab: 0,
-    address: '',
-    publicKey: '',
-    form: {
-      publicKeys: [],
-      minKeys: null,
-      fee: 0,
-      passphrase: '',
-      walletPassword: ''
-    }
-  }),
-
-  computed: {
-    addressTab () {
-      return this.currentTab === 0
+    components: {
+        ButtonGeneric,
+        InputAddress,
+        InputFee,
+        InputPassword,
+        InputPublicKey,
+        InputText,
+        ListDivided,
+        ListDividedItem,
+        MenuTab,
+        MenuTabItem,
+        ModalLoader,
+        PassphraseInput,
+        TransactionMultiSignatureList
     },
 
-    publicKeyTab () {
-      return this.currentTab === 1
-    },
+    mixins: [mixin],
 
-    tabs () {
-      return [
-        {
-          text: this.$t('TRANSACTION.MULTI_SIGNATURE.TAB.ADDRESS')
-        },
-        {
-          text: this.$t('TRANSACTION.MULTI_SIGNATURE.TAB.PUBLIC_KEY')
+    data: () => ({
+        step: 1,
+        currentTab: 0,
+        address: "",
+        publicKey: "",
+        form: {
+            publicKeys: [],
+            minKeys: null,
+            fee: 0,
+            passphrase: "",
+            walletPassword: ""
         }
-      ]
-    },
+    }),
 
-    validStep1 () {
-      if (this.addressTab) {
-        if (!this.$v.address.$dirty || this.$v.address.$invalid ||
-          this.addressWarning || this.address.replace(/\s+/, '') === '') {
-          return false
-        }
-      } else {
-        if (!this.$v.publicKey.$dirty || this.$v.publicKey.$invalid ||
-          this.publicKeyWarning || this.publicKey.replace(/\s+/, '') === '') {
-          return false
-        }
-      }
-
-      return true
-    },
-
-    isFormValid () {
-      if (this.step === 1) {
-        return !this.$v.form.publicKeys.$invalid
-      }
-
-      return !this.$v.form.$invalid
-    },
-
-    addressWarning () {
-      if (!this.$v.address.$dirty) {
-        return null
-      }
-
-      if (this.form.publicKeys.some(key => key.address === this.$v.address.$model)) {
-        return this.$t('TRANSACTION.MULTI_SIGNATURE.ERROR_DUPLICATE')
-      }
-
-      return null
-    },
-
-    publicKeyWarning () {
-      if (!this.$v.publicKey.$dirty) {
-        return null
-      }
-
-      if (this.form.publicKeys.some(key => key.publicKey === this.$v.publicKey.$model)) {
-        return this.$t('TRANSACTION.MULTI_SIGNATURE.ERROR_DUPLICATE')
-      }
-
-      return null
-    },
-
-    maximumPublicKeys () {
-      if (!this.session_network.constants || !this.session_network.constants.maxMultiSignatureParticipants) {
-        return 16
-      }
-
-      return this.session_network.constants.maxMultiSignatureParticipants
-    },
-
-    minKeysError () {
-      if (this.$v.form.minKeys.$dirty && this.$v.form.minKeys.$error) {
-        if (!this.$v.form.minKeys.required) {
-          return this.$t('VALIDATION.REQUIRED', [this.$t('TRANSACTION.MULTI_SIGNATURE.MIN_KEYS')])
-        } else if (!this.$v.form.minKeys.belowMaximum) {
-          return this.$t('TRANSACTION.MULTI_SIGNATURE.ERROR_MIN_KEYS_TOO_HIGH')
-        } else if (!this.$v.form.minKeys.aboveMinimum) {
-          return this.$t('TRANSACTION.MULTI_SIGNATURE.ERROR_MIN_KEYS_TOO_LOW')
-        }
-      }
-
-      return null
-    }
-  },
-
-  mounted () {
-    this.form.publicKeys.push({
-      address: this.currentWallet.address,
-      publicKey: this.currentWallet.publicKey
-    })
-    this.updateMinKeys()
-  },
-
-  methods: {
-    getTransactionData () {
-      const transactionData = {
-        address: this.currentWallet.address,
-        publicKeys: this.form.publicKeys.map(key => key.publicKey),
-        minKeys: this.form.minKeys,
-        passphrase: this.form.passphrase,
-        fee: this.getFee(),
-        wif: this.form.wif,
-        networkWif: this.walletNetwork.wif
-      }
-
-      if (this.currentWallet.secondPublicKey) {
-        transactionData.secondPassphrase = this.form.secondPassphrase
-      }
-
-      return transactionData
-    },
-
-    async buildTransaction (transactionData, isAdvancedFee = false, returnObject = false) {
-      const transaction = await this.$client.buildMultiSignature(transactionData, isAdvancedFee, returnObject)
-      if (!returnObject) {
-        transaction.multiSignature = transaction.asset.multiSignature
-      }
-
-      return transaction
-    },
-
-    transactionError () {
-      this.$error(this.$t('TRANSACTION.ERROR.VALIDATION.MULTI_SIGNATURE'))
-    },
-
-    async addPublicKey () {
-      const entry = {
-        address: null,
-        publicKey: null
-      }
-      if (this.addressTab) {
-        entry.address = this.address
-
-        let wallet = this.$store.getters['wallet/byAddress'](this.address)
-        if (wallet && wallet.publicKey) {
-          entry.publicKey = wallet.publicKey
-        } else {
-          wallet = await this.$client.fetchWallet(this.address)
-
-          if (wallet && wallet.publicKey) {
-            entry.publicKey = wallet.publicKey
-          } else {
-            this.$error(this.$t('TRANSACTION.MULTI_SIGNATURE.ERROR_PUBLIC_KEY_NOT_FOUND'))
-
-            return
-          }
-        }
-
-        this.$refs.address.reset()
-      } else {
-        entry.publicKey = this.publicKey
-
-        this.$refs.publicKey.reset()
-      }
-
-      const existingEntry = this.form.publicKeys.find(key => key.publicKey === entry.publicKey)
-      if (existingEntry) {
-        if (entry.address && !existingEntry.address) {
-          existingEntry.address = entry.address
-        }
-
-        this.$error(this.$t('TRANSACTION.MULTI_SIGNATURE.ERROR_PUBLIC_KEY_EXISTS'))
-
-        return
-      }
-
-      this.form.publicKeys.push(entry)
-      this.updateMinKeys()
-    },
-
-    updateMinKeys () {
-      this.$v.form.minKeys.$model = this.form.publicKeys.length
-    },
-
-    previousStep () {
-      if (this.step === 2) {
-        this.step = 1
-      }
-    },
-
-    nextStep () {
-      if (this.step === 1) {
-        this.step = 2
-      } else {
-        this.form.fee = this.$refs.fee.fee
-        this.onSubmit()
-      }
-    },
-
-    onFee (fee) {
-      this.$set(this.form, 'fee', fee)
-    },
-
-    emitRemovePublicKey (index) {
-      this.$v.form.publicKeys.$model = [
-        ...this.form.publicKeys.slice(0, index),
-        ...this.form.publicKeys.slice(index + 1)
-      ]
-    }
-  },
-
-  validations: {
-    publicKey: {
-      isValid () {
-        if (this.$refs.publicKey) {
-          return !this.$refs.publicKey.$v.$invalid
-        }
-
-        return false
-      }
-    },
-
-    address: {
-      isValid () {
-        if (this.$refs.address) {
-          return !this.$refs.address.$v.$invalid
-        }
-
-        return false
-      }
-    },
-
-    form: {
-      publicKeys: {
-        notEmpty () {
-          return !!this.form.publicKeys.length
+    computed: {
+        addressTab () {
+            return this.currentTab === 0;
         },
 
-        aboveMinimum () {
-          return this.form.publicKeys.length > 1
+        publicKeyTab () {
+            return this.currentTab === 1;
         },
 
-        belowMaximum () {
-          return this.form.publicKeys.length < this.maximumPublicKeys
-        }
-      },
-
-      minKeys: {
-        required,
-
-        belowMaximum (value) {
-          return value <= this.form.publicKeys.length
+        tabs () {
+            return [
+                {
+                    text: this.$t("TRANSACTION.MULTI_SIGNATURE.TAB.ADDRESS")
+                },
+                {
+                    text: this.$t("TRANSACTION.MULTI_SIGNATURE.TAB.PUBLIC_KEY")
+                }
+            ];
         },
 
-        aboveMinimum (value) {
-          return value >= 1
-        }
-      },
+        validStep1 () {
+            if (this.addressTab) {
+                if (!this.$v.address.$dirty || this.$v.address.$invalid ||
+          this.addressWarning || this.address.replace(/\s+/, "") === "") {
+                    return false;
+                }
+            } else {
+                if (!this.$v.publicKey.$dirty || this.$v.publicKey.$invalid ||
+          this.publicKeyWarning || this.publicKey.replace(/\s+/, "") === "") {
+                    return false;
+                }
+            }
 
-      fee: mixin.validators.fee,
-      passphrase: mixin.validators.passphrase,
-      secondPassphrase: mixin.validators.secondPassphrase,
-      walletPassword: mixin.validators.walletPassword
+            return true;
+        },
+
+        isFormValid () {
+            if (this.step === 1) {
+                return !this.$v.form.publicKeys.$invalid;
+            }
+
+            return !this.$v.form.$invalid;
+        },
+
+        addressWarning () {
+            if (!this.$v.address.$dirty) {
+                return null;
+            }
+
+            if (this.form.publicKeys.some(key => key.address === this.$v.address.$model)) {
+                return this.$t("TRANSACTION.MULTI_SIGNATURE.ERROR_DUPLICATE");
+            }
+
+            return null;
+        },
+
+        publicKeyWarning () {
+            if (!this.$v.publicKey.$dirty) {
+                return null;
+            }
+
+            if (this.form.publicKeys.some(key => key.publicKey === this.$v.publicKey.$model)) {
+                return this.$t("TRANSACTION.MULTI_SIGNATURE.ERROR_DUPLICATE");
+            }
+
+            return null;
+        },
+
+        maximumPublicKeys () {
+            if (!this.session_network.constants || !this.session_network.constants.maxMultiSignatureParticipants) {
+                return 16;
+            }
+
+            return this.session_network.constants.maxMultiSignatureParticipants;
+        },
+
+        minKeysError () {
+            if (this.$v.form.minKeys.$dirty && this.$v.form.minKeys.$error) {
+                if (!this.$v.form.minKeys.required) {
+                    return this.$t("VALIDATION.REQUIRED", [this.$t("TRANSACTION.MULTI_SIGNATURE.MIN_KEYS")]);
+                } else if (!this.$v.form.minKeys.belowMaximum) {
+                    return this.$t("TRANSACTION.MULTI_SIGNATURE.ERROR_MIN_KEYS_TOO_HIGH");
+                } else if (!this.$v.form.minKeys.aboveMinimum) {
+                    return this.$t("TRANSACTION.MULTI_SIGNATURE.ERROR_MIN_KEYS_TOO_LOW");
+                }
+            }
+
+            return null;
+        }
+    },
+
+    mounted () {
+        this.form.publicKeys.push({
+            address: this.currentWallet.address,
+            publicKey: this.currentWallet.publicKey
+        });
+        this.updateMinKeys();
+    },
+
+    methods: {
+        getTransactionData () {
+            const transactionData = {
+                address: this.currentWallet.address,
+                publicKeys: this.form.publicKeys.map(key => key.publicKey),
+                minKeys: this.form.minKeys,
+                passphrase: this.form.passphrase,
+                fee: this.getFee(),
+                wif: this.form.wif,
+                networkWif: this.walletNetwork.wif
+            };
+
+            if (this.currentWallet.secondPublicKey) {
+                transactionData.secondPassphrase = this.form.secondPassphrase;
+            }
+
+            return transactionData;
+        },
+
+        async buildTransaction (transactionData, isAdvancedFee = false, returnObject = false) {
+            const transaction = await this.$client.buildMultiSignature(transactionData, isAdvancedFee, returnObject);
+            if (!returnObject) {
+                transaction.multiSignature = transaction.asset.multiSignature;
+            }
+
+            return transaction;
+        },
+
+        transactionError () {
+            this.$error(this.$t("TRANSACTION.ERROR.VALIDATION.MULTI_SIGNATURE"));
+        },
+
+        async addPublicKey () {
+            const entry = {
+                address: null,
+                publicKey: null
+            };
+            if (this.addressTab) {
+                entry.address = this.address;
+
+                let wallet = this.$store.getters["wallet/byAddress"](this.address);
+                if (wallet && wallet.publicKey) {
+                    entry.publicKey = wallet.publicKey;
+                } else {
+                    wallet = await this.$client.fetchWallet(this.address);
+
+                    if (wallet && wallet.publicKey) {
+                        entry.publicKey = wallet.publicKey;
+                    } else {
+                        this.$error(this.$t("TRANSACTION.MULTI_SIGNATURE.ERROR_PUBLIC_KEY_NOT_FOUND"));
+
+                        return;
+                    }
+                }
+
+                this.$refs.address.reset();
+            } else {
+                entry.publicKey = this.publicKey;
+
+                this.$refs.publicKey.reset();
+            }
+
+            const existingEntry = this.form.publicKeys.find(key => key.publicKey === entry.publicKey);
+            if (existingEntry) {
+                if (entry.address && !existingEntry.address) {
+                    existingEntry.address = entry.address;
+                }
+
+                this.$error(this.$t("TRANSACTION.MULTI_SIGNATURE.ERROR_PUBLIC_KEY_EXISTS"));
+
+                return;
+            }
+
+            this.form.publicKeys.push(entry);
+            this.updateMinKeys();
+        },
+
+        updateMinKeys () {
+            this.$v.form.minKeys.$model = this.form.publicKeys.length;
+        },
+
+        previousStep () {
+            if (this.step === 2) {
+                this.step = 1;
+            }
+        },
+
+        nextStep () {
+            if (this.step === 1) {
+                this.step = 2;
+            } else {
+                this.form.fee = this.$refs.fee.fee;
+                this.onSubmit();
+            }
+        },
+
+        onFee (fee) {
+            this.$set(this.form, "fee", fee);
+        },
+
+        emitRemovePublicKey (index) {
+            this.$v.form.publicKeys.$model = [
+                ...this.form.publicKeys.slice(0, index),
+                ...this.form.publicKeys.slice(index + 1)
+            ];
+        }
+    },
+
+    validations: {
+        publicKey: {
+            isValid () {
+                if (this.$refs.publicKey) {
+                    return !this.$refs.publicKey.$v.$invalid;
+                }
+
+                return false;
+            }
+        },
+
+        address: {
+            isValid () {
+                if (this.$refs.address) {
+                    return !this.$refs.address.$v.$invalid;
+                }
+
+                return false;
+            }
+        },
+
+        form: {
+            publicKeys: {
+                notEmpty () {
+                    return !!this.form.publicKeys.length;
+                },
+
+                aboveMinimum () {
+                    return this.form.publicKeys.length > 1;
+                },
+
+                belowMaximum () {
+                    return this.form.publicKeys.length < this.maximumPublicKeys;
+                }
+            },
+
+            minKeys: {
+                required,
+
+                belowMaximum (value) {
+                    return value <= this.form.publicKeys.length;
+                },
+
+                aboveMinimum (value) {
+                    return value >= 1;
+                }
+            },
+
+            fee: mixin.validators.fee,
+            passphrase: mixin.validators.passphrase,
+            secondPassphrase: mixin.validators.secondPassphrase,
+            walletPassword: mixin.validators.walletPassword
+        }
     }
-  }
-}
+};
 </script>
 
 <style>

@@ -1,5 +1,5 @@
-import NpmAdapter from './npm-adapter'
+import NpmAdapter from "./npm-adapter";
 
 export {
-  NpmAdapter
-}
+    NpmAdapter
+};

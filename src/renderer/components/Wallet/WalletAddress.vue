@@ -217,124 +217,124 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'WalletAddress',
+    name: "WalletAddress",
 
-  components: {
-    SvgIcon
-  },
+    components: {
+        SvgIcon
+    },
 
-  props: {
-    address: {
-      type: String,
-      required: false,
-      default: () => ''
+    props: {
+        address: {
+            type: String,
+            required: false,
+            default: () => ""
+        },
+        asset: {
+            type: Object,
+            required: false,
+            default: () => {}
+        },
+        type: {
+            type: Number,
+            required: false,
+            default: () => 0
+        },
+        group: {
+            type: Number,
+            required: false,
+            default: () => 1
+        },
+        tooltipContainer: {
+            type: String,
+            required: false,
+            default: () => "#app"
+        },
+        addressLength: {
+            type: Number,
+            required: false,
+            default: 10
+        }
     },
-    asset: {
-      type: Object,
-      required: false,
-      default: () => {}
+
+    data: () => ({
+        showTooltip: false
+    }),
+
+    computed: {
+        hasMultipleVotes () {
+            return this.asset && this.asset.votes && this.asset.votes.length > 1;
+        },
+
+        isUnvote () {
+            return this.asset && this.asset.votes && this.asset.votes[0].charAt(0) === "-";
+        },
+
+        votePublicKey () {
+            if (this.asset && this.asset.votes) {
+                const vote = this.hasMultipleVotes ? this.asset.votes.find(vote => vote.charAt(0) === "+") : this.asset.votes[0];
+                return vote.substr(1);
+            }
+            return "";
+        },
+
+        votedDelegate () {
+            if (this.votePublicKey) {
+                return this.$store.getters["delegate/byPublicKey"](this.votePublicKey);
+            }
+
+            return null;
+        },
+
+        votedDelegateUsername () {
+            return this.votedDelegate ? this.votedDelegate.username : "";
+        },
+
+        votedDelegateAddress () {
+            return this.votedDelegate ? this.votedDelegate.address : "";
+        },
+
+        verifiedAddressText () {
+            let verifiedText = "";
+            const knownWallet = this.isKnownWallet();
+            if (knownWallet && knownWallet !== this.wallet_formatAddress(this.address, this.addressLength)) {
+                verifiedText = `${knownWallet} - `;
+            }
+
+            return verifiedText + this.$t("COMMON.VERIFIED_ADDRESS");
+        }
     },
-    type: {
-      type: Number,
-      required: false,
-      default: () => 0
-    },
-    group: {
-      type: Number,
-      required: false,
-      default: () => 1
-    },
-    tooltipContainer: {
-      type: String,
-      required: false,
-      default: () => '#app'
-    },
-    addressLength: {
-      type: Number,
-      required: false,
-      default: 10
+
+    methods: {
+        isKnownWallet () {
+            return this.session_network.knownWallets[this.address];
+        },
+
+        onClick () {
+            this.showTooltip = false;
+            this.$emit("click");
+            this.openAddress();
+        },
+
+        onMouseOver () {
+            this.showTooltip = true;
+        },
+
+        onMouseOut () {
+            this.showTooltip = false;
+        },
+
+        openAddress () {
+            if (this.votePublicKey) {
+                this.$router.push({ name: "wallet-show", params: { address: this.votedDelegateAddress } });
+            } else {
+                this.$router.push({ name: "wallet-show", params: { address: this.address } });
+            }
+        }
     }
-  },
-
-  data: () => ({
-    showTooltip: false
-  }),
-
-  computed: {
-    hasMultipleVotes () {
-      return this.asset && this.asset.votes && this.asset.votes.length > 1
-    },
-
-    isUnvote () {
-      return this.asset && this.asset.votes && this.asset.votes[0].charAt(0) === '-'
-    },
-
-    votePublicKey () {
-      if (this.asset && this.asset.votes) {
-        const vote = this.hasMultipleVotes ? this.asset.votes.find(vote => vote.charAt(0) === '+') : this.asset.votes[0]
-        return vote.substr(1)
-      }
-      return ''
-    },
-
-    votedDelegate () {
-      if (this.votePublicKey) {
-        return this.$store.getters['delegate/byPublicKey'](this.votePublicKey)
-      }
-
-      return null
-    },
-
-    votedDelegateUsername () {
-      return this.votedDelegate ? this.votedDelegate.username : ''
-    },
-
-    votedDelegateAddress () {
-      return this.votedDelegate ? this.votedDelegate.address : ''
-    },
-
-    verifiedAddressText () {
-      let verifiedText = ''
-      const knownWallet = this.isKnownWallet()
-      if (knownWallet && knownWallet !== this.wallet_formatAddress(this.address, this.addressLength)) {
-        verifiedText = `${knownWallet} - `
-      }
-
-      return verifiedText + this.$t('COMMON.VERIFIED_ADDRESS')
-    }
-  },
-
-  methods: {
-    isKnownWallet () {
-      return this.session_network.knownWallets[this.address]
-    },
-
-    onClick () {
-      this.showTooltip = false
-      this.$emit('click')
-      this.openAddress()
-    },
-
-    onMouseOver () {
-      this.showTooltip = true
-    },
-
-    onMouseOut () {
-      this.showTooltip = false
-    },
-
-    openAddress () {
-      if (this.votePublicKey) {
-        this.$router.push({ name: 'wallet-show', params: { address: this.votedDelegateAddress } })
-      } else {
-        this.$router.push({ name: 'wallet-show', params: { address: this.address } })
-      }
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

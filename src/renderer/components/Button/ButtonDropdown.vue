@@ -67,109 +67,109 @@
 </template>
 
 <script>
-import { ButtonGeneric } from '@/components/Button'
-import SvgIcon from '@/components/SvgIcon'
+import { ButtonGeneric } from "@/components/Button";
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'ButtonDropdown',
+    name: "ButtonDropdown",
 
-  components: {
-    ButtonGeneric,
-    SvgIcon
-  },
-
-  props: {
-    classes: {
-      type: String,
-      required: false,
-      default: ''
+    components: {
+        ButtonGeneric,
+        SvgIcon
     },
 
-    items: {
-      type: Array,
-      required: true
+    props: {
+        classes: {
+            type: String,
+            required: false,
+            default: ""
+        },
+
+        items: {
+            type: Array,
+            required: true
+        },
+
+        title: {
+            type: String,
+            required: false,
+            default: null
+        }
     },
 
-    title: {
-      type: String,
-      required: false,
-      default: null
+    data () {
+        return {
+            showDropdown: false,
+            dropdownStyle: ""
+        };
+    },
+
+    computed: {
+        hasPrimaryButton () {
+            return !!this.$slots.primaryButton;
+        },
+
+        dropdownButtonClasses () {
+            return {
+                ...this.classes.split(" ").reduce((classes, className) => {
+                    classes[className] = true;
+
+                    return classes;
+                }, {}),
+                "ButtonDropdown__button--nolabel": this.hasPrimaryButton
+            };
+        },
+
+        arrowViewbox () {
+            if (this.showDropdown) {
+                return "0 2 12 16";
+            }
+
+            return "0 -2 12 16";
+        }
+    },
+
+    mounted () {
+        this.setDropdownStyle();
+
+        window.addEventListener("resize", this.handleResize);
+    },
+
+    destroyed () {
+        window.removeEventListener("resize", this.handleResize);
+    },
+
+    methods: {
+        toggleDropdown () {
+            this.showDropdown = !this.showDropdown;
+        },
+
+        triggerClose () {
+            this.showDropdown = false;
+        },
+
+        handleResize () {
+            this.setDropdownStyle();
+        },
+
+        setDropdownStyle () {
+            const buttonDropdown = this.$refs.buttonDropdown;
+
+            if (buttonDropdown) {
+                const height = buttonDropdown.clientHeight;
+                const position = buttonDropdown.getBoundingClientRect();
+
+                this.dropdownStyle = [
+                    `top: ${position.top + height}px`,
+                    `left: ${position.left}px`,
+                    "z-index: 10"
+                ].join(";");
+            } else {
+                this.dropdownStyle = "";
+            }
+        }
     }
-  },
-
-  data () {
-    return {
-      showDropdown: false,
-      dropdownStyle: ''
-    }
-  },
-
-  computed: {
-    hasPrimaryButton () {
-      return !!this.$slots.primaryButton
-    },
-
-    dropdownButtonClasses () {
-      return {
-        ...this.classes.split(' ').reduce((classes, className) => {
-          classes[className] = true
-
-          return classes
-        }, {}),
-        'ButtonDropdown__button--nolabel': this.hasPrimaryButton
-      }
-    },
-
-    arrowViewbox () {
-      if (this.showDropdown) {
-        return '0 2 12 16'
-      }
-
-      return '0 -2 12 16'
-    }
-  },
-
-  mounted () {
-    this.setDropdownStyle()
-
-    window.addEventListener('resize', this.handleResize)
-  },
-
-  destroyed () {
-    window.removeEventListener('resize', this.handleResize)
-  },
-
-  methods: {
-    toggleDropdown () {
-      this.showDropdown = !this.showDropdown
-    },
-
-    triggerClose () {
-      this.showDropdown = false
-    },
-
-    handleResize () {
-      this.setDropdownStyle()
-    },
-
-    setDropdownStyle () {
-      const buttonDropdown = this.$refs.buttonDropdown
-
-      if (buttonDropdown) {
-        const height = buttonDropdown.clientHeight
-        const position = buttonDropdown.getBoundingClientRect()
-
-        this.dropdownStyle = [
-          `top: ${position.top + height}px`,
-          `left: ${position.left}px`,
-          'z-index: 10'
-        ].join(';')
-      } else {
-        this.dropdownStyle = ''
-      }
-    }
-  }
-}
+};
 </script>
 
 <style scoped>

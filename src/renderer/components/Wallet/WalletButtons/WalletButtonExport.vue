@@ -28,35 +28,35 @@
 </template>
 
 <script>
-import ModalExportWallets from '@/components/Modal/ModalExportWallets'
-import SvgIcon from '@/components/SvgIcon'
+import ModalExportWallets from "@/components/Modal/ModalExportWallets";
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'WalletButtonExport',
+    name: "WalletButtonExport",
 
-  components: {
-    ModalExportWallets,
-    SvgIcon
-  },
+    components: {
+        ModalExportWallets,
+        SvgIcon
+    },
 
-  data () {
-    return {
-      showModal: false
+    data () {
+        return {
+            showModal: false
+        };
+    },
+
+    computed: {
+        hideText () {
+            return this.$store.getters["session/hideWalletButtonText"];
+        }
+    },
+
+    methods: {
+        toggle () {
+            this.showModal = !this.showModal;
+        }
     }
-  },
-
-  computed: {
-    hideText () {
-      return this.$store.getters['session/hideWalletButtonText']
-    }
-  },
-
-  methods: {
-    toggle () {
-      this.showModal = !this.showModal
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

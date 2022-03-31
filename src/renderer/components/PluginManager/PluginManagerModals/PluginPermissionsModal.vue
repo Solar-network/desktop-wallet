@@ -39,55 +39,55 @@
 </template>
 
 <script>
-import { ModalWindow } from '@/components/Modal'
+import { ModalWindow } from "@/components/Modal";
 
 export default {
-  name: 'PluginPermissionsModal',
+    name: "PluginPermissionsModal",
 
-  components: {
-    ModalWindow
-  },
+    components: {
+        ModalWindow
+    },
 
-  props: {
-    modalRef: {
-      type: String,
-      required: false,
-      default: ''
+    props: {
+        modalRef: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        plugin: {
+            type: Object,
+            required: true
+        },
+        isUpdate: {
+            type: Boolean,
+            default: false,
+            required: false
+        }
     },
-    plugin: {
-      type: Object,
-      required: true
+
+    computed: {
+        title () {
+            if (this.isInstalled && !this.isUpdate) {
+                return this.$t("MODAL_PLUGIN_PERMISSIONS.TITLE");
+            }
+            return this.$t("MODAL_PLUGIN_PERMISSIONS.ALTERNATIVE_TITLE");
+        },
+
+        isInstalled () {
+            return this.$store.getters["plugin/isInstalled"](this.plugin.id);
+        }
     },
-    isUpdate: {
-      type: Boolean,
-      default: false,
-      required: false
+
+    methods: {
+        emitClose () {
+            this.$emit("close", this.modalRef);
+        },
+
+        emitConfirm () {
+            this.$emit("confirm", this.plugin);
+        }
     }
-  },
-
-  computed: {
-    title () {
-      if (this.isInstalled && !this.isUpdate) {
-        return this.$t('MODAL_PLUGIN_PERMISSIONS.TITLE')
-      }
-      return this.$t('MODAL_PLUGIN_PERMISSIONS.ALTERNATIVE_TITLE')
-    },
-
-    isInstalled () {
-      return this.$store.getters['plugin/isInstalled'](this.plugin.id)
-    }
-  },
-
-  methods: {
-    emitClose () {
-      this.$emit('close', this.modalRef)
-    },
-
-    emitConfirm () {
-      this.$emit('confirm', this.plugin)
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

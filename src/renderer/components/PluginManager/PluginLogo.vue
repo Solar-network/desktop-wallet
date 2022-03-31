@@ -18,27 +18,27 @@
 </template>
 
 <script>
-import PluginIdenticon from '@/components/PluginManager/PluginIdenticon'
+import PluginIdenticon from "@/components/PluginManager/PluginIdenticon";
 
 export default {
-  name: 'PluginLogo',
+    name: "PluginLogo",
 
-  components: {
-    PluginIdenticon
-  },
-
-  props: {
-    plugin: {
-      type: Object,
-      required: true
+    components: {
+        PluginIdenticon
     },
-    size: {
-      type: Number,
-      required: false,
-      default: 80
+
+    props: {
+        plugin: {
+            type: Object,
+            required: true
+        },
+        size: {
+            type: Number,
+            required: false,
+            default: 80
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

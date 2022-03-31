@@ -14,17 +14,17 @@
 </template>
 
 <script>
-import { InputText } from '@/components/Input'
-import SvgIcon from '@/components/SvgIcon'
+import { InputText } from "@/components/Input";
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'SearchInput',
+    name: "SearchInput",
 
-  components: {
-    InputText,
-    SvgIcon
-  }
-}
+    components: {
+        InputText,
+        SvgIcon
+    }
+};
 </script>
 
 <style lang="postcss">

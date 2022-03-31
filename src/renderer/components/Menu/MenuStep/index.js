@@ -1,8 +1,8 @@
-import MenuStep from './MenuStep'
-import MenuStepItem from './MenuStepItem'
+import MenuStep from "./MenuStep";
+import MenuStepItem from "./MenuStepItem";
 
-export default MenuStep
+export default MenuStep;
 export {
-  MenuStep,
-  MenuStepItem
-}
+    MenuStep,
+    MenuStepItem
+};

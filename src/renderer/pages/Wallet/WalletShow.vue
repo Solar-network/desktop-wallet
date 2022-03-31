@@ -23,47 +23,47 @@
 </template>
 
 <script>
-import { WalletSidebar, WalletDetails } from '@/components/Wallet'
+import { WalletSidebar, WalletDetails } from "@/components/Wallet";
 
 export default {
-  name: 'WalletShow',
+    name: "WalletShow",
 
-  components: {
-    WalletSidebar,
-    WalletDetails
-  },
-
-  data: () => ({
-    isSidebarExpanded: false
-  }),
-
-  computed: {
-    wallet () {
-      return this.wallet_fromRoute
-    }
-  },
-
-  watch: {
-    wallet () {
-      if (!this.wallet) {
-        this.$router.push({ name: 'wallets' })
-      }
-    }
-  },
-
-  created () {
-    if (!this.wallet) {
-      this.$router.push({ name: 'wallets' })
-    }
-  },
-
-  methods: {
-    onCollapse () {
-      this.isSidebarExpanded = false
+    components: {
+        WalletSidebar,
+        WalletDetails
     },
-    onExpand () {
-      this.isSidebarExpanded = true
+
+    data: () => ({
+        isSidebarExpanded: false
+    }),
+
+    computed: {
+        wallet () {
+            return this.wallet_fromRoute;
+        }
+    },
+
+    watch: {
+        wallet () {
+            if (!this.wallet) {
+                this.$router.push({ name: "wallets" });
+            }
+        }
+    },
+
+    created () {
+        if (!this.wallet) {
+            this.$router.push({ name: "wallets" });
+        }
+    },
+
+    methods: {
+        onCollapse () {
+            this.isSidebarExpanded = false;
+        },
+        onExpand () {
+            this.isSidebarExpanded = true;
+        }
     }
-  }
-}
+};
 </script>

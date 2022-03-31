@@ -12,20 +12,20 @@
 </template>
 
 <script>
-import selectionMixin from './mixin-selection'
-import selectionImageMixin from './mixin-selection-image'
+import selectionMixin from "./mixin-selection";
+import selectionImageMixin from "./mixin-selection-image";
 
 export default {
-  name: 'SelectionBackground',
+    name: "SelectionBackground",
 
-  mixins: [selectionMixin, selectionImageMixin],
+    mixins: [selectionMixin, selectionImageMixin],
 
-  props: {
-    categories: {
-      type: Array,
-      required: false,
-      default: () => ['wallpapers', 'textures']
+    props: {
+        categories: {
+            type: Array,
+            required: false,
+            default: () => ["wallpapers", "textures"]
+        }
     }
-  }
-}
+};
 </script>

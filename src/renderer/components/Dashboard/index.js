@@ -1,5 +1,5 @@
-import DashboardTransactions from './DashboardTransactions'
+import DashboardTransactions from "./DashboardTransactions";
 
 export {
-  DashboardTransactions
-}
+    DashboardTransactions
+};

@@ -102,167 +102,167 @@
 </template>
 
 <script>
-import truncateMiddle from '@/filters/truncate-middle'
-import { TransactionShowMultiSignature } from '@/components/Transaction'
-import WalletAddress from '@/components/Wallet/WalletAddress'
-import TableWrapper from '@/components/utils/TableWrapper'
-import TransactionService from '@/services/transaction'
-import WalletService from '@/services/wallet'
+import truncateMiddle from "@/filters/truncate-middle";
+import { TransactionShowMultiSignature } from "@/components/Transaction";
+import WalletAddress from "@/components/Wallet/WalletAddress";
+import TableWrapper from "@/components/utils/TableWrapper";
+import TransactionService from "@/services/transaction";
+import WalletService from "@/services/wallet";
 
 export default {
-  name: 'TransactionMultiSignatureTable',
+    name: "TransactionMultiSignatureTable",
 
-  components: {
-    TableWrapper,
-    TransactionShowMultiSignature,
-    WalletAddress
-  },
-
-  props: {
-    hasShortId: {
-      type: Boolean,
-      required: false,
-      default: false
+    components: {
+        TableWrapper,
+        TransactionShowMultiSignature,
+        WalletAddress
     },
 
-    transactionType: {
-      type: Number,
-      required: false,
-      default: null
-    }
-  },
+    props: {
+        hasShortId: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
 
-  data: () => ({
-    selected: null
-  }),
-
-  computed: {
-    columns () {
-      return [
-        {
-          label: this.$t('TRANSACTION.ID'),
-          field: 'id',
-          formatFn: this.formatTransactionId,
-          sortable: false
-        },
-        {
-          label: this.$t('COMMON.DATE'),
-          field: 'timestamp',
-          type: 'date',
-          formatFn: this.formatDate,
-          tdClass: 'text-center',
-          thClass: 'text-center'
-        },
-        {
-          label: this.$t('TRANSACTION.SENDER'),
-          field: 'senderPublicKey',
-          sortable: false
-        },
-        {
-          label: this.$t('TRANSACTION.RECIPIENT'),
-          field: 'recipientId',
-          sortable: false
-        },
-        {
-          label: this.$t('TRANSACTION.STATUS'),
-          field: 'status'
-        },
-        {
-          label: this.$t('TRANSACTION.AMOUNT'),
-          type: 'number',
-          field: 'amount',
-          tdClass: 'text-right',
-          thClass: 'text-right'
+        transactionType: {
+            type: Number,
+            required: false,
+            default: null
         }
-      ]
+    },
+
+    data: () => ({
+        selected: null
+    }),
+
+    computed: {
+        columns () {
+            return [
+                {
+                    label: this.$t("TRANSACTION.ID"),
+                    field: "id",
+                    formatFn: this.formatTransactionId,
+                    sortable: false
+                },
+                {
+                    label: this.$t("COMMON.DATE"),
+                    field: "timestamp",
+                    type: "date",
+                    formatFn: this.formatDate,
+                    tdClass: "text-center",
+                    thClass: "text-center"
+                },
+                {
+                    label: this.$t("TRANSACTION.SENDER"),
+                    field: "senderPublicKey",
+                    sortable: false
+                },
+                {
+                    label: this.$t("TRANSACTION.RECIPIENT"),
+                    field: "recipientId",
+                    sortable: false
+                },
+                {
+                    label: this.$t("TRANSACTION.STATUS"),
+                    field: "status"
+                },
+                {
+                    label: this.$t("TRANSACTION.AMOUNT"),
+                    type: "number",
+                    field: "amount",
+                    tdClass: "text-right",
+                    thClass: "text-right"
+                }
+            ];
+        }
+    },
+
+    methods: {
+        needsSignatures (transaction) {
+            return TransactionService.needsSignatures(transaction);
+        },
+
+        needsWalletSignature (transaction) {
+            return TransactionService.needsWalletSignature(transaction, WalletService.getPublicKeyFromWallet(this.wallet_fromRoute));
+        },
+
+        remainingSignatureCount (transaction) {
+            let min = transaction.multiSignature.min;
+            if (TransactionService.isMultiSignatureRegistration(transaction)) {
+                min = transaction.multiSignature.publicKeys.length;
+            }
+
+            return min - transaction.signatures.length;
+        },
+
+        formatDate (value) {
+            return this.formatter_date(value);
+        },
+
+        formatAddress (row) {
+            return row.sender || WalletService.getAddressFromPublicKey(row.senderPublicKey, this.session_network.version);
+        },
+
+        formatTransactionId (value) {
+            return this.hasShortId ? truncateMiddle(value, 6) : truncateMiddle(value, 10);
+        },
+
+        formatSmartbridge (value) {
+            if (value.length > 43) {
+                return `${value.slice(0, 40)}...`;
+            }
+            return value;
+        },
+
+        formatHash (value) {
+            return truncateMiddle(value, 10);
+        },
+
+        formatAmount (row, includeFee = true) {
+            return this.formatter_networkCurrency(TransactionService.getAmount(this, row, this.wallet_fromRoute, includeFee));
+        },
+
+        formatFee (value) {
+            return this.formatter_networkCurrency(value);
+        },
+
+        formatRow (row) {
+            const classes = [
+                row.confirmations === 0 ? "unconfirmed" : "confirmed"
+            ];
+
+            if (row.isExpired) {
+                classes.push("expired");
+            }
+
+            return classes.join(" ");
+        },
+
+        getIpfsUrl (row) {
+            return `https://cloudflare-ipfs.com/ipfs/${row.asset.ipfs}`;
+        },
+
+        openTransactions (id) {
+            this.network_openExplorer("transaction", id);
+        },
+
+        onSortChange (sortOptions) {
+            this.$emit("on-sort-change", {
+                source: "transactionsTab",
+                ...sortOptions[0]
+            });
+        },
+
+        onRowClick ({ row }) {
+            this.selected = row;
+        },
+
+        onCloseModal () {
+            this.selected = null;
+        }
     }
-  },
-
-  methods: {
-    needsSignatures (transaction) {
-      return TransactionService.needsSignatures(transaction)
-    },
-
-    needsWalletSignature (transaction) {
-      return TransactionService.needsWalletSignature(transaction, WalletService.getPublicKeyFromWallet(this.wallet_fromRoute))
-    },
-
-    remainingSignatureCount (transaction) {
-      let min = transaction.multiSignature.min
-      if (TransactionService.isMultiSignatureRegistration(transaction)) {
-        min = transaction.multiSignature.publicKeys.length
-      }
-
-      return min - transaction.signatures.length
-    },
-
-    formatDate (value) {
-      return this.formatter_date(value)
-    },
-
-    formatAddress (row) {
-      return row.sender || WalletService.getAddressFromPublicKey(row.senderPublicKey, this.session_network.version)
-    },
-
-    formatTransactionId (value) {
-      return this.hasShortId ? truncateMiddle(value, 6) : truncateMiddle(value, 10)
-    },
-
-    formatSmartbridge (value) {
-      if (value.length > 43) {
-        return `${value.slice(0, 40)}...`
-      }
-      return value
-    },
-
-    formatHash (value) {
-      return truncateMiddle(value, 10)
-    },
-
-    formatAmount (row, includeFee = true) {
-      return this.formatter_networkCurrency(TransactionService.getAmount(this, row, this.wallet_fromRoute, includeFee))
-    },
-
-    formatFee (value) {
-      return this.formatter_networkCurrency(value)
-    },
-
-    formatRow (row) {
-      const classes = [
-        row.confirmations === 0 ? 'unconfirmed' : 'confirmed'
-      ]
-
-      if (row.isExpired) {
-        classes.push('expired')
-      }
-
-      return classes.join(' ')
-    },
-
-    getIpfsUrl (row) {
-      return `https://cloudflare-ipfs.com/ipfs/${row.asset.ipfs}`
-    },
-
-    openTransactions (id) {
-      this.network_openExplorer('transaction', id)
-    },
-
-    onSortChange (sortOptions) {
-      this.$emit('on-sort-change', {
-        source: 'transactionsTab',
-        ...sortOptions[0]
-      })
-    },
-
-    onRowClick ({ row }) {
-      this.selected = row
-    },
-
-    onCloseModal () {
-      this.selected = null
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss">

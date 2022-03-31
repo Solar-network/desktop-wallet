@@ -13,22 +13,22 @@
 
 <script>
 export default {
-  name: 'WalletIdenticonPlaceholder',
+    name: "WalletIdenticonPlaceholder",
 
-  props: {
-    size: {
-      type: Number,
-      required: true
-    }
-  },
+    props: {
+        size: {
+            type: Number,
+            required: true
+        }
+    },
 
-  computed: {
-    imagePath () {
-      const theme = this.session_hasDarkTheme ? 'dark' : 'light'
-      return `identicons/identicon-placeholder-${theme}.svg`
+    computed: {
+        imagePath () {
+            const theme = this.session_hasDarkTheme ? "dark" : "light";
+            return `identicons/identicon-placeholder-${theme}.svg`;
+        }
     }
-  }
-}
+};
 </script>
 
 <style>

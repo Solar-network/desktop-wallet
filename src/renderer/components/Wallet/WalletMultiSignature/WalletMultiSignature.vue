@@ -46,62 +46,62 @@
 </template>
 
 <script>
-import { ButtonModal } from '@/components/Button'
-import { ModalLoader, ModalPeer } from '@/components/Modal'
-import { WalletTransactionsMultiSignature } from '@/components/Wallet/WalletTransactions'
-import MultiSignature from '@/services/client-multisig'
+import { ButtonModal } from "@/components/Button";
+import { ModalLoader, ModalPeer } from "@/components/Modal";
+import { WalletTransactionsMultiSignature } from "@/components/Wallet/WalletTransactions";
+import MultiSignature from "@/services/client-multisig";
 
 export default {
-  name: 'WalletMultiSignature',
+    name: "WalletMultiSignature",
 
-  components: {
-    ButtonModal,
-    ModalLoader,
-    ModalPeer,
-    WalletTransactionsMultiSignature
-  },
-
-  data () {
-    return {
-      showLoadingModal: false
-    }
-  },
-
-  computed: {
-    peer () {
-      return this.$store.getters['session/multiSignaturePeer']
+    components: {
+        ButtonModal,
+        ModalLoader,
+        ModalPeer,
+        WalletTransactionsMultiSignature
     },
 
-    peerOutput () {
-      if (!this.peer) {
-        return this.$t('PEER.NONE')
-      }
+    data () {
+        return {
+            showLoadingModal: false
+        };
+    },
 
-      return `${this.peer.host}:${this.peer.port}`
-    }
-  },
+    computed: {
+        peer () {
+            return this.$store.getters["session/multiSignaturePeer"];
+        },
 
-  methods: {
-    async connectPeer ({ peer, closeTrigger }) {
-      this.showLoadingModal = true
+        peerOutput () {
+            if (!this.peer) {
+                return this.$t("PEER.NONE");
+            }
 
-      if (await MultiSignature.performHandshake(peer)) {
-        await this.$store.dispatch('session/setMultiSignaturePeer', peer)
-        await this.$store.dispatch('profile/setMultiSignaturePeer', peer)
-        this.$eventBus.emit('wallet:reload:multi-signature')
-        this.$success(`${this.$t('PEER.CONNECTED')}: ${peer.host}:${peer.port}`)
-
-        if (closeTrigger) {
-          closeTrigger()
+            return `${this.peer.host}:${this.peer.port}`;
         }
-      } else {
-        this.$error(this.$t('PEER.CONNECT_FAILED'))
-      }
+    },
 
-      this.showLoadingModal = false
+    methods: {
+        async connectPeer ({ peer, closeTrigger }) {
+            this.showLoadingModal = true;
+
+            if (await MultiSignature.performHandshake(peer)) {
+                await this.$store.dispatch("session/setMultiSignaturePeer", peer);
+                await this.$store.dispatch("profile/setMultiSignaturePeer", peer);
+                this.$eventBus.emit("wallet:reload:multi-signature");
+                this.$success(`${this.$t("PEER.CONNECTED")}: ${peer.host}:${peer.port}`);
+
+                if (closeTrigger) {
+                    closeTrigger();
+                }
+            } else {
+                this.$error(this.$t("PEER.CONNECT_FAILED"));
+            }
+
+            this.showLoadingModal = false;
+        }
     }
-  }
-}
+};
 </script>
 
 <style>

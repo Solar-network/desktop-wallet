@@ -1,56 +1,56 @@
-import { transform } from 'lodash'
-import { validate as jsonValidate } from 'jsonschema'
-import { isNil } from '@/utils'
+import { transform } from "lodash";
+import { validate as jsonValidate } from "jsonschema";
+import { isNil } from "@/utils";
 
 export default class BaseModel {
-  constructor (schema) {
-    this.schema = schema
-  }
-
-  deserialize (input) {
-    if (typeof input !== 'object') {
-      throw new Error(`Invalid model input type: \`${input}\``)
+    constructor (schema) {
+        this.schema = schema;
     }
 
-    const model = {}
+    deserialize (input) {
+        if (typeof input !== "object") {
+            throw new Error(`Invalid model input type: \`${input}\``);
+        }
 
-    const properties = this.formatProperties(input)
-    Object.defineProperties(model, properties)
+        const model = {};
 
-    this.validate(model)
-    return model
-  }
+        const properties = this.formatProperties(input);
+        Object.defineProperties(model, properties);
 
-  formatProperties (input) {
-    return transform(this.schema.properties, (result, item, key) => {
-      let value
+        this.validate(model);
+        return model;
+    }
 
-      if (item.format && typeof item.format === 'function') {
-        value = item.format(input)
-      } else if (input[key] !== undefined) {
-        value = input[key]
-      }
+    formatProperties (input) {
+        return transform(this.schema.properties, (result, item, key) => {
+            let value;
 
-      if (isNil(value) && item.default) {
-        value = item.default
-      }
+            if (item.format && typeof item.format === "function") {
+                value = item.format(input);
+            } else if (input[key] !== undefined) {
+                value = input[key];
+            }
 
-      result[key] = {
-        enumerable: true,
-        writable: true,
-        value
-      }
-    }, {})
-  }
+            if (isNil(value) && item.default) {
+                value = item.default;
+            }
 
-  validate (input) {
-    const validation = jsonValidate(input, this.schema)
+            result[key] = {
+                enumerable: true,
+                writable: true,
+                value
+            };
+        }, {});
+    }
 
-    if (!validation.valid) {
-      const errors = validation.errors.map(error => error.stack).join(', ')
-      throw new Error(`JSON: ${JSON.stringify(this.schema, null, 2)} Cannot be instantiated due to errors: ${errors}
+    validate (input) {
+        const validation = jsonValidate(input, this.schema);
+
+        if (!validation.valid) {
+            const errors = validation.errors.map(error => error.stack).join(", ");
+            throw new Error(`JSON: ${JSON.stringify(this.schema, null, 2)} Cannot be instantiated due to errors: ${errors}
         input: ${JSON.stringify(input)}
-      `)
+      `);
+        }
     }
-  }
 }

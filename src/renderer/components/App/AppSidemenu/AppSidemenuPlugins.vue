@@ -25,49 +25,49 @@
 </template>
 
 <script>
-import { MenuOptions, MenuOptionsItem } from '@/components/Menu'
+import { MenuOptions, MenuOptionsItem } from "@/components/Menu";
 
 export default {
-  name: 'AppSidemenuPlugins',
+    name: "AppSidemenuPlugins",
 
-  components: {
-    MenuOptions,
-    MenuOptionsItem
-  },
-
-  props: {
-    outsideClick: {
-      type: Boolean,
-      required: false,
-      default: false
+    components: {
+        MenuOptions,
+        MenuOptionsItem
     },
 
-    isHorizontal: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
-  },
+    props: {
+        outsideClick: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
 
-  computed: {
-    pluginMenuItems () {
-      return this.$store.getters['plugin/menuItems']
-    }
-  },
-
-  methods: {
-    navigateToRoute (routeName) {
-      this.$emit('close', true)
-      this.$router.push({ name: routeName })
+        isHorizontal: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
     },
 
-    emitClose () {
-      if (this.outsideClick) {
-        this.$emit('close')
-      }
+    computed: {
+        pluginMenuItems () {
+            return this.$store.getters["plugin/menuItems"];
+        }
+    },
+
+    methods: {
+        navigateToRoute (routeName) {
+            this.$emit("close", true);
+            this.$router.push({ name: routeName });
+        },
+
+        emitClose () {
+            if (this.outsideClick) {
+                this.$emit("close");
+            }
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

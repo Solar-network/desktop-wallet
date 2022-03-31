@@ -1,8 +1,8 @@
-import InputToggle from './InputToggle'
-import InputToggleChoice from './InputToggleChoice'
+import InputToggle from "./InputToggle";
+import InputToggleChoice from "./InputToggleChoice";
 
-export default InputToggle
+export default InputToggle;
 export {
-  InputToggle,
-  InputToggleChoice
-}
+    InputToggle,
+    InputToggleChoice
+};

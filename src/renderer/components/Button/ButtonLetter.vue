@@ -18,39 +18,39 @@
 
 <script>
 export default {
-  name: 'ButtonLetter',
+    name: "ButtonLetter",
 
-  props: {
-    tag: {
-      type: String,
-      required: false,
-      default: 'button',
-      validator: value => ['button', 'div'].includes(value)
+    props: {
+        tag: {
+            type: String,
+            required: false,
+            default: "button",
+            validator: value => ["button", "div"].includes(value)
+        },
+        size: {
+            type: String,
+            required: false,
+            default: null,
+            validator: value => value ? ["sm", "base", "lg", "xl", "2xl", "3xl"].includes(value) : true
+        },
+        hasCustomStyle: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        value: {
+            type: String,
+            required: false,
+            default: ""
+        }
     },
-    size: {
-      type: String,
-      required: false,
-      default: null,
-      validator: value => value ? ['sm', 'base', 'lg', 'xl', '2xl', '3xl'].includes(value) : true
-    },
-    hasCustomStyle: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    value: {
-      type: String,
-      required: false,
-      default: ''
-    }
-  },
 
-  computed: {
-    letter () {
-      return (this.value || '').charAt(0)
+    computed: {
+        letter () {
+            return (this.value || "").charAt(0);
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

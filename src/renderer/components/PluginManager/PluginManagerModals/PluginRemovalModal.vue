@@ -27,53 +27,53 @@
 </template>
 
 <script>
-import { ButtonSwitch } from '@/components/Button'
-import { ModalConfirmation } from '@/components/Modal'
-import { ListDivided, ListDividedItem } from '@/components/ListDivided'
+import { ButtonSwitch } from "@/components/Button";
+import { ModalConfirmation } from "@/components/Modal";
+import { ListDivided, ListDividedItem } from "@/components/ListDivided";
 
 export default {
-  name: 'PluginRemovalConfirmation',
+    name: "PluginRemovalConfirmation",
 
-  components: {
-    ButtonSwitch,
-    ListDivided,
-    ListDividedItem,
-    ModalConfirmation
-  },
+    components: {
+        ButtonSwitch,
+        ListDivided,
+        ListDividedItem,
+        ModalConfirmation
+    },
 
-  props: {
-    plugin: {
-      type: Object,
-      required: true
-    }
-  },
+    props: {
+        plugin: {
+            type: Object,
+            required: true
+        }
+    },
 
-  data: () => ({
-    removeOptions: false
-  }),
+    data: () => ({
+        removeOptions: false
+    }),
 
-  computed: {
-    hasStorage () {
-      return this.plugin.permissions.includes('STORAGE') &&
+    computed: {
+        hasStorage () {
+            return this.plugin.permissions.includes("STORAGE") &&
         (
-          this.$store.getters['plugin/profileHasPluginOptions'](this.plugin.id) ||
-          this.$store.getters['plugin/profileHasPluginOptions'](this.plugin.id, 'global')
-        )
-    }
-  },
-
-  methods: {
-    emitCancel () {
-      this.$emit('cancel')
+            this.$store.getters["plugin/profileHasPluginOptions"](this.plugin.id) ||
+          this.$store.getters["plugin/profileHasPluginOptions"](this.plugin.id, "global")
+        );
+        }
     },
 
-    emitConfirm () {
-      this.$emit('confirm', this.removeOptions)
-    },
+    methods: {
+        emitCancel () {
+            this.$emit("cancel");
+        },
 
-    toggleRemoveOptions () {
-      this.removeOptions = !this.removeOptions
+        emitConfirm () {
+            this.$emit("confirm", this.removeOptions);
+        },
+
+        toggleRemoveOptions () {
+            this.removeOptions = !this.removeOptions;
+        }
     }
-  }
-}
+};
 </script>

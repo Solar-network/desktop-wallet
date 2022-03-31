@@ -33,8 +33,8 @@
         "build:win:publish": "node .electron-vue/build.js && electron-builder --win --x64 --ia32 --publish onTagOrDraft",
         "dev": "cross-env ENABLE_SCREENSHOT_PROTECTION=false node .electron-vue/dev-runner.js",
         "postinstall": "electron-builder install-app-deps",
-        "lint": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter src __tests__",
-        "lint:fix": "eslint --ext .js,.vue -f ./node_modules/eslint-friendly-formatter --fix src __tests__",
+        "lint": "eslint --ext .js,.ts,.vue -f ./node_modules/eslint-friendly-formatter config scripts src __tests__",
+        "lint:fix": "eslint --ext .js,.ts,.vue -f ./node_modules/eslint-friendly-formatter --fix config scripts src __tests__",
         "pack": "npm run pack:main && npm run pack:renderer",
         "pack:main": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.main.config.js",
         "pack:renderer": "cross-env NODE_ENV=production webpack --progress --colors --config .electron-vue/webpack.renderer.config.js",
@@ -45,11 +45,6 @@
         "test:unit:coverage": "jest --config __tests__/unit.jest.conf.js --coverage",
         "test:unit:watch": "jest --config __tests__/unit.jest.conf.js --watch",
         "preversion": "cross-env ./scripts/version-artifacts.sh"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "lint-staged"
-        }
     },
     "dependencies": {
         "@alessiodf/crypto": "3.2.2",

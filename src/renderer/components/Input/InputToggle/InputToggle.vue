@@ -13,36 +13,36 @@
 </template>
 
 <script>
-import InputToggleChoice from './InputToggleChoice'
+import InputToggleChoice from "./InputToggleChoice";
 
 export default {
-  name: 'InputToggle',
+    name: "InputToggle",
 
-  components: {
-    InputToggleChoice
-  },
-
-  model: {
-    prop: 'selectedChoice',
-    event: 'choice-select'
-  },
-
-  props: {
-    choices: {
-      type: Array,
-      required: true
+    components: {
+        InputToggleChoice
     },
 
-    selectedChoice: {
-      type: String,
-      required: true
-    }
-  },
+    model: {
+        prop: "selectedChoice",
+        event: "choice-select"
+    },
 
-  methods: {
-    emitSelect (choice) {
-      this.$emit('select', choice)
+    props: {
+        choices: {
+            type: Array,
+            required: true
+        },
+
+        selectedChoice: {
+            type: String,
+            required: true
+        }
+    },
+
+    methods: {
+        emitSelect (choice) {
+            this.$emit("select", choice);
+        }
     }
-  }
-}
+};
 </script>

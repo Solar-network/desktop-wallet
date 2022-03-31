@@ -1,89 +1,89 @@
-import { createLocalVue, mount } from '@vue/test-utils'
-import PluginWrapper from '@/components/Plugin/PluginWrapper'
-import { Wormhole } from 'portal-vue'
+import { createLocalVue, mount } from "@vue/test-utils";
+import PluginWrapper from "@/components/Plugin/PluginWrapper";
+import { Wormhole } from "portal-vue";
 
-const vue = createLocalVue()
+const vue = createLocalVue();
 
-jest.mock('portal-vue', () => ({
-  Wormhole: {
-    open: jest.fn(),
-    close: jest.fn()
-  }
-}))
+jest.mock("portal-vue", () => ({
+    Wormhole: {
+        open: jest.fn(),
+        close: jest.fn()
+    }
+}));
 
-describe('PluginWrapper', () => {
-  const mountComponent = config => {
-    return mount(PluginWrapper, config)
-  }
+describe("PluginWrapper", () => {
+    const mountComponent = config => {
+        return mount(PluginWrapper, config);
+    };
 
-  describe('when there is a footer slot', () => {
-    it('should open a Wormhole when mounted', done => {
-      const spy = jest.spyOn(Wormhole, 'open')
+    describe("when there is a footer slot", () => {
+        it("should open a Wormhole when mounted", done => {
+            const spy = jest.spyOn(Wormhole, "open");
 
-      const wrapper = mountComponent({
-        slots: {
-          footer: '<div></div>'
-        }
-      })
+            const wrapper = mountComponent({
+                slots: {
+                    footer: "<div></div>"
+                }
+            });
 
-      vue.nextTick(() => {
-        expect(spy).toHaveBeenCalledWith({
-          to: 'plugin-footer',
-          from: 'plugin-wrapper',
-          passengers: wrapper.vm.footerSlot
-        })
-        done()
-      })
+            vue.nextTick(() => {
+                expect(spy).toHaveBeenCalledWith({
+                    to: "plugin-footer",
+                    from: "plugin-wrapper",
+                    passengers: wrapper.vm.footerSlot
+                });
+                done();
+            });
 
-      spy.mockRestore()
-    })
+            spy.mockRestore();
+        });
 
-    it('should close a Wormhole when destroyed', done => {
-      const spy = jest.spyOn(Wormhole, 'close')
+        it("should close a Wormhole when destroyed", done => {
+            const spy = jest.spyOn(Wormhole, "close");
 
-      mountComponent({
-        slots: {
-          footer: '<div></div>'
-        }
-      }).destroy()
+            mountComponent({
+                slots: {
+                    footer: "<div></div>"
+                }
+            }).destroy();
 
-      vue.nextTick(() => {
-        expect(spy).toHaveBeenCalledWith({
-          to: 'plugin-footer',
-          from: 'plugin-wrapper'
-        })
-        done()
-      })
+            vue.nextTick(() => {
+                expect(spy).toHaveBeenCalledWith({
+                    to: "plugin-footer",
+                    from: "plugin-wrapper"
+                });
+                done();
+            });
 
-      spy.mockRestore()
-    })
-  })
+            spy.mockRestore();
+        });
+    });
 
-  describe('when there is no footer slot', () => {
-    it('should not open a Wormhole when mounted', done => {
-      const spy = jest.spyOn(Wormhole, 'open')
+    describe("when there is no footer slot", () => {
+        it("should not open a Wormhole when mounted", done => {
+            const spy = jest.spyOn(Wormhole, "open");
 
-      mountComponent()
+            mountComponent();
 
-      vue.nextTick(() => {
-        expect(spy).not.toHaveBeenCalled()
-        done()
-      })
+            vue.nextTick(() => {
+                expect(spy).not.toHaveBeenCalled();
+                done();
+            });
 
-      spy.mockRestore()
-    })
+            spy.mockRestore();
+        });
 
-    it('should not close a Wormhole when destroyed', done => {
-      const spy = jest.spyOn(Wormhole, 'close')
+        it("should not close a Wormhole when destroyed", done => {
+            const spy = jest.spyOn(Wormhole, "close");
 
-      mountComponent().destroy()
+            mountComponent().destroy();
 
-      vue.nextTick(() => {
-        expect(spy).not.toHaveBeenCalled()
-        done()
-      })
+            vue.nextTick(() => {
+                expect(spy).not.toHaveBeenCalled();
+                done();
+            });
 
-      spy.mockRestore()
-    })
-  })
-})
+            spy.mockRestore();
+        });
+    });
+});

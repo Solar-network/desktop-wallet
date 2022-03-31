@@ -56,49 +56,49 @@
 </template>
 
 <script>
-import { ButtonGeneric, ButtonIconGeneric } from '@/components/Button'
-import PluginManagerCheckmark from '@/components/PluginManager/PluginManagerCheckmark'
-import PluginManagerGrants from '@/components/PluginManager/PluginManagerGrants'
-import PluginLogo from '@/components/PluginManager/PluginLogo'
+import { ButtonGeneric, ButtonIconGeneric } from "@/components/Button";
+import PluginManagerCheckmark from "@/components/PluginManager/PluginManagerCheckmark";
+import PluginManagerGrants from "@/components/PluginManager/PluginManagerGrants";
+import PluginLogo from "@/components/PluginManager/PluginLogo";
 
 export default {
-  name: 'PluginManagerGrid',
+    name: "PluginManagerGrid",
 
-  components: {
-    ButtonGeneric,
-    ButtonIconGeneric,
-    PluginManagerCheckmark,
-    PluginManagerGrants,
-    PluginLogo
-  },
-
-  props: {
-    plugins: {
-      type: Array,
-      required: true
-    }
-  },
-
-  computed: {
-    sortedPlugins () {
-      return this.plugins.concat().sort((a, b) => a.title.localeCompare(b.title))
-    }
-  },
-
-  methods: {
-    emitShowDetails (plugin) {
-      this.$emit('show-details', plugin)
+    components: {
+        ButtonGeneric,
+        ButtonIconGeneric,
+        PluginManagerCheckmark,
+        PluginManagerGrants,
+        PluginLogo
     },
 
-    isInstalled (pluginId) {
-      return this.$store.getters['plugin/isInstalled'](pluginId)
+    props: {
+        plugins: {
+            type: Array,
+            required: true
+        }
     },
 
-    isUpdateAvailable (pluginId) {
-      return this.$store.getters['plugin/isUpdateAvailable'](pluginId)
+    computed: {
+        sortedPlugins () {
+            return this.plugins.concat().sort((a, b) => a.title.localeCompare(b.title));
+        }
+    },
+
+    methods: {
+        emitShowDetails (plugin) {
+            this.$emit("show-details", plugin);
+        },
+
+        isInstalled (pluginId) {
+            return this.$store.getters["plugin/isInstalled"](pluginId);
+        },
+
+        isUpdateAvailable (pluginId) {
+            return this.$store.getters["plugin/isUpdateAvailable"](pluginId);
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

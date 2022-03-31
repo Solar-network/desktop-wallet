@@ -11,42 +11,42 @@
 
 <script>
 export default {
-  name: 'MenuOptions',
+    name: "MenuOptions",
 
-  props: {
-    isHorizontal: {
-      type: Boolean,
-      required: false,
-      default: false
+    props: {
+        isHorizontal: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+
+        isSettings: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+
+        singleColumn: {
+            type: Boolean,
+            required: false,
+            default: true
+        }
     },
 
-    isSettings: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
+    computed: {
+        classes () {
+            const classes = [this.isHorizontal ? "MenuOptions--horizontal" : "MenuOptions--vertical"];
+            if (!this.isHorizontal) {
+                classes.push(this.isSettings ? "MenuOptions__settings--vertical" : "MenuOptions__default--vertical");
+            }
+            if (this.singleColumn) {
+                classes.push("flex-col");
+            }
 
-    singleColumn: {
-      type: Boolean,
-      required: false,
-      default: true
+            return classes.join(" ");
+        }
     }
-  },
-
-  computed: {
-    classes () {
-      const classes = [this.isHorizontal ? 'MenuOptions--horizontal' : 'MenuOptions--vertical']
-      if (!this.isHorizontal) {
-        classes.push(this.isSettings ? 'MenuOptions__settings--vertical' : 'MenuOptions__default--vertical')
-      }
-      if (this.singleColumn) {
-        classes.push('flex-col')
-      }
-
-      return classes.join(' ')
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss">

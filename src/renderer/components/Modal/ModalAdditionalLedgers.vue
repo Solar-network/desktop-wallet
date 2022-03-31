@@ -51,88 +51,88 @@
 </template>
 
 <script>
-import { minValue, numeric, required } from 'vuelidate/lib/validators'
-import ModalWindow from '@/components/Modal/ModalWindow'
-import { ButtonGeneric } from '@/components/Button'
-import { InputText } from '@/components/Input'
+import { minValue, numeric, required } from "vuelidate/lib/validators";
+import ModalWindow from "@/components/Modal/ModalWindow";
+import { ButtonGeneric } from "@/components/Button";
+import { InputText } from "@/components/Input";
 
 export default {
-  name: 'ModalAdditionalLedgers',
+    name: "ModalAdditionalLedgers",
 
-  components: {
-    ButtonGeneric,
-    InputText,
-    ModalWindow
-  },
-
-  props: {
-    largeQuantity: {
-      type: Number,
-      required: false,
-      default: 50
-    }
-  },
-
-  data () {
-    return {
-      form: {
-        quantity: ''
-      }
-    }
-  },
-
-  computed: {
-    currentLedgerQuantity () {
-      return this.$store.getters['ledger/wallets'].length
+    components: {
+        ButtonGeneric,
+        InputText,
+        ModalWindow
     },
 
-    quantityError () {
-      if (this.$v.form.quantity.$dirty) {
-        if (!this.$v.form.quantity.required) {
-          return this.$t('VALIDATION.REQUIRED', [this.$refs['input-quantity'].label])
-        } else if (!this.$v.form.quantity.numeric) {
-          return this.$t('VALIDATION.NOT_NUMERIC', [this.$refs['input-quantity'].label])
-        } else if (!this.$v.form.quantity.minValue) {
-          return this.$t('VALIDATION.MUST_BE_GREATER_THAN', [0])
+    props: {
+        largeQuantity: {
+            type: Number,
+            required: false,
+            default: 50
         }
-      }
-
-      return null
     },
 
-    quantityWarning () {
-      if (this.$v.form.quantity.$dirty && this.$v.form.quantity.$model > this.largeQuantity) {
-        return this.$t('MODAL_ADDITIONAL_LEDGERS.LARGE_QUANTITY')
-      }
-
-      return null
-    }
-  },
-
-  methods: {
-    async submit () {
-      this.$store.dispatch('ledger/reloadWallets', {
-        clearFirst: true,
-        forceLoad: true,
-        quantity: this.form.quantity
-      })
-
-      this.emitClose(true)
+    data () {
+        return {
+            form: {
+                quantity: ""
+            }
+        };
     },
 
-    emitClose (closeMenu = false) {
-      this.$emit('close', closeMenu)
-    }
-  },
+    computed: {
+        currentLedgerQuantity () {
+            return this.$store.getters["ledger/wallets"].length;
+        },
 
-  validations: {
-    form: {
-      quantity: {
-        numeric,
-        required,
-        minValue: minValue(1)
-      }
+        quantityError () {
+            if (this.$v.form.quantity.$dirty) {
+                if (!this.$v.form.quantity.required) {
+                    return this.$t("VALIDATION.REQUIRED", [this.$refs["input-quantity"].label]);
+                } else if (!this.$v.form.quantity.numeric) {
+                    return this.$t("VALIDATION.NOT_NUMERIC", [this.$refs["input-quantity"].label]);
+                } else if (!this.$v.form.quantity.minValue) {
+                    return this.$t("VALIDATION.MUST_BE_GREATER_THAN", [0]);
+                }
+            }
+
+            return null;
+        },
+
+        quantityWarning () {
+            if (this.$v.form.quantity.$dirty && this.$v.form.quantity.$model > this.largeQuantity) {
+                return this.$t("MODAL_ADDITIONAL_LEDGERS.LARGE_QUANTITY");
+            }
+
+            return null;
+        }
+    },
+
+    methods: {
+        async submit () {
+            this.$store.dispatch("ledger/reloadWallets", {
+                clearFirst: true,
+                forceLoad: true,
+                quantity: this.form.quantity
+            });
+
+            this.emitClose(true);
+        },
+
+        emitClose (closeMenu = false) {
+            this.$emit("close", closeMenu);
+        }
+    },
+
+    validations: {
+        form: {
+            quantity: {
+                numeric,
+                required,
+                minValue: minValue(1)
+            }
+        }
     }
-  }
-}
+};
 </script>

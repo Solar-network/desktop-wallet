@@ -62,83 +62,83 @@
 </template>
 
 <script>
-import ModalWindow from './ModalWindow'
-import { QrcodeStream } from 'vue-qrcode-reader'
-import Loader from '@/components/utils/Loader'
+import ModalWindow from "./ModalWindow";
+import { QrcodeStream } from "vue-qrcode-reader";
+import Loader from "@/components/utils/Loader";
 
 export default {
-  name: 'ModalQrCode',
+    name: "ModalQrCode",
 
-  components: {
-    ModalWindow,
-    QrcodeStream,
-    Loader
-  },
+    components: {
+        ModalWindow,
+        QrcodeStream,
+        Loader
+    },
 
-  props: {
-    toggle: {
-      type: Function,
-      required: true
-    }
-  },
-
-  data: () => ({
-    isLoading: true,
-    errorMessage: null
-  }),
-
-  computed: {
-    title () {
-      return this.$t('MODAL_QR_SCANNER.TITLE')
-    }
-  },
-
-  methods: {
-    async onInit (promise) {
-      let promiseSuccessfullyHandled = false
-      let errorMessage
-
-      try {
-        setTimeout(() => {
-          if (!promiseSuccessfullyHandled) {
-            this.isLoading = false
-            this.errorMessage = this.$t('MODAL_QR_SCANNER.ERROR.NOT_READABLE')
-          }
-        }, 10000)
-        await promise
-        errorMessage = null
-      } catch (error) {
-        if (error.name === 'NotAllowedError') {
-          errorMessage = this.$t('MODAL_QR_SCANNER.ERROR.NOT_ALLOWED')
-        } else if (error.name === 'NotFoundError') {
-          errorMessage = this.$t('MODAL_QR_SCANNER.ERROR.NOT_FOUND')
-        } else if (error.name === 'NotSupportedError') {
-          errorMessage = this.$t('MODAL_QR_SCANNER.ERROR.NOT_SUPPORTED')
-        } else if (error.name === 'NotReadableError') {
-          errorMessage = this.$t('MODAL_QR_SCANNER.ERROR.NOT_READABLE')
-        } else if (error.name === 'OverconstrainedError') {
-          errorMessage = this.$t('MODAL_QR_SCANNER.ERROR.OVERCONSTRAINED')
-        } else if (error.name === 'StreamApiNotSupportedError') {
-          errorMessage = this.$t('MODAL_QR_SCANNER.ERROR.STREAM')
+    props: {
+        toggle: {
+            type: Function,
+            required: true
         }
-      } finally {
-        setTimeout(() => {
-          promiseSuccessfullyHandled = true
-          this.isLoading = false
-          this.errorMessage = errorMessage
-        }, 1000)
-      }
     },
 
-    onDecode (decodedString) {
-      this.$emit('decoded', decodedString, this.toggle)
+    data: () => ({
+        isLoading: true,
+        errorMessage: null
+    }),
+
+    computed: {
+        title () {
+            return this.$t("MODAL_QR_SCANNER.TITLE");
+        }
     },
 
-    emitClose () {
-      this.$emit('close')
+    methods: {
+        async onInit (promise) {
+            let promiseSuccessfullyHandled = false;
+            let errorMessage;
+
+            try {
+                setTimeout(() => {
+                    if (!promiseSuccessfullyHandled) {
+                        this.isLoading = false;
+                        this.errorMessage = this.$t("MODAL_QR_SCANNER.ERROR.NOT_READABLE");
+                    }
+                }, 10000);
+                await promise;
+                errorMessage = null;
+            } catch (error) {
+                if (error.name === "NotAllowedError") {
+                    errorMessage = this.$t("MODAL_QR_SCANNER.ERROR.NOT_ALLOWED");
+                } else if (error.name === "NotFoundError") {
+                    errorMessage = this.$t("MODAL_QR_SCANNER.ERROR.NOT_FOUND");
+                } else if (error.name === "NotSupportedError") {
+                    errorMessage = this.$t("MODAL_QR_SCANNER.ERROR.NOT_SUPPORTED");
+                } else if (error.name === "NotReadableError") {
+                    errorMessage = this.$t("MODAL_QR_SCANNER.ERROR.NOT_READABLE");
+                } else if (error.name === "OverconstrainedError") {
+                    errorMessage = this.$t("MODAL_QR_SCANNER.ERROR.OVERCONSTRAINED");
+                } else if (error.name === "StreamApiNotSupportedError") {
+                    errorMessage = this.$t("MODAL_QR_SCANNER.ERROR.STREAM");
+                }
+            } finally {
+                setTimeout(() => {
+                    promiseSuccessfullyHandled = true;
+                    this.isLoading = false;
+                    this.errorMessage = errorMessage;
+                }, 1000);
+            }
+        },
+
+        onDecode (decodedString) {
+            this.$emit("decoded", decodedString, this.toggle);
+        },
+
+        emitClose () {
+            this.$emit("close");
+        }
     }
-  }
-}
+};
 </script>
 
 <style>

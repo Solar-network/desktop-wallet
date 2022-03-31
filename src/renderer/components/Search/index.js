@@ -1,6 +1,6 @@
-import SearchInput from './SearchInput'
+import SearchInput from "./SearchInput";
 
-export * from './SearchFilter'
+export * from "./SearchFilter";
 export {
-  SearchInput
-}
+    SearchInput
+};

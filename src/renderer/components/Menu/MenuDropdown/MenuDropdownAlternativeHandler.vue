@@ -19,33 +19,33 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'MenuDropdownAlternativeHandler',
+    name: "MenuDropdownAlternativeHandler",
 
-  components: {
-    SvgIcon
-  },
+    components: {
+        SvgIcon
+    },
 
-  props: {
-    value: {
-      type: String,
-      required: false,
-      default: null
-    },
-    placeholder: {
-      type: String,
-      required: false,
-      default: null
-    },
-    isOpen: {
-      type: Boolean,
-      required: false,
-      default: false
+    props: {
+        value: {
+            type: String,
+            required: false,
+            default: null
+        },
+        placeholder: {
+            type: String,
+            required: false,
+            default: null
+        },
+        isOpen: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

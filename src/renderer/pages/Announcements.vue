@@ -51,52 +51,52 @@
 </template>
 
 <script>
-import { orderBy } from 'lodash'
-import { mapGetters } from 'vuex'
-import { AnnouncementsPost } from '@/components/Announcements'
-import SvgIcon from '@/components/SvgIcon'
+import { orderBy } from "lodash";
+import { mapGetters } from "vuex";
+import { AnnouncementsPost } from "@/components/Announcements";
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'Announcements',
+    name: "Announcements",
 
-  components: {
-    AnnouncementsPost,
-    SvgIcon
-  },
-
-  computed: {
-    ...mapGetters({
-      readAnnouncements: 'announcements/read',
-      unreadAnnouncements: 'announcements/unread'
-    }),
-
-    announcements () {
-      const all = this.unreadAnnouncements.concat(this.readAnnouncements)
-      return orderBy(all, ['isRead', 'date'], ['asc', 'desc'])
+    components: {
+        AnnouncementsPost,
+        SvgIcon
     },
 
-    showReadAll () {
-      return this.unreadAnnouncements && this.unreadAnnouncements.length
-    }
-  },
+    computed: {
+        ...mapGetters({
+            readAnnouncements: "announcements/read",
+            unreadAnnouncements: "announcements/unread"
+        }),
 
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.$synchronizer.focus('announcements')
-      vm.$synchronizer.pause('market')
-    })
-  },
+        announcements () {
+            const all = this.unreadAnnouncements.concat(this.readAnnouncements);
+            return orderBy(all, ["isRead", "date"], ["asc", "desc"]);
+        },
 
-  methods: {
-    read (announcement) {
-      this.$store.dispatch('announcements/markAsRead', announcement)
+        showReadAll () {
+            return this.unreadAnnouncements && this.unreadAnnouncements.length;
+        }
     },
 
-    readAll () {
-      this.$store.dispatch('announcements/markAsReadBulk', this.unreadAnnouncements)
+    beforeRouteEnter (to, from, next) {
+        next(vm => {
+            vm.$synchronizer.focus("announcements");
+            vm.$synchronizer.pause("market");
+        });
+    },
+
+    methods: {
+        read (announcement) {
+            this.$store.dispatch("announcements/markAsRead", announcement);
+        },
+
+        readAll () {
+            this.$store.dispatch("announcements/markAsReadBulk", this.unreadAnnouncements);
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

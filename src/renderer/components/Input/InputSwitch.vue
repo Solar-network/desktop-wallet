@@ -33,20 +33,20 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Model } from 'vue-property-decorator'
-import { InputField } from '@/components/Input'
-import { ButtonSwitch } from '@/components/Button'
+import { Vue, Component, Prop, Model } from "vue-property-decorator";
+import { InputField } from "@/components/Input";
+import { ButtonSwitch } from "@/components/Button";
 
 @Component({
-  name: 'InputSwitch',
+    name: "InputSwitch",
 
-  components: {
-    InputField,
-    ButtonSwitch
-  }
+    components: {
+        InputField,
+        ButtonSwitch
+    }
 })
 export default class InputSwitch extends Vue {
-  @Model('change', { default: false })
+  @Model("change", { default: false })
   readonly isActive!: boolean;
 
   @Prop({ type: String })
@@ -71,11 +71,11 @@ export default class InputSwitch extends Vue {
   readonly isReverse!: boolean;
 
   get model () {
-    return this.isActive
+      return this.isActive;
   }
 
   set model (value) {
-    this.$emit('change', value)
+      this.$emit("change", value);
   }
 }
 </script>

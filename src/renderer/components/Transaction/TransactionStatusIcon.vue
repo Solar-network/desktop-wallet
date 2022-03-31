@@ -50,74 +50,74 @@
 </template>
 
 <script>
-import { at } from 'lodash'
-import SvgIcon from '@/components/SvgIcon'
-import TransactionService from '@/services/transaction'
+import { at } from "lodash";
+import SvgIcon from "@/components/SvgIcon";
+import TransactionService from "@/services/transaction";
 
 export default {
-  name: 'TransactionStatusIcon',
+    name: "TransactionStatusIcon",
 
-  components: {
-    SvgIcon
-  },
+    components: {
+        SvgIcon
+    },
 
-  props: {
-    isSender: {
-      type: Boolean,
-      required: false,
-      default: false
+    props: {
+        isSender: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        isRecipient: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        type: {
+            type: Number,
+            required: false,
+            default: null
+        },
+        typeGroup: {
+            type: Number,
+            required: false,
+            default: null
+        },
+        confirmations: {
+            type: Number,
+            required: false,
+            default: 0
+        },
+        showWaitingConfirmations: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        showTooltip: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        tooltipContainer: {
+            type: String,
+            required: false,
+            default: undefined
+        }
     },
-    isRecipient: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    type: {
-      type: Number,
-      required: false,
-      default: null
-    },
-    typeGroup: {
-      type: Number,
-      required: false,
-      default: null
-    },
-    confirmations: {
-      type: Number,
-      required: false,
-      default: 0
-    },
-    showWaitingConfirmations: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    showTooltip: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    tooltipContainer: {
-      type: String,
-      required: false,
-      default: undefined
+
+    computed: {
+        isTransferToSelf () {
+            return this.isSender === this.isRecipient && TransactionService.isTransfer(this.$options.propsData);
+        },
+
+        isWellConfirmed () {
+            return this.confirmations >= this.numberOfActiveDelegates;
+        },
+
+        numberOfActiveDelegates () {
+            return at(this, "session_network.constants.activeDelegates") || 51;
+        }
     }
-  },
-
-  computed: {
-    isTransferToSelf () {
-      return this.isSender === this.isRecipient && TransactionService.isTransfer(this.$options.propsData)
-    },
-
-    isWellConfirmed () {
-      return this.confirmations >= this.numberOfActiveDelegates
-    },
-
-    numberOfActiveDelegates () {
-      return at(this, 'session_network.constants.activeDelegates') || 51
-    }
-  }
-}
+};
 </script>
 
 <style scoped>

@@ -53,131 +53,131 @@
 
 <script>
 /* eslint-disable vue/no-unused-components */
-import { TRANSACTION_GROUPS } from '@config'
-import TransactionConfirmDelegateRegistration from './TransactionConfirmDelegateRegistration'
-import TransactionConfirmDelegateResignation from './TransactionConfirmDelegateResignation'
-import TransactionConfirmIpfs from './TransactionConfirmIpfs'
-import TransactionConfirmMultiPayment from './TransactionConfirmMultiPayment'
-import TransactionConfirmMultiSignature from './TransactionConfirmMultiSignature'
-import TransactionConfirmSecondSignature from './TransactionConfirmSecondSignature'
-import TransactionConfirmTransfer from './TransactionConfirmTransfer'
-import TransactionConfirmVote from './TransactionConfirmVote'
-import TransactionDetail from '../TransactionDetail'
-import SvgIcon from '@/components/SvgIcon'
-import TransactionService from '@/services/transaction'
+import { TRANSACTION_GROUPS } from "@config";
+import TransactionConfirmDelegateRegistration from "./TransactionConfirmDelegateRegistration";
+import TransactionConfirmDelegateResignation from "./TransactionConfirmDelegateResignation";
+import TransactionConfirmIpfs from "./TransactionConfirmIpfs";
+import TransactionConfirmMultiPayment from "./TransactionConfirmMultiPayment";
+import TransactionConfirmMultiSignature from "./TransactionConfirmMultiSignature";
+import TransactionConfirmSecondSignature from "./TransactionConfirmSecondSignature";
+import TransactionConfirmTransfer from "./TransactionConfirmTransfer";
+import TransactionConfirmVote from "./TransactionConfirmVote";
+import TransactionDetail from "../TransactionDetail";
+import SvgIcon from "@/components/SvgIcon";
+import TransactionService from "@/services/transaction";
 
 export default {
-  name: 'TransactionConfirm',
+    name: "TransactionConfirm",
 
-  provide () {
-    return {
-      currentWallet: this.currentWallet,
-      transaction: this.transaction
-    }
-  },
-
-  components: {
-    TransactionConfirmDelegateRegistration,
-    TransactionConfirmDelegateResignation,
-    TransactionConfirmIpfs,
-    TransactionConfirmMultiPayment,
-    TransactionConfirmMultiSignature,
-    TransactionConfirmSecondSignature,
-    TransactionConfirmTransfer,
-    TransactionConfirmVote,
-    TransactionDetail,
-    SvgIcon
-  },
-
-  props: {
-    transaction: {
-      type: Object,
-      required: true
+    provide () {
+        return {
+            currentWallet: this.currentWallet,
+            transaction: this.transaction
+        };
     },
-    wallet: {
-      type: Object,
-      required: false,
-      default: null
-    }
-  },
 
-  data: () => ({
-    activeComponent: null,
-    wasClicked: false
-  }),
+    components: {
+        TransactionConfirmDelegateRegistration,
+        TransactionConfirmDelegateResignation,
+        TransactionConfirmIpfs,
+        TransactionConfirmMultiPayment,
+        TransactionConfirmMultiSignature,
+        TransactionConfirmSecondSignature,
+        TransactionConfirmTransfer,
+        TransactionConfirmVote,
+        TransactionDetail,
+        SvgIcon
+    },
 
-  computed: {
-    totalAmount () {
-      const amount = this.currency_toBuilder(this.transaction.fee)
-
-      if (this.transaction.asset && this.transaction.asset.payments) {
-        for (const payment of this.transaction.asset.payments) {
-          amount.add(payment.amount)
+    props: {
+        transaction: {
+            type: Object,
+            required: true
+        },
+        wallet: {
+            type: Object,
+            required: false,
+            default: null
         }
-      } else if (this.transaction.amount) {
-        amount.add(this.transaction.amount)
-      }
-
-      return amount.value
     },
 
-    currentWallet () {
-      return this.wallet || this.wallet_fromRoute
-    },
-    address () {
-      return this.currentWallet.address
-    },
-    showSave () {
-      return !TransactionService.isMultiSignature(this.transaction)
-    }
-  },
+    data: () => ({
+        activeComponent: null,
+        wasClicked: false
+    }),
 
-  mounted () {
-    const transactionGroup = this.transaction.typeGroup || TRANSACTION_GROUPS.STANDARD
-    const component = Object.values(this.$options.components).find(component => {
-      const group = component.transactionGroup || TRANSACTION_GROUPS.STANDARD
+    computed: {
+        totalAmount () {
+            const amount = this.currency_toBuilder(this.transaction.fee);
 
-      return group !== transactionGroup ? false : component.transactionType === this.transaction.type
-    })
+            if (this.transaction.asset && this.transaction.asset.payments) {
+                for (const payment of this.transaction.asset.payments) {
+                    amount.add(payment.amount);
+                }
+            } else if (this.transaction.amount) {
+                amount.add(this.transaction.amount);
+            }
 
-    if (!component) {
-      throw new Error(`[TransactionConfirm] - Confirm for type ${this.transaction.type} (group ${transactionGroup}) not found.`)
-    }
+            return amount.value;
+        },
 
-    this.activeComponent = component.name
-  },
-
-  methods: {
-    emitBack () {
-      this.$emit('back')
-    },
-
-    emitConfirm () {
-      if (!this.wasClicked) {
-        this.wasClicked = true
-
-        this.$emit('confirm')
-      }
-    },
-
-    async saveTransaction () {
-      const raw = JSON.stringify(this.transaction)
-      const defaultPath = `${this.transaction.id}.json`
-
-      try {
-        const path = await this.electron_writeFile(raw, defaultPath)
-
-        if (path) {
-          this.$success(this.$t('TRANSACTION.SUCCESS.SAVE_OFFLINE', { path }))
-        } else {
-          return
+        currentWallet () {
+            return this.wallet || this.wallet_fromRoute;
+        },
+        address () {
+            return this.currentWallet.address;
+        },
+        showSave () {
+            return !TransactionService.isMultiSignature(this.transaction);
         }
-      } catch (error) {
-        this.$error(this.$t('TRANSACTION.ERROR.SAVE_OFFLINE', { error: error.message }))
-      }
+    },
+
+    mounted () {
+        const transactionGroup = this.transaction.typeGroup || TRANSACTION_GROUPS.STANDARD;
+        const component = Object.values(this.$options.components).find(component => {
+            const group = component.transactionGroup || TRANSACTION_GROUPS.STANDARD;
+
+            return group !== transactionGroup ? false : component.transactionType === this.transaction.type;
+        });
+
+        if (!component) {
+            throw new Error(`[TransactionConfirm] - Confirm for type ${this.transaction.type} (group ${transactionGroup}) not found.`);
+        }
+
+        this.activeComponent = component.name;
+    },
+
+    methods: {
+        emitBack () {
+            this.$emit("back");
+        },
+
+        emitConfirm () {
+            if (!this.wasClicked) {
+                this.wasClicked = true;
+
+                this.$emit("confirm");
+            }
+        },
+
+        async saveTransaction () {
+            const raw = JSON.stringify(this.transaction);
+            const defaultPath = `${this.transaction.id}.json`;
+
+            try {
+                const path = await this.electron_writeFile(raw, defaultPath);
+
+                if (path) {
+                    this.$success(this.$t("TRANSACTION.SUCCESS.SAVE_OFFLINE", { path }));
+                } else {
+                    return;
+                }
+            } catch (error) {
+                this.$error(this.$t("TRANSACTION.ERROR.SAVE_OFFLINE", { error: error.message }));
+            }
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

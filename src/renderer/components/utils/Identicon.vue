@@ -86,136 +86,136 @@
 </template>
 
 <script>
-import MersenneTwister from 'mersenne-twister'
-import Color from 'color'
-import colors from '@/components/utils/IdenticonColors'
-import crypto from 'crypto'
+import MersenneTwister from "mersenne-twister";
+import Color from "color";
+import colors from "@/components/utils/IdenticonColors";
+import crypto from "crypto";
 
 export default {
-  name: 'Identicon',
+    name: "Identicon",
 
-  props: {
-    value: {
-      type: String,
-      required: true
+    props: {
+        value: {
+            type: String,
+            required: true
+        },
+        size: {
+            type: Number,
+            required: true
+        },
+        shape: {
+            type: String,
+            required: false,
+            default: () => "circle"
+        },
+        shapeCount: {
+            type: Number,
+            required: false,
+            default: 3
+        },
+        isDark: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        showNetworkSymbol: {
+            type: Boolean,
+            required: false,
+            default: true
+        }
     },
-    size: {
-      type: Number,
-      required: true
+
+    data: () => ({
+        rectangles: [],
+        logo: null,
+        backgroundColor: ""
+    }),
+
+    computed: {
+        networkSymbol () {
+            return this.session_network && this.session_network.symbol.length ? this.session_network.symbol[0] : "";
+        },
+        maskId () {
+            return Math.random().toString(36).substring(9);
+        }
     },
-    shape: {
-      type: String,
-      required: false,
-      default: () => 'circle'
+
+    watch: {
+        value () {
+            this.generate(this.value);
+        }
     },
-    shapeCount: {
-      type: Number,
-      required: false,
-      default: 3
+
+    created () {
+        this.generate(this.value);
     },
-    isDark: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    showNetworkSymbol: {
-      type: Boolean,
-      required: false,
-      default: true
+
+    methods: {
+        generate (value) {
+            this.rectangles = [];
+
+            // Change string to a hash
+            const hash = crypto.createHash("sha1").update(Buffer.from(value, "utf8")).digest("binary");
+            // Change hash into a 32 bit int for our seed
+            const seed = (hash.charCodeAt(0) << 24) | (hash.charCodeAt(1) << 16) | (hash.charCodeAt(2) << 8) | hash.charCodeAt(3);
+            const generator = new MersenneTwister(seed);
+            const remainingColors = this.hueShift(colors.slice(), generator);
+            this.backgroundColor = this.genColor(remainingColors, generator);
+
+            for (let i = 0; i < this.shapeCount; i++) {
+                this.rectangles.push(this.genShape(generator, remainingColors, 100, i, this.shapeCount));
+            }
+            this.logo = this.genShape(generator, remainingColors, 100, 1, this.shapeCount);
+        },
+
+        genShape (generator, remainingColors, diameter, i, total) {
+            const center = diameter / 2;
+            const width = diameter;
+            const height = diameter;
+
+            const firstRot = generator.random();
+            const angle = Math.PI * 2 * firstRot;
+            const velocity = diameter / total * generator.random() + (i * diameter / total);
+
+            const tx = (Math.cos(angle) * velocity);
+            const ty = (Math.sin(angle) * velocity);
+
+            const translate = "translate(" + tx + " " + ty + ")";
+
+            // Third random is a shape rotation on top of all of that.
+            const secondRot = generator.random();
+            const rot = (firstRot * 360) + secondRot * 180;
+            const rotate = "rotate(" + rot.toFixed(1) + " " + center + " " + center + ")";
+            const transform = translate + " " + rotate;
+
+            const fill = this.genColor(remainingColors, generator);
+
+            return {
+                id: i,
+                width,
+                height,
+                transform,
+                fill
+            };
+        },
+
+        genColor (colors, generator) {
+            const idx = Math.floor(colors.length * generator.random());
+            const color = colors.splice(idx, 1)[0];
+            return color;
+        },
+
+        hueShift (colors, generator) {
+            const wobble = 30;
+            const amount = (generator.random() * 30) - (wobble / 2);
+            return colors.map(function (hex) {
+                const color = Color(hex);
+                color.rotate(amount);
+                return color.hex();
+            });
+        }
     }
-  },
-
-  data: () => ({
-    rectangles: [],
-    logo: null,
-    backgroundColor: ''
-  }),
-
-  computed: {
-    networkSymbol () {
-      return this.session_network && this.session_network.symbol.length ? this.session_network.symbol[0] : ''
-    },
-    maskId () {
-      return Math.random().toString(36).substring(9)
-    }
-  },
-
-  watch: {
-    value () {
-      this.generate(this.value)
-    }
-  },
-
-  created () {
-    this.generate(this.value)
-  },
-
-  methods: {
-    generate (value) {
-      this.rectangles = []
-
-      // Change string to a hash
-      const hash = crypto.createHash('sha1').update(Buffer.from(value, 'utf8')).digest('binary')
-      // Change hash into a 32 bit int for our seed
-      const seed = (hash.charCodeAt(0) << 24) | (hash.charCodeAt(1) << 16) | (hash.charCodeAt(2) << 8) | hash.charCodeAt(3)
-      const generator = new MersenneTwister(seed)
-      const remainingColors = this.hueShift(colors.slice(), generator)
-      this.backgroundColor = this.genColor(remainingColors, generator)
-
-      for (let i = 0; i < this.shapeCount; i++) {
-        this.rectangles.push(this.genShape(generator, remainingColors, 100, i, this.shapeCount))
-      }
-      this.logo = this.genShape(generator, remainingColors, 100, 1, this.shapeCount)
-    },
-
-    genShape (generator, remainingColors, diameter, i, total) {
-      const center = diameter / 2
-      const width = diameter
-      const height = diameter
-
-      const firstRot = generator.random()
-      const angle = Math.PI * 2 * firstRot
-      const velocity = diameter / total * generator.random() + (i * diameter / total)
-
-      const tx = (Math.cos(angle) * velocity)
-      const ty = (Math.sin(angle) * velocity)
-
-      const translate = 'translate(' + tx + ' ' + ty + ')'
-
-      // Third random is a shape rotation on top of all of that.
-      const secondRot = generator.random()
-      const rot = (firstRot * 360) + secondRot * 180
-      const rotate = 'rotate(' + rot.toFixed(1) + ' ' + center + ' ' + center + ')'
-      const transform = translate + ' ' + rotate
-
-      const fill = this.genColor(remainingColors, generator)
-
-      return {
-        id: i,
-        width,
-        height,
-        transform,
-        fill
-      }
-    },
-
-    genColor (colors, generator) {
-      const idx = Math.floor(colors.length * generator.random())
-      const color = colors.splice(idx, 1)[0]
-      return color
-    },
-
-    hueShift (colors, generator) {
-      const wobble = 30
-      const amount = (generator.random() * 30) - (wobble / 2)
-      return colors.map(function (hex) {
-        const color = Color(hex)
-        color.rotate(amount)
-        return color.hex()
-      })
-    }
-  }
-}
+};
 
 </script>
 

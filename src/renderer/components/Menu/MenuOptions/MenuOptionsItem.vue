@@ -27,32 +27,32 @@
 
 <script>
 export default {
-  name: 'MenuOptionsItem',
+    name: "MenuOptionsItem",
 
-  props: {
-    title: {
-      type: String,
-      required: true
+    props: {
+        title: {
+            type: String,
+            required: true
+        },
+        tooltip: {
+            type: [String, Object],
+            required: false,
+            default: () => {}
+        }
     },
-    tooltip: {
-      type: [String, Object],
-      required: false,
-      default: () => {}
-    }
-  },
 
-  computed: {
-    hasControls () {
-      return !!this.$slots.controls
-    }
-  },
+    computed: {
+        hasControls () {
+            return !!this.$slots.controls;
+        }
+    },
 
-  methods: {
-    emitClick () {
-      this.$emit('click')
+    methods: {
+        emitClick () {
+            this.$emit("click");
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

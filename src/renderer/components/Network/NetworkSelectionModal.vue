@@ -41,46 +41,46 @@
 </template>
 
 <script>
-import { ModalWindow } from '@/components/Modal'
+import { ModalWindow } from "@/components/Modal";
 
 export default {
-  name: 'NetworkSelectionModal',
+    name: "NetworkSelectionModal",
 
-  components: {
-    ModalWindow
-  },
-
-  props: {
-    toggle: {
-      type: Function,
-      required: true
-    }
-  },
-
-  data: () => {
-    return {
-      selectedNetwork: null
-    }
-  },
-
-  methods: {
-    getCustomNetworks () {
-      return Object.values(this.$store.getters['network/customNetworks'])
+    components: {
+        ModalWindow
     },
 
-    selectNetwork (network) {
-      this.selectedNetwork = network
+    props: {
+        toggle: {
+            type: Function,
+            required: true
+        }
     },
 
-    emitCancel () {
-      this.$emit('cancel')
+    data: () => {
+        return {
+            selectedNetwork: null
+        };
     },
 
-    emitSelected () {
-      this.$emit('selected', this.selectedNetwork, this.toggle)
+    methods: {
+        getCustomNetworks () {
+            return Object.values(this.$store.getters["network/customNetworks"]);
+        },
+
+        selectNetwork (network) {
+            this.selectedNetwork = network;
+        },
+
+        emitCancel () {
+            this.$emit("cancel");
+        },
+
+        emitSelected () {
+            this.$emit("selected", this.selectedNetwork, this.toggle);
+        }
     }
-  }
-}
+};
 </script>
 
 <style>

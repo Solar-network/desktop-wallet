@@ -180,48 +180,48 @@
 </template>
 
 <script>
-import AppFooter from '@/components/App/AppFooter'
-import AppIntroScreen from '@/components/App/AppIntro/AppIntroScreen'
-import { ButtonGeneric } from '@/components/Button'
+import AppFooter from "@/components/App/AppFooter";
+import AppIntroScreen from "@/components/App/AppIntro/AppIntroScreen";
+import { ButtonGeneric } from "@/components/Button";
 
 export default {
-  name: 'AppIntro',
+    name: "AppIntro",
 
-  components: {
-    AppFooter,
-    AppIntroScreen,
-    ButtonGeneric
-  },
-
-  data: () => ({
-    step: 0,
-    stepImages: [
-      'pages/intro/welcome.svg',
-      'pages/intro/power.svg',
-      'pages/intro/duty.svg',
-      'pages/intro/responsibility.svg',
-      'pages/intro/turn.svg'
-    ]
-  }),
-
-  computed: {
-    stepImage () {
-      return this.stepImages[this.step]
-    }
-  },
-
-  methods: {
-    done () {
-      this.$emit('done')
+    components: {
+        AppFooter,
+        AppIntroScreen,
+        ButtonGeneric
     },
-    moveTo (step) {
-      this.step = step
+
+    data: () => ({
+        step: 0,
+        stepImages: [
+            "pages/intro/welcome.svg",
+            "pages/intro/power.svg",
+            "pages/intro/duty.svg",
+            "pages/intro/responsibility.svg",
+            "pages/intro/turn.svg"
+        ]
+    }),
+
+    computed: {
+        stepImage () {
+            return this.stepImages[this.step];
+        }
     },
-    start () {
-      this.step = 0
+
+    methods: {
+        done () {
+            this.$emit("done");
+        },
+        moveTo (step) {
+            this.step = step;
+        },
+        start () {
+            this.step = 0;
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

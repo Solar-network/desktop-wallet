@@ -39,47 +39,47 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'PluginManagerButtonFilter',
+    name: "PluginManagerButtonFilter",
 
-  components: {
-    SvgIcon
-  },
-
-  props: {
-    activeFilter: {
-      type: String,
-      required: true
-    }
-  },
-
-  data: () => ({
-    isOpen: false,
-    filters: [
-      'all',
-      'installed',
-      'official',
-      'funded'
-    ]
-  }),
-
-  methods: {
-    closeDropdown () {
-      this.isOpen = false
+    components: {
+        SvgIcon
     },
 
-    toggleDropdown () {
-      this.isOpen = !this.isOpen
+    props: {
+        activeFilter: {
+            type: String,
+            required: true
+        }
     },
 
-    emitFilterChange (filter) {
-      this.closeDropdown()
-      this.$emit('filter-change', filter)
+    data: () => ({
+        isOpen: false,
+        filters: [
+            "all",
+            "installed",
+            "official",
+            "funded"
+        ]
+    }),
+
+    methods: {
+        closeDropdown () {
+            this.isOpen = false;
+        },
+
+        toggleDropdown () {
+            this.isOpen = !this.isOpen;
+        },
+
+        emitFilterChange (filter) {
+            this.closeDropdown();
+            this.$emit("filter-change", filter);
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

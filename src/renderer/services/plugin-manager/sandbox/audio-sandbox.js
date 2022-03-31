@@ -1,5 +1,5 @@
 export function create (sandbox) {
-  return () => {
-    sandbox.AudioContext = AudioContext
-  }
+    return () => {
+        sandbox.AudioContext = AudioContext;
+    };
 }

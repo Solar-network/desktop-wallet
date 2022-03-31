@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import SearchFilterItem from './SearchFilterItem'
+import SearchFilterItem from "./SearchFilterItem";
 
 export default {
-  name: 'SearchFilterDelegate',
+    name: "SearchFilterDelegate",
 
-  components: {
-    SearchFilterItem
-  }
-}
+    components: {
+        SearchFilterItem
+    }
+};
 </script>

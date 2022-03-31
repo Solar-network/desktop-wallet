@@ -12,76 +12,76 @@
 </template>
 
 <script>
-import selectionMixin from './mixin-selection'
-import selectionImageMixin from './mixin-selection-image'
+import selectionMixin from "./mixin-selection";
+import selectionImageMixin from "./mixin-selection-image";
 
 export default {
-  name: 'SelectionAvatar',
+    name: "SelectionAvatar",
 
-  mixins: [selectionMixin, selectionImageMixin],
+    mixins: [selectionMixin, selectionImageMixin],
 
-  props: {
-    categories: {
-      type: Array,
-      required: false,
-      default: () => ['avatars']
+    props: {
+        categories: {
+            type: Array,
+            required: false,
+            default: () => ["avatars"]
+        },
+        enableModal: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        letterValue: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        profile: {
+            type: Object,
+            required: false,
+            default: () => null
+        }
     },
-    enableModal: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    letterValue: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    profile: {
-      type: Object,
-      required: false,
-      default: () => null
+
+    computed: {
+        modalHeaderText () {
+            return this.enableModal
+                ? this.$t("SELECTION_AVATAR.MODAL_HEADER")
+                : null;
+        },
+
+        availableAvatars () {
+            const images = { ...this.images };
+            const key = Object.keys(images)[0];
+            images[key] = [this.letterAvatar, ...images[key]];
+            if (this.pluginAvatars && this.pluginAvatars.length) {
+                images[this.$t("SELECTION_AVATAR.ADDITIONAL_AVATARS")] = this.pluginAvatars;
+            }
+
+            return images;
+        },
+
+        letterAvatar () {
+            return {
+                title: this.$t("SELECTION_AVATAR.NO_AVATAR"),
+                textContent: this.letterValue,
+                onlyLetter: true
+            };
+        },
+
+        additional () {
+            return this.pluginAvatars;
+        },
+
+        pluginAvatars () {
+            if (!this.profile || !this.profile.id) {
+                return [];
+            }
+
+            return this.$store.getters["plugin/avatars"](this.profile.id);
+        }
     }
-  },
-
-  computed: {
-    modalHeaderText () {
-      return this.enableModal
-        ? this.$t('SELECTION_AVATAR.MODAL_HEADER')
-        : null
-    },
-
-    availableAvatars () {
-      const images = { ...this.images }
-      const key = Object.keys(images)[0]
-      images[key] = [this.letterAvatar, ...images[key]]
-      if (this.pluginAvatars && this.pluginAvatars.length) {
-        images[this.$t('SELECTION_AVATAR.ADDITIONAL_AVATARS')] = this.pluginAvatars
-      }
-
-      return images
-    },
-
-    letterAvatar () {
-      return {
-        title: this.$t('SELECTION_AVATAR.NO_AVATAR'),
-        textContent: this.letterValue,
-        onlyLetter: true
-      }
-    },
-
-    additional () {
-      return this.pluginAvatars
-    },
-
-    pluginAvatars () {
-      if (!this.profile || !this.profile.id) {
-        return []
-      }
-
-      return this.$store.getters['plugin/avatars'](this.profile.id)
-    }
-  }
-}
+};
 </script>
 
 <style>

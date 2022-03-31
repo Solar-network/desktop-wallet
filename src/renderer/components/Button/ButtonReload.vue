@@ -29,62 +29,62 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'ButtonReload',
+    name: "ButtonReload",
 
-  components: {
-    SvgIcon
-  },
+    components: {
+        SvgIcon
+    },
 
-  props: {
-    isRefreshing: {
-      type: Boolean,
-      required: false,
-      default: false
+    props: {
+        isRefreshing: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        colorClass: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        text: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        textClass: {
+            type: String,
+            required: false,
+            default: "text-grey-dark"
+        },
+        withoutBackground: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        title: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        viewBox: {
+            type: String,
+            required: false,
+            default: "0 0 15 14"
+        },
+        tooltipPlacement: {
+            type: String,
+            required: false,
+            default: ""
+        }
     },
-    colorClass: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    text: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    textClass: {
-      type: String,
-      required: false,
-      default: 'text-grey-dark'
-    },
-    withoutBackground: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    title: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    viewBox: {
-      type: String,
-      required: false,
-      default: '0 0 15 14'
-    },
-    tooltipPlacement: {
-      type: String,
-      required: false,
-      default: ''
+
+    methods: {
+        emitClick () {
+            this.$emit("click");
+        }
     }
-  },
-
-  methods: {
-    emitClick () {
-      this.$emit('click')
-    }
-  }
-}
+};
 </script>

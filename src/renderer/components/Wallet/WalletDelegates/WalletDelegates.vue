@@ -72,177 +72,177 @@
 </template>
 
 <script>
-import { isEqual } from 'lodash'
-import { ButtonClose } from '@/components/Button'
-import TableWrapper from '@/components/utils/TableWrapper'
+import { isEqual } from "lodash";
+import { ButtonClose } from "@/components/Button";
+import TableWrapper from "@/components/utils/TableWrapper";
 
 export default {
-  name: 'WalletDelegates',
+    name: "WalletDelegates",
 
-  inject: ['walletVote'],
+    inject: ["walletVote"],
 
-  components: {
-    ButtonClose,
-    TableWrapper
-  },
+    components: {
+        ButtonClose,
+        TableWrapper
+    },
 
-  data: () => ({
-    currentPage: 1,
-    delegates: [],
-    isExplanationTruncated: true,
-    isLoading: false,
-    totalCount: 0,
-    queryParams: {
-      page: 1,
-      limit: 51,
-      sort: {
-        field: 'rank',
-        type: 'asc'
-      }
-    }
-  }),
-
-  computed: {
-    perPageOptions () {
-      if (this.activeDelegates < 25) {
-        return [this.activeDelegates]
-      }
-
-      const options = []
-
-      for (let i = 25; i <= this.activeDelegates && i <= 100; i = i + 25) {
-        options.push(i)
-      }
-
-      if (this.activeDelegates < 100) {
-        if (this.activeDelegates - options[options.length - 1] > 10) {
-          options.push(this.activeDelegates)
-        } else {
-          options[options.length - 1] = this.activeDelegates
+    data: () => ({
+        currentPage: 1,
+        delegates: [],
+        isExplanationTruncated: true,
+        isLoading: false,
+        totalCount: 0,
+        queryParams: {
+            page: 1,
+            limit: 51,
+            sort: {
+                field: "rank",
+                type: "asc"
+            }
         }
-      }
+    }),
 
-      return options
-    },
+    computed: {
+        perPageOptions () {
+            if (this.activeDelegates < 25) {
+                return [this.activeDelegates];
+            }
 
-    activeDelegates () {
-      return this.session_network.constants.activeDelegates || 51
-    },
+            const options = [];
 
-    columns () {
-      return [
-        {
-          label: this.$t('WALLET_DELEGATES.RANK'),
-          field: 'rank',
-          type: 'number',
-          thClass: 'text-center',
-          tdClass: 'text-center'
+            for (let i = 25; i <= this.activeDelegates && i <= 100; i = i + 25) {
+                options.push(i);
+            }
+
+            if (this.activeDelegates < 100) {
+                if (this.activeDelegates - options[options.length - 1] > 10) {
+                    options.push(this.activeDelegates);
+                } else {
+                    options[options.length - 1] = this.activeDelegates;
+                }
+            }
+
+            return options;
         },
-        {
-          label: this.$t('WALLET_DELEGATES.USERNAME'),
-          field: 'username',
-          tdClass: 'w-2/3'
+
+        activeDelegates () {
+            return this.session_network.constants.activeDelegates || 51;
         },
-        {
-          label: this.$t('WALLET_DELEGATES.APPROVAL'),
-          field: 'production.approval',
-          type: 'percentage',
-          formatFn: this.formatPercentage
+
+        columns () {
+            return [
+                {
+                    label: this.$t("WALLET_DELEGATES.RANK"),
+                    field: "rank",
+                    type: "number",
+                    thClass: "text-center",
+                    tdClass: "text-center"
+                },
+                {
+                    label: this.$t("WALLET_DELEGATES.USERNAME"),
+                    field: "username",
+                    tdClass: "w-2/3"
+                },
+                {
+                    label: this.$t("WALLET_DELEGATES.APPROVAL"),
+                    field: "production.approval",
+                    type: "percentage",
+                    formatFn: this.formatPercentage
+                }
+            ];
+        },
+
+        isExplanationDisplayed () {
+            return this.$store.getters["app/showVotingExplanation"];
+        },
+
+        votingUrl () {
+            return "https://docs.solar.org/desktop-wallet/introduction-to-solar-rewards";
         }
-      ]
     },
 
-    isExplanationDisplayed () {
-      return this.$store.getters['app/showVotingExplanation']
+    mounted () {
+        this.queryParams.limit = Math.min(100, this.activeDelegates);
+        this.fetchDelegates();
     },
 
-    votingUrl () {
-      return 'https://docs.solar.org/desktop-wallet/introduction-to-solar-rewards'
+    methods: {
+        dismissExplanation () {
+            this.$store.dispatch("app/setVotingExplanation", false);
+        },
+
+        async fetchDelegates () {
+            if (this.isLoading) {
+                return;
+            }
+
+            try {
+                this.isLoading = true;
+
+                const { limit, page, sort } = this.queryParams;
+                const { delegates, meta } = await this.$client.fetchDelegates({
+                    page,
+                    limit,
+                    orderBy: `${sort.field.replace("production.", "")}:${sort.type}`
+                });
+
+                this.delegates = delegates;
+                this.totalCount = meta.totalCount;
+            } catch (error) {
+                this.$logger.error(error);
+                this.$error(this.$t("COMMON.FAILED_FETCH", {
+                    name: "delegates",
+                    msg: error.message
+                }));
+                this.delegates = [];
+            } finally {
+                this.isLoading = false;
+            }
+        },
+
+        formatPercentage (value) {
+            return this.formatter_percentage(value);
+        },
+
+        onRowClick ({ row }) {
+            this.$emit("on-row-click-delegate", row);
+        },
+
+        onPageChange ({ currentPage }) {
+            this.currentPage = currentPage;
+            this.__updateParams({ page: currentPage });
+            this.fetchDelegates();
+        },
+
+        onPerPageChange ({ currentPerPage }) {
+            this.__updateParams({ limit: currentPerPage, page: 1 });
+            this.fetchDelegates();
+        },
+
+        onSortChange (sortOptions) {
+            const params = sortOptions[0];
+
+            if (!isEqual(params, this.queryParams.sort)) {
+                this.__updateParams({
+                    sort: params,
+                    page: 1
+                });
+                this.fetchDelegates();
+            }
+        },
+
+        reset () {
+            this.currentPage = 1;
+            this.queryParams.page = 1;
+            this.totalCount = 0;
+            this.delegates = [];
+        },
+
+        __updateParams (newProps) {
+            this.queryParams = Object.assign({}, this.queryParams, newProps);
+        }
     }
-  },
-
-  mounted () {
-    this.queryParams.limit = Math.min(100, this.activeDelegates)
-    this.fetchDelegates()
-  },
-
-  methods: {
-    dismissExplanation () {
-      this.$store.dispatch('app/setVotingExplanation', false)
-    },
-
-    async fetchDelegates () {
-      if (this.isLoading) {
-        return
-      }
-
-      try {
-        this.isLoading = true
-
-        const { limit, page, sort } = this.queryParams
-        const { delegates, meta } = await this.$client.fetchDelegates({
-          page,
-          limit,
-          orderBy: `${sort.field.replace('production.', '')}:${sort.type}`
-        })
-
-        this.delegates = delegates
-        this.totalCount = meta.totalCount
-      } catch (error) {
-        this.$logger.error(error)
-        this.$error(this.$t('COMMON.FAILED_FETCH', {
-          name: 'delegates',
-          msg: error.message
-        }))
-        this.delegates = []
-      } finally {
-        this.isLoading = false
-      }
-    },
-
-    formatPercentage (value) {
-      return this.formatter_percentage(value)
-    },
-
-    onRowClick ({ row }) {
-      this.$emit('on-row-click-delegate', row)
-    },
-
-    onPageChange ({ currentPage }) {
-      this.currentPage = currentPage
-      this.__updateParams({ page: currentPage })
-      this.fetchDelegates()
-    },
-
-    onPerPageChange ({ currentPerPage }) {
-      this.__updateParams({ limit: currentPerPage, page: 1 })
-      this.fetchDelegates()
-    },
-
-    onSortChange (sortOptions) {
-      const params = sortOptions[0]
-
-      if (!isEqual(params, this.queryParams.sort)) {
-        this.__updateParams({
-          sort: params,
-          page: 1
-        })
-        this.fetchDelegates()
-      }
-    },
-
-    reset () {
-      this.currentPage = 1
-      this.queryParams.page = 1
-      this.totalCount = 0
-      this.delegates = []
-    },
-
-    __updateParams (newProps) {
-      this.queryParams = Object.assign({}, this.queryParams, newProps)
-    }
-  }
-}
+};
 </script>
 
 <style scoped>

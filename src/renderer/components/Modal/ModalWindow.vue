@@ -82,132 +82,132 @@
 </template>
 
 <script>
-import { ButtonClose } from '@/components/Button'
-import ModalCloseConfirmation from './ModalCloseConfirmation'
+import { ButtonClose } from "@/components/Button";
+import ModalCloseConfirmation from "./ModalCloseConfirmation";
 
 export default {
-  name: 'ModalWindow',
+    name: "ModalWindow",
 
-  components: {
-    ButtonClose,
-    ModalCloseConfirmation
-  },
+    components: {
+        ButtonClose,
+        ModalCloseConfirmation
+    },
 
-  props: {
-    canResize: {
-      type: Boolean,
-      required: false,
-      default: false
+    props: {
+        canResize: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        modalClasses: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        headerClasses: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        containerClasses: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        containerClassesMinimized: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        title: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        message: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        allowBackdropClick: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        confirmClose: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        allowClose: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        portalTarget: {
+            type: String,
+            required: false,
+            default: "modal"
+        }
     },
-    modalClasses: {
-      type: String,
-      required: false,
-      default: ''
+
+    data: () => ({
+        isMaximized: true,
+        showConfirmationModal: false,
+        hasChanged: false
+    }),
+
+    mounted () {
+        document.addEventListener("keyup", this.onEscKey, false);
+        this.$eventBus.on("change", this.onChange);
     },
-    headerClasses: {
-      type: String,
-      required: false,
-      default: ''
+
+    destroyed () {
+        document.removeEventListener("keyup", this.onEscKey);
     },
-    containerClasses: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    containerClassesMinimized: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    title: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    message: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    allowBackdropClick: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    confirmClose: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    allowClose: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    portalTarget: {
-      type: String,
-      required: false,
-      default: 'modal'
+
+    methods: {
+        toggleMaximized () {
+            this.isMaximized = !this.isMaximized;
+        },
+
+        onBackdropClick () {
+            if (this.allowBackdropClick) {
+                this.emitClose();
+            }
+        },
+
+        emitClose (force = false) {
+            if (!this.allowClose) {
+                return;
+            }
+
+            if (this.confirmClose && this.hasChanged) {
+                this.showConfirmationModal = true;
+                return;
+            }
+
+            if (force || this.isMaximized) {
+                this.$emit("close");
+            }
+        },
+
+        emitCloseAfterConfirm () {
+            this.showConfirmationModal = false;
+            this.$emit("close");
+        },
+
+        onEscKey (event) {
+            if (event.key === "Escape") {
+                this.emitClose();
+            }
+        },
+
+        onChange () {
+            this.hasChanged = true;
+        }
     }
-  },
-
-  data: () => ({
-    isMaximized: true,
-    showConfirmationModal: false,
-    hasChanged: false
-  }),
-
-  mounted () {
-    document.addEventListener('keyup', this.onEscKey, false)
-    this.$eventBus.on('change', this.onChange)
-  },
-
-  destroyed () {
-    document.removeEventListener('keyup', this.onEscKey)
-  },
-
-  methods: {
-    toggleMaximized () {
-      this.isMaximized = !this.isMaximized
-    },
-
-    onBackdropClick () {
-      if (this.allowBackdropClick) {
-        this.emitClose()
-      }
-    },
-
-    emitClose (force = false) {
-      if (!this.allowClose) {
-        return
-      }
-
-      if (this.confirmClose && this.hasChanged) {
-        this.showConfirmationModal = true
-        return
-      }
-
-      if (force || this.isMaximized) {
-        this.$emit('close')
-      }
-    },
-
-    emitCloseAfterConfirm () {
-      this.showConfirmationModal = false
-      this.$emit('close')
-    },
-
-    onEscKey (event) {
-      if (event.key === 'Escape') {
-        this.emitClose()
-      }
-    },
-
-    onChange () {
-      this.hasChanged = true
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

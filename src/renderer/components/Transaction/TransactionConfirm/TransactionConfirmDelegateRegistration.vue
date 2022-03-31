@@ -29,33 +29,33 @@
 </template>
 
 <script>
-import { TRANSACTION_TYPES } from '@config'
-import { ListDivided, ListDividedItem } from '@/components/ListDivided'
+import { TRANSACTION_TYPES } from "@config";
+import { ListDivided, ListDividedItem } from "@/components/ListDivided";
 
 export default {
-  name: 'TransactionConfirmDelegateRegistration',
+    name: "TransactionConfirmDelegateRegistration",
 
-  transactionType: TRANSACTION_TYPES.GROUP_1.DELEGATE_REGISTRATION,
+    transactionType: TRANSACTION_TYPES.GROUP_1.DELEGATE_REGISTRATION,
 
-  inject: ['currentWallet', 'transaction'],
+    inject: ["currentWallet", "transaction"],
 
-  components: {
-    ListDivided,
-    ListDividedItem
-  },
-
-  computed: {
-    senderLabel () {
-      return this.wallet_formatAddress(this.currentWallet.address)
+    components: {
+        ListDivided,
+        ListDividedItem
     },
 
-    username () {
-      if (this.transaction.asset && this.transaction.asset.delegate) {
-        return this.transaction.asset.delegate.username
-      }
+    computed: {
+        senderLabel () {
+            return this.wallet_formatAddress(this.currentWallet.address);
+        },
 
-      return ''
+        username () {
+            if (this.transaction.asset && this.transaction.asset.delegate) {
+                return this.transaction.asset.delegate.username;
+            }
+
+            return "";
+        }
     }
-  }
-}
+};
 </script>

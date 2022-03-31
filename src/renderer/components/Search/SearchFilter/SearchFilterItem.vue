@@ -12,16 +12,16 @@
 
 <script>
 export default {
-  name: 'SearchFilterItem',
+    name: "SearchFilterItem",
 
-  props: {
-    label: {
-      type: String,
-      required: false,
-      default: null
+    props: {
+        label: {
+            type: String,
+            required: false,
+            default: null
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

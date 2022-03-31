@@ -12,100 +12,100 @@
 </template>
 
 <script>
-import InputText from './InputText'
-import { Identities } from '@alessiodf/crypto'
+import InputText from "./InputText";
+import { Identities } from "@alessiodf/crypto";
 
 export default {
-  name: 'InputPublicKey',
+    name: "InputPublicKey",
 
-  components: {
-    InputText
-  },
-
-  model: {
-    prop: 'value',
-    event: 'input'
-  },
-
-  props: {
-    isRequired: {
-      type: Boolean,
-      required: false,
-      default: true
+    components: {
+        InputText
     },
 
-    value: {
-      type: String,
-      required: false,
-      default: ''
-    }
-  },
-
-  data: vm => ({
-    inputValue: vm.value
-  }),
-
-  computed: {
     model: {
-      get () {
-        return this.inputValue
-      },
-
-      set (value) {
-        this.inputValue = value
-        this.$v.model.$touch()
-        this.$emit('input', value)
-      }
+        prop: "value",
+        event: "input"
     },
 
-    publicKeyLabel () {
-      return this.$t('INPUT_PUBLIC_KEY.TITLE')
+    props: {
+        isRequired: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+
+        value: {
+            type: String,
+            required: false,
+            default: ""
+        }
     },
 
-    error () {
-      if (this.$v.model.$dirty && this.$v.model.$invalid) {
-        if (!this.$v.model.isValid) {
-          return this.$t('INPUT_PUBLIC_KEY.ERROR.NOT_VALID')
+    data: vm => ({
+        inputValue: vm.value
+    }),
+
+    computed: {
+        model: {
+            get () {
+                return this.inputValue;
+            },
+
+            set (value) {
+                this.inputValue = value;
+                this.$v.model.$touch();
+                this.$emit("input", value);
+            }
+        },
+
+        publicKeyLabel () {
+            return this.$t("INPUT_PUBLIC_KEY.TITLE");
+        },
+
+        error () {
+            if (this.$v.model.$dirty && this.$v.model.$invalid) {
+                if (!this.$v.model.isValid) {
+                    return this.$t("INPUT_PUBLIC_KEY.ERROR.NOT_VALID");
+                }
+            }
+
+            return null;
         }
-      }
+    },
 
-      return null
-    }
-  },
-
-  watch: {
-    value (value) {
-      this.inputValue = value
-    }
-  },
-
-  methods: {
-    reset () {
-      this.model = ''
-      this.$nextTick(() => {
-        this.$v.$reset()
-      })
-    }
-  },
-
-  validations: {
-    model: {
-      isValid (value) {
-        if (!this.isRequired && value.replace(/\s+/, '') === '') {
-          return true
+    watch: {
+        value (value) {
+            this.inputValue = value;
         }
+    },
 
-        try {
-          Identities.Address.fromPublicKey(value)
-
-          return true
-        } catch (error) {
-          //
+    methods: {
+        reset () {
+            this.model = "";
+            this.$nextTick(() => {
+                this.$v.$reset();
+            });
         }
+    },
 
-        return false
-      }
+    validations: {
+        model: {
+            isValid (value) {
+                if (!this.isRequired && value.replace(/\s+/, "") === "") {
+                    return true;
+                }
+
+                try {
+                    Identities.Address.fromPublicKey(value);
+
+                    return true;
+                } catch (error) {
+                    //
+                }
+
+                return false;
+            }
+        }
     }
-  }
-}
+};
 </script>

@@ -18,34 +18,34 @@
 </template>
 
 <script>
-import ListDividedItem from './ListDividedItem'
+import ListDividedItem from "./ListDividedItem";
 
 export default {
-  name: 'ListDivided',
+    name: "ListDivided",
 
-  components: {
-    ListDividedItem
-  },
-
-  provide () {
-    return {
-      isFloatingLabel: this.isFloatingLabel
-    }
-  },
-
-  props: {
-    isFloatingLabel: {
-      type: Boolean,
-      required: false,
-      default: false
+    components: {
+        ListDividedItem
     },
-    items: {
-      type: Object,
-      required: false,
-      default: null
+
+    provide () {
+        return {
+            isFloatingLabel: this.isFloatingLabel
+        };
+    },
+
+    props: {
+        isFloatingLabel: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        items: {
+            type: Object,
+            required: false,
+            default: null
+        }
     }
-  }
-}
+};
 </script>
 
 <style>

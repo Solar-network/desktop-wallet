@@ -122,98 +122,98 @@
 </template>
 
 <script>
-import Loader from '@/components/utils/Loader'
-import { MenuDropdown } from '@/components/Menu'
-import WalletIdenticon from './WalletIdenticon'
-import SvgIcon from '@/components/SvgIcon'
+import Loader from "@/components/utils/Loader";
+import { MenuDropdown } from "@/components/Menu";
+import WalletIdenticon from "./WalletIdenticon";
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'WalletGrid',
+    name: "WalletGrid",
 
-  components: {
-    Loader,
-    MenuDropdown,
-    SvgIcon,
-    WalletIdenticon
-  },
-
-  props: {
-    isLedgerLoading: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    wallets: {
-      type: Array,
-      required: true,
-      default: () => []
-    }
-  },
-
-  computed: {
-    isMarketEnabled () {
-      return this.session_network.market.enabled
+    components: {
+        Loader,
+        MenuDropdown,
+        SvgIcon,
+        WalletIdenticon
     },
 
-    alternativeCurrency () {
-      return this.$store.getters['session/currency']
-    },
-
-    price () {
-      return this.$store.getters['market/lastPrice']
-    }
-  },
-
-  methods: {
-    getAlternativeBalance (balance) {
-      const unitBalance = this.currency_subToUnit(balance)
-      const price = this.price || 0
-      return this.currency_format(unitBalance * price, { currency: this.alternativeCurrency })
-    },
-
-    contextMenuOptions (wallet) {
-      const options = {
-        rename: {
-          value: this.$t('WALLET_TABLE.RENAME'),
-          icon: 'edit'
+    props: {
+        isLedgerLoading: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        wallets: {
+            type: Array,
+            required: true,
+            default: () => []
         }
-      }
+    },
 
-      if (!wallet.isLedger) {
-        options.delete = {
-          value: this.$t('WALLET_TABLE.DELETE'),
-          icon: 'delete-wallet'
+    computed: {
+        isMarketEnabled () {
+            return this.session_network.market.enabled;
+        },
+
+        alternativeCurrency () {
+            return this.$store.getters["session/currency"];
+        },
+
+        price () {
+            return this.$store.getters["market/lastPrice"];
         }
-      }
-
-      return options
     },
 
-    toggleDropdown (dropdownId) {
-      this.$refs[dropdownId][0].toggle()
-    },
+    methods: {
+        getAlternativeBalance (balance) {
+            const unitBalance = this.currency_subToUnit(balance);
+            const price = this.price || 0;
+            return this.currency_format(unitBalance * price, { currency: this.alternativeCurrency });
+        },
 
-    emitShow (wallet) {
-      this.$emit('show', wallet.id)
-    },
+        contextMenuOptions (wallet) {
+            const options = {
+                rename: {
+                    value: this.$t("WALLET_TABLE.RENAME"),
+                    icon: "edit"
+                }
+            };
 
-    emitRename (wallet) {
-      this.$emit('rename', wallet)
-    },
+            if (!wallet.isLedger) {
+                options.delete = {
+                    value: this.$t("WALLET_TABLE.DELETE"),
+                    icon: "delete-wallet"
+                };
+            }
 
-    emitRemove (wallet) {
-      this.$emit('remove', wallet)
-    },
+            return options;
+        },
 
-    onSelectDropdown (wallet, item) {
-      if (item === 'delete') {
-        this.emitRemove(wallet)
-      } else if (item === 'rename') {
-        this.emitRename(wallet)
-      }
+        toggleDropdown (dropdownId) {
+            this.$refs[dropdownId][0].toggle();
+        },
+
+        emitShow (wallet) {
+            this.$emit("show", wallet.id);
+        },
+
+        emitRename (wallet) {
+            this.$emit("rename", wallet);
+        },
+
+        emitRemove (wallet) {
+            this.$emit("remove", wallet);
+        },
+
+        onSelectDropdown (wallet, item) {
+            if (item === "delete") {
+                this.emitRemove(wallet);
+            } else if (item === "rename") {
+                this.emitRename(wallet);
+            }
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

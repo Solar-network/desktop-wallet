@@ -55,73 +55,73 @@
 </template>
 
 <script>
-import Collapse from '@/components/Collapse'
+import Collapse from "@/components/Collapse";
 
 export default {
-  name: 'MenuStepItem',
+    name: "MenuStepItem",
 
-  components: {
-    Collapse
-  },
+    components: {
+        Collapse
+    },
 
-  props: {
-    title: {
-      type: String,
-      required: true
+    props: {
+        title: {
+            type: String,
+            required: true
+        },
+        step: {
+            type: [Number, String],
+            required: true
+        },
+        isBackVisible: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        isNextVisible: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        isNextEnabled: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        isDisabled: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
     },
-    step: {
-      type: [Number, String],
-      required: true
-    },
-    isBackVisible: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    isNextVisible: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    isNextEnabled: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isDisabled: {
-      type: Boolean,
-      required: false,
-      default: false
+
+    data: () => ({
+        isFirstItem: false,
+        isLastItem: false,
+        isLastItemClicked: false
+    }),
+
+    methods: {
+        emitBack () {
+            this.$emit("back");
+        },
+
+        emitNext (isLastItem) {
+            if (!this.isLastItemClicked) {
+                this.$emit("next");
+            }
+            if (isLastItem) {
+                this.isLastItemClicked = true;
+            }
+        },
+
+        emitOpen () {
+            this.$emit("open");
+        },
+
+        emitClose () {
+            this.$emit("close");
+        }
     }
-  },
-
-  data: () => ({
-    isFirstItem: false,
-    isLastItem: false,
-    isLastItemClicked: false
-  }),
-
-  methods: {
-    emitBack () {
-      this.$emit('back')
-    },
-
-    emitNext (isLastItem) {
-      if (!this.isLastItemClicked) {
-        this.$emit('next')
-      }
-      if (isLastItem) {
-        this.isLastItemClicked = true
-      }
-    },
-
-    emitOpen () {
-      this.$emit('open')
-    },
-
-    emitClose () {
-      this.$emit('close')
-    }
-  }
-}
+};
 </script>

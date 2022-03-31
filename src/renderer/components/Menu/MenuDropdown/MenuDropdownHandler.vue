@@ -26,61 +26,61 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'MenuDropdownHandler',
+    name: "MenuDropdownHandler",
 
-  components: {
-    SvgIcon
-  },
+    components: {
+        SvgIcon
+    },
 
-  props: {
+    props: {
     /**
      * The value of the selected option
      */
-    value: {
-      type: String,
-      required: false,
-      default: null
-    },
+        value: {
+            type: String,
+            required: false,
+            default: null
+        },
 
-    /**
+        /**
      * The visible text of the selected option
      */
-    item: {
-      type: String,
-      required: false,
-      default: null
+        item: {
+            type: String,
+            required: false,
+            default: null
+        },
+
+        placeholder: {
+            type: String,
+            required: false,
+            default: "Select"
+        },
+
+        iconDisabled: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+
+        prefix: {
+            type: String,
+            required: false,
+            default: ""
+        }
     },
 
-    placeholder: {
-      type: String,
-      required: false,
-      default: 'Select'
-    },
+    methods: {
+        emitBlur (event) {
+            this.$emit("blur", event);
+        },
 
-    iconDisabled: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-
-    prefix: {
-      type: String,
-      required: false,
-      default: ''
+        emitClick () {
+            this.$emit("click");
+        }
     }
-  },
-
-  methods: {
-    emitBlur (event) {
-      this.$emit('blur', event)
-    },
-
-    emitClick () {
-      this.$emit('click')
-    }
-  }
-}
+};
 </script>

@@ -18,43 +18,43 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
-import { debounce } from 'lodash'
+import SvgIcon from "@/components/SvgIcon";
+import { debounce } from "lodash";
 
 export default {
-  name: 'PluginManagerSearchBar',
+    name: "PluginManagerSearchBar",
 
-  components: {
-    SvgIcon
-  },
-
-  data: () => ({
-    query: null
-  }),
-
-  watch: {
-    query () {
-      this.emitSearch()
-    }
-  },
-
-  methods: {
-    update: debounce(function (event) {
-      this.query = event.target.value
-    }, 500),
-
-    emitSearch () {
-      const query = this.query ? this.query.toLowerCase() : null
-
-      if (!query || query.length >= 3) {
-        this.$emit('search', query)
-      }
+    components: {
+        SvgIcon
     },
 
-    onEscKey () {
-      this.query = null
-      this.$refs.search.blur()
+    data: () => ({
+        query: null
+    }),
+
+    watch: {
+        query () {
+            this.emitSearch();
+        }
+    },
+
+    methods: {
+        update: debounce(function (event) {
+            this.query = event.target.value;
+        }, 500),
+
+        emitSearch () {
+            const query = this.query ? this.query.toLowerCase() : null;
+
+            if (!query || query.length >= 3) {
+                this.$emit("search", query);
+            }
+        },
+
+        onEscKey () {
+            this.query = null;
+            this.$refs.search.blur();
+        }
     }
-  }
-}
+};
 </script>

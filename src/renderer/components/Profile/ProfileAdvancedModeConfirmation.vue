@@ -12,25 +12,25 @@
 </template>
 
 <script>
-import { ModalConfirmation } from '@/components/Modal'
+import { ModalConfirmation } from "@/components/Modal";
 
 export default {
-  name: 'ProfileAdvancedModeConfirmation',
+    name: "ProfileAdvancedModeConfirmation",
 
-  components: {
-    ModalConfirmation
-  },
-
-  methods: {
-    emitSave () {
-      this.$emit('save')
+    components: {
+        ModalConfirmation
     },
 
-    emitClose () {
-      this.$emit('close')
+    methods: {
+        emitSave () {
+            this.$emit("save");
+        },
+
+        emitClose () {
+            this.$emit("close");
+        }
     }
-  }
-}
+};
 </script>
 
 <style>

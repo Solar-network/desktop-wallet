@@ -26,63 +26,63 @@
 
 <script>
 export default {
-  name: 'ButtonSwitch',
+    name: "ButtonSwitch",
 
-  model: {
-    prop: 'isActive',
-    event: 'change'
-  },
-
-  props: {
-    isActive: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isDisabled: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    backgroundColor: {
-      type: String,
-      required: false,
-      default: null
-    }
-  },
-
-  data: vm => ({
-    inputIsActive: vm.isActive
-  }),
-
-  computed: {
     model: {
-      get () {
-        return this.inputIsActive
-      },
-      set (value) {
-        this.inputIsActive = value
-        this.$emit('change', value)
-      }
-    }
-  },
+        prop: "isActive",
+        event: "change"
+    },
 
-  watch: {
-    isActive (isActive) {
-      this.inputIsActive = isActive
-    }
-  },
+    props: {
+        isActive: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        isDisabled: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        backgroundColor: {
+            type: String,
+            required: false,
+            default: null
+        }
+    },
 
-  methods: {
-    toggle () {
-      if (this.isDisabled) {
-        return
-      }
+    data: vm => ({
+        inputIsActive: vm.isActive
+    }),
 
-      this.model = !this.model
+    computed: {
+        model: {
+            get () {
+                return this.inputIsActive;
+            },
+            set (value) {
+                this.inputIsActive = value;
+                this.$emit("change", value);
+            }
+        }
+    },
+
+    watch: {
+        isActive (isActive) {
+            this.inputIsActive = isActive;
+        }
+    },
+
+    methods: {
+        toggle () {
+            if (this.isDisabled) {
+                return;
+            }
+
+            this.model = !this.model;
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

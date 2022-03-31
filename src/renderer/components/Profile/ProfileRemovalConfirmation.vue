@@ -27,53 +27,53 @@
 </template>
 
 <script>
-import { ModalConfirmation } from '@/components/Modal'
-import { ProfileAvatar } from '@/components/Profile'
+import { ModalConfirmation } from "@/components/Modal";
+import { ProfileAvatar } from "@/components/Profile";
 
 export default {
-  name: 'ProfileRemovalConfirmation',
+    name: "ProfileRemovalConfirmation",
 
-  components: {
-    ModalConfirmation,
-    ProfileAvatar
-  },
-
-  props: {
-    profile: {
-      type: Object,
-      required: true
-    }
-  },
-
-  methods: {
-    removeProfile () {
-      const removeCurrentProfile = () => {
-        this.$store.dispatch('profile/delete', this.profile)
-        this.emitRemoved()
-      }
-
-      const profiles = this.$store.getters['profile/all']
-
-      if (profiles.length <= 1) {
-        this.$store.dispatch('session/reset')
-        removeCurrentProfile()
-        this.$router.push({ name: 'profile-new' })
-      } else {
-        const nextProfile = profiles.find(profile => profile.id !== this.profile.id)
-        this.$store.dispatch('session/setProfileId', nextProfile.id)
-        removeCurrentProfile()
-      }
+    components: {
+        ModalConfirmation,
+        ProfileAvatar
     },
 
-    emitCancel () {
-      this.$emit('cancel')
+    props: {
+        profile: {
+            type: Object,
+            required: true
+        }
     },
 
-    emitRemoved () {
-      this.$emit('removed')
+    methods: {
+        removeProfile () {
+            const removeCurrentProfile = () => {
+                this.$store.dispatch("profile/delete", this.profile);
+                this.emitRemoved();
+            };
+
+            const profiles = this.$store.getters["profile/all"];
+
+            if (profiles.length <= 1) {
+                this.$store.dispatch("session/reset");
+                removeCurrentProfile();
+                this.$router.push({ name: "profile-new" });
+            } else {
+                const nextProfile = profiles.find(profile => profile.id !== this.profile.id);
+                this.$store.dispatch("session/setProfileId", nextProfile.id);
+                removeCurrentProfile();
+            }
+        },
+
+        emitCancel () {
+            this.$emit("cancel");
+        },
+
+        emitRemoved () {
+            this.$emit("removed");
+        }
     }
-  }
-}
+};
 </script>
 
 <style>

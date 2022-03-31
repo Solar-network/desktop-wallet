@@ -12,23 +12,23 @@
 </template>
 
 <script>
-import { ModalConfirmation } from '@/components/Modal'
+import { ModalConfirmation } from "@/components/Modal";
 
 export default {
-  name: 'PluginBlacklistDisclaimerConfirmation',
+    name: "PluginBlacklistDisclaimerConfirmation",
 
-  components: {
-    ModalConfirmation
-  },
-
-  methods: {
-    emitContinue () {
-      this.$emit('continue')
+    components: {
+        ModalConfirmation
     },
 
-    emitClose () {
-      this.$emit('close')
+    methods: {
+        emitContinue () {
+            this.$emit("continue");
+        },
+
+        emitClose () {
+            this.$emit("close");
+        }
     }
-  }
-}
+};
 </script>

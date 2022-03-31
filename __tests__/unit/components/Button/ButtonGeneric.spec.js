@@ -1,23 +1,23 @@
-import { mount } from '@vue/test-utils'
-import { ButtonGeneric } from '@/components/Button'
+import { mount } from "@vue/test-utils";
+import { ButtonGeneric } from "@/components/Button";
 
-describe('ButtonGeneric', () => {
-  let wrapper
+describe("ButtonGeneric", () => {
+    let wrapper;
 
-  beforeEach(() => {
-    wrapper = mount(ButtonGeneric, {
-      propsData: {
-        label: 'Test'
-      }
-    })
-  })
+    beforeEach(() => {
+        wrapper = mount(ButtonGeneric, {
+            propsData: {
+                label: "Test"
+            }
+        });
+    });
 
-  it('should render', () => {
-    expect(wrapper.contains('.ButtonGeneric')).toBeTruthy()
-  })
+    it("should render", () => {
+        expect(wrapper.contains(".ButtonGeneric")).toBeTruthy();
+    });
 
-  it('should emit click event', () => {
-    wrapper.trigger('click')
-    expect(wrapper.emitted('click')).toBeTruthy()
-  })
-})
+    it("should emit click event", () => {
+        wrapper.trigger("click");
+        expect(wrapper.emitted("click")).toBeTruthy();
+    });
+});

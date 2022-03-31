@@ -1,7 +1,7 @@
-import WalletSidebar from './WalletSidebar'
+import WalletSidebar from "./WalletSidebar";
 
-export default WalletSidebar
+export default WalletSidebar;
 
 export {
-  WalletSidebar
-}
+    WalletSidebar
+};

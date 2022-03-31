@@ -52,45 +52,45 @@
 </template>
 
 <script>
-import { ListDivided, ListDividedItem } from '@/components/ListDivided'
-import { ModalWindow } from '@/components/Modal'
-import { SvgIcon } from '@/components/SvgIcon'
+import { ListDivided, ListDividedItem } from "@/components/ListDivided";
+import { ModalWindow } from "@/components/Modal";
+import { SvgIcon } from "@/components/SvgIcon";
 
 export default {
-  name: 'PluginManageBlacklistModal',
+    name: "PluginManageBlacklistModal",
 
-  components: {
-    ListDivided,
-    ListDividedItem,
-    ModalWindow,
-    SvgIcon
-  },
-
-  props: {
-    blacklist: {
-      type: Array,
-      required: true
-    }
-  },
-
-  methods: {
-    emitClose () {
-      this.$emit('close')
+    components: {
+        ListDivided,
+        ListDividedItem,
+        ModalWindow,
+        SvgIcon
     },
 
-    removeAll () {
-      this.$store.dispatch('plugin/setBlacklisted', {
-        scope: 'local',
-        plugins: []
-      })
+    props: {
+        blacklist: {
+            type: Array,
+            required: true
+        }
     },
 
-    removeFromBlacklist (plugin) {
-      this.$store.dispatch('plugin/setBlacklisted', {
-        scope: 'local',
-        plugins: this.$store.getters['plugin/blacklisted'].local.filter(blacklisted => blacklisted !== plugin)
-      })
+    methods: {
+        emitClose () {
+            this.$emit("close");
+        },
+
+        removeAll () {
+            this.$store.dispatch("plugin/setBlacklisted", {
+                scope: "local",
+                plugins: []
+            });
+        },
+
+        removeFromBlacklist (plugin) {
+            this.$store.dispatch("plugin/setBlacklisted", {
+                scope: "local",
+                plugins: this.$store.getters["plugin/blacklisted"].local.filter(blacklisted => blacklisted !== plugin)
+            });
+        }
     }
-  }
-}
+};
 </script>

@@ -57,43 +57,43 @@
 </template>
 
 <script>
-import { TRANSACTION_TYPES } from '@config'
-import { ListDivided, ListDividedItem } from '@/components/ListDivided'
-import TransactionRecipientList from '@/components/Transaction/TransactionRecipientList'
+import { TRANSACTION_TYPES } from "@config";
+import { ListDivided, ListDividedItem } from "@/components/ListDivided";
+import TransactionRecipientList from "@/components/Transaction/TransactionRecipientList";
 
 export default {
-  name: 'TransactionConfirmMultiPayment',
+    name: "TransactionConfirmMultiPayment",
 
-  transactionType: TRANSACTION_TYPES.GROUP_1.MULTI_PAYMENT,
+    transactionType: TRANSACTION_TYPES.GROUP_1.MULTI_PAYMENT,
 
-  inject: ['currentWallet', 'transaction'],
+    inject: ["currentWallet", "transaction"],
 
-  components: {
-    ListDivided,
-    ListDividedItem,
-    TransactionRecipientList
-  },
-
-  computed: {
-    senderLabel () {
-      return this.wallet_formatAddress(this.currentWallet.address)
+    components: {
+        ListDivided,
+        ListDividedItem,
+        TransactionRecipientList
     },
 
-    totalAmount () {
-      const amount = this.currency_toBuilder(0)
+    computed: {
+        senderLabel () {
+            return this.wallet_formatAddress(this.currentWallet.address);
+        },
 
-      for (const payment of this.payments) {
-        amount.add(payment.amount)
-      }
+        totalAmount () {
+            const amount = this.currency_toBuilder(0);
 
-      return amount.value
-    },
+            for (const payment of this.payments) {
+                amount.add(payment.amount);
+            }
 
-    payments () {
-      return this.transaction.asset.payments
+            return amount.value;
+        },
+
+        payments () {
+            return this.transaction.asset.payments;
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

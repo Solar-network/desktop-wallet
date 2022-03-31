@@ -69,58 +69,58 @@
 </template>
 
 <script>
-import { SvgIcon } from '@/components/SvgIcon'
+import { SvgIcon } from "@/components/SvgIcon";
 
 export default {
-  name: 'AnnouncementsPost',
+    name: "AnnouncementsPost",
 
-  components: {
-    SvgIcon
-  },
+    components: {
+        SvgIcon
+    },
 
-  props: {
-    date: {
-      type: String,
-      required: true
+    props: {
+        date: {
+            type: String,
+            required: true
+        },
+        title: {
+            type: String,
+            required: true
+        },
+        summary: {
+            required: true,
+            validator: value => typeof value === "string" || value === null
+        },
+        url: {
+            type: String,
+            required: true
+        },
+        isRead: {
+            type: Boolean,
+            required: true
+        }
     },
-    title: {
-      type: String,
-      required: true
+
+    computed: {
+        formattedDate () {
+            return this.formatter_date(this.date, "D MMMM");
+        },
+
+        weekday () {
+            return this.formatter_date(this.date, "dddd");
+        }
     },
-    summary: {
-      required: true,
-      validator: value => typeof value === 'string' || value === null
-    },
-    url: {
-      type: String,
-      required: true
-    },
-    isRead: {
-      type: Boolean,
-      required: true
+
+    methods: {
+        emitRead () {
+            this.$emit("read", this.announcement);
+        },
+        openInBrowser (url) {
+            this.electron_openExternal(url);
+            setTimeout(() => this.emitRead(), 2000);
+        }
     }
-  },
-
-  computed: {
-    formattedDate () {
-      return this.formatter_date(this.date, 'D MMMM')
-    },
-
-    weekday () {
-      return this.formatter_date(this.date, 'dddd')
-    }
-  },
-
-  methods: {
-    emitRead () {
-      this.$emit('read', this.announcement)
-    },
-    openInBrowser (url) {
-      this.electron_openExternal(url)
-      setTimeout(() => this.emitRead(), 2000)
-    }
-  }
-}
+};
 </script>
 
 <style scoped>

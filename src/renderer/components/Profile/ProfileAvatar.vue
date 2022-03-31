@@ -35,40 +35,40 @@
 </template>
 
 <script>
-import { ButtonLetter } from '@/components/Button'
+import { ButtonLetter } from "@/components/Button";
 
 export default {
-  name: 'ProfileAvatar',
+    name: "ProfileAvatar",
 
-  components: {
-    ButtonLetter
-  },
-
-  props: {
-    profile: {
-      type: Object,
-      required: true
-    },
-    letterSize: {
-      type: String,
-      required: true
-    }
-  },
-
-  computed: {
-    hasStandardAvatar () {
-      return this.profile.avatar && typeof this.profile.avatar === 'string'
+    components: {
+        ButtonLetter
     },
 
-    pluginAvatar () {
-      if (this.profile.avatar && this.profile.avatar.pluginId) {
-        return this.$store.getters['plugin/avatar'](this.profile)
-      }
+    props: {
+        profile: {
+            type: Object,
+            required: true
+        },
+        letterSize: {
+            type: String,
+            required: true
+        }
+    },
 
-      return null
+    computed: {
+        hasStandardAvatar () {
+            return this.profile.avatar && typeof this.profile.avatar === "string";
+        },
+
+        pluginAvatar () {
+            if (this.profile.avatar && this.profile.avatar.pluginId) {
+                return this.$store.getters["plugin/avatar"](this.profile);
+            }
+
+            return null;
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

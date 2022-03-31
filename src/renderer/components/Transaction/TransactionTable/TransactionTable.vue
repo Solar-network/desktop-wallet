@@ -147,185 +147,185 @@
 </template>
 
 <script>
-import { TRANSACTION_TYPES } from '@config'
-import SvgIcon from '@/components/SvgIcon'
-import truncateMiddle from '@/filters/truncate-middle'
-import { TransactionShow, TransactionStatusIcon } from '@/components/Transaction'
-import WalletAddress from '@/components/Wallet/WalletAddress'
-import TableWrapper from '@/components/utils/TableWrapper'
-import TransactionService from '@/services/transaction'
+import { TRANSACTION_TYPES } from "@config";
+import SvgIcon from "@/components/SvgIcon";
+import truncateMiddle from "@/filters/truncate-middle";
+import { TransactionShow, TransactionStatusIcon } from "@/components/Transaction";
+import WalletAddress from "@/components/Wallet/WalletAddress";
+import TableWrapper from "@/components/utils/TableWrapper";
+import TransactionService from "@/services/transaction";
 
 export default {
-  name: 'TransactionTable',
+    name: "TransactionTable",
 
-  components: {
-    SvgIcon,
-    TableWrapper,
-    TransactionShow,
-    TransactionStatusIcon,
-    WalletAddress
-  },
-
-  props: {
-    hasShortId: {
-      type: Boolean,
-      required: false,
-      default: false
+    components: {
+        SvgIcon,
+        TableWrapper,
+        TransactionShow,
+        TransactionStatusIcon,
+        WalletAddress
     },
 
-    isDashboard: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-
-    transactionType: {
-      type: Number,
-      required: false,
-      default: null
-    }
-  },
-
-  data: () => ({
-    selected: null
-  }),
-
-  computed: {
-    columns () {
-      const vendorFieldClass = [
-        'hidden', 'w-1/4'
-      ]
-      if (this.hasShortId && !this.isDashboard) {
-        vendorFieldClass.push('xxl:table-cell')
-      } else if (!this.isDashboard) {
-        vendorFieldClass.push('xl:table-cell')
-      }
-
-      const columns = [
-        {
-          label: this.$t('TRANSACTION.ID'),
-          field: 'id',
-          formatFn: this.formatTransactionId,
-          sortable: false,
-          thClass: 'no-sort'
+    props: {
+        hasShortId: {
+            type: Boolean,
+            required: false,
+            default: false
         },
-        {
-          label: this.$t('COMMON.DATE'),
-          field: 'timestamp',
-          type: 'date',
-          formatFn: this.formatDate,
-          tdClass: 'text-center',
-          thClass: 'text-center'
+
+        isDashboard: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+
+        transactionType: {
+            type: Number,
+            required: false,
+            default: null
         }
-      ]
+    },
 
-      if (this.transactionType === TRANSACTION_TYPES.GROUP_1.IPFS) {
-        columns.push({
-          label: this.$t('TRANSACTION.HASH'),
-          field: 'asset.ipfs',
-          tdClass: 'text-right md:w-3/5',
-          thClass: 'no-sort text-right md:w-3/5',
-          sortable: false
-        })
-      } else {
-        columns.push(...[
-          {
-            label: this.$t('TRANSACTION.SENDER'),
-            field: 'senderPublicKey',
-            sortable: false,
-            thClass: 'no-sort'
-          },
-          {
-            label: this.$t('TRANSACTION.RECIPIENT'),
-            field: 'recipientId',
-            sortable: false,
-            thClass: 'no-sort'
-          },
-          {
-            label: this.$t('TRANSACTION.VENDOR_FIELD'),
-            field: 'vendorField',
-            formatFn: this.formatSmartbridge,
-            tdClass: vendorFieldClass.join(' '),
-            thClass: vendorFieldClass.join(' ')
-          },
-          {
-            label: this.$t('TRANSACTION.AMOUNT'),
-            type: 'number',
-            field: 'amount',
-            tdClass: 'text-right',
-            thClass: 'text-right'
-          }
-        ])
-      }
+    data: () => ({
+        selected: null
+    }),
 
-      return columns
+    computed: {
+        columns () {
+            const vendorFieldClass = [
+                "hidden", "w-1/4"
+            ];
+            if (this.hasShortId && !this.isDashboard) {
+                vendorFieldClass.push("xxl:table-cell");
+            } else if (!this.isDashboard) {
+                vendorFieldClass.push("xl:table-cell");
+            }
+
+            const columns = [
+                {
+                    label: this.$t("TRANSACTION.ID"),
+                    field: "id",
+                    formatFn: this.formatTransactionId,
+                    sortable: false,
+                    thClass: "no-sort"
+                },
+                {
+                    label: this.$t("COMMON.DATE"),
+                    field: "timestamp",
+                    type: "date",
+                    formatFn: this.formatDate,
+                    tdClass: "text-center",
+                    thClass: "text-center"
+                }
+            ];
+
+            if (this.transactionType === TRANSACTION_TYPES.GROUP_1.IPFS) {
+                columns.push({
+                    label: this.$t("TRANSACTION.HASH"),
+                    field: "asset.ipfs",
+                    tdClass: "text-right md:w-3/5",
+                    thClass: "no-sort text-right md:w-3/5",
+                    sortable: false
+                });
+            } else {
+                columns.push(...[
+                    {
+                        label: this.$t("TRANSACTION.SENDER"),
+                        field: "senderPublicKey",
+                        sortable: false,
+                        thClass: "no-sort"
+                    },
+                    {
+                        label: this.$t("TRANSACTION.RECIPIENT"),
+                        field: "recipientId",
+                        sortable: false,
+                        thClass: "no-sort"
+                    },
+                    {
+                        label: this.$t("TRANSACTION.VENDOR_FIELD"),
+                        field: "vendorField",
+                        formatFn: this.formatSmartbridge,
+                        tdClass: vendorFieldClass.join(" "),
+                        thClass: vendorFieldClass.join(" ")
+                    },
+                    {
+                        label: this.$t("TRANSACTION.AMOUNT"),
+                        type: "number",
+                        field: "amount",
+                        tdClass: "text-right",
+                        thClass: "text-right"
+                    }
+                ]);
+            }
+
+            return columns;
+        }
+    },
+
+    methods: {
+        formatDate (value) {
+            return this.formatter_date(value);
+        },
+
+        formatAddress (value) {
+            return this.wallet_formatAddress(value, 10);
+        },
+
+        formatTransactionId (value) {
+            return this.hasShortId ? truncateMiddle(value, 6) : truncateMiddle(value, 10);
+        },
+
+        formatSmartbridge (value) {
+            if (value.length > 43) {
+                return `${value.slice(0, 40)}...`;
+            }
+            return value;
+        },
+
+        formatAmount (row, includeFee = true) {
+            return this.formatter_networkCurrency(TransactionService.getAmount(this, row, this.wallet_fromRoute, includeFee));
+        },
+
+        formatFee (value) {
+            return this.formatter_networkCurrency(value);
+        },
+
+        formatRow (row) {
+            const classes = [
+                row.confirmations === 0 ? "unconfirmed" : "confirmed"
+            ];
+
+            if (row.isExpired) {
+                classes.push("expired");
+            }
+
+            return classes.join(" ");
+        },
+
+        getIpfsUrl (row) {
+            return `https://cloudflare-ipfs.com/ipfs/${row.asset.ipfs}`;
+        },
+
+        openTransactions (id) {
+            this.network_openExplorer("transaction", id);
+        },
+
+        onSortChange (sortOptions) {
+            this.$emit("on-sort-change", {
+                source: "transactionsTab",
+                ...sortOptions[0]
+            });
+        },
+
+        onRowClick ({ row }) {
+            this.selected = row;
+        },
+
+        onCloseModal () {
+            this.selected = null;
+        }
     }
-  },
-
-  methods: {
-    formatDate (value) {
-      return this.formatter_date(value)
-    },
-
-    formatAddress (value) {
-      return this.wallet_formatAddress(value, 10)
-    },
-
-    formatTransactionId (value) {
-      return this.hasShortId ? truncateMiddle(value, 6) : truncateMiddle(value, 10)
-    },
-
-    formatSmartbridge (value) {
-      if (value.length > 43) {
-        return `${value.slice(0, 40)}...`
-      }
-      return value
-    },
-
-    formatAmount (row, includeFee = true) {
-      return this.formatter_networkCurrency(TransactionService.getAmount(this, row, this.wallet_fromRoute, includeFee))
-    },
-
-    formatFee (value) {
-      return this.formatter_networkCurrency(value)
-    },
-
-    formatRow (row) {
-      const classes = [
-        row.confirmations === 0 ? 'unconfirmed' : 'confirmed'
-      ]
-
-      if (row.isExpired) {
-        classes.push('expired')
-      }
-
-      return classes.join(' ')
-    },
-
-    getIpfsUrl (row) {
-      return `https://cloudflare-ipfs.com/ipfs/${row.asset.ipfs}`
-    },
-
-    openTransactions (id) {
-      this.network_openExplorer('transaction', id)
-    },
-
-    onSortChange (sortOptions) {
-      this.$emit('on-sort-change', {
-        source: 'transactionsTab',
-        ...sortOptions[0]
-      })
-    },
-
-    onRowClick ({ row }) {
-      this.selected = row
-    },
-
-    onCloseModal () {
-      this.selected = null
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss">

@@ -43,54 +43,54 @@
 
 <script>
 /* eslint-disable vue/no-unused-components */
-import { MenuOptions, MenuDropdown, MenuDropdownAlternativeHandler } from '@/components/Menu'
-import SearchFilterItem from './SearchFilterItem'
-import SvgIcon from '@/components/SvgIcon'
-import SearchFilterTransaction from './SearchFilterTransaction'
-import SearchFilterDelegate from './SearchFilterDelegate'
+import { MenuOptions, MenuDropdown, MenuDropdownAlternativeHandler } from "@/components/Menu";
+import SearchFilterItem from "./SearchFilterItem";
+import SvgIcon from "@/components/SvgIcon";
+import SearchFilterTransaction from "./SearchFilterTransaction";
+import SearchFilterDelegate from "./SearchFilterDelegate";
 
 export default {
-  name: 'SearchFilter',
+    name: "SearchFilter",
 
-  components: {
-    MenuOptions,
-    MenuDropdown,
-    MenuDropdownAlternativeHandler,
-    SearchFilterItem,
-    SearchFilterTransaction,
-    SearchFilterDelegate,
-    SvgIcon
-  },
+    components: {
+        MenuOptions,
+        MenuDropdown,
+        MenuDropdownAlternativeHandler,
+        SearchFilterItem,
+        SearchFilterTransaction,
+        SearchFilterDelegate,
+        SvgIcon
+    },
 
-  props: {
-    outsideClick: {
-      type: Boolean,
-      required: false,
-      default: false
+    props: {
+        outsideClick: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    },
+
+    data: () => ({
+        currentFilter: null
+    }),
+
+    computed: {
+        filterComponents () {
+            return {
+                SearchFilterTransaction: this.$t("TRANSACTION.TRANSACTION"),
+                SearchFilterDelegate: this.$t("SEARCH.DELEGATE")
+            };
+        }
+    },
+
+    methods: {
+        emitClose () {
+            if (this.outsideClick) {
+                this.$emit("close");
+            }
+        }
     }
-  },
-
-  data: () => ({
-    currentFilter: null
-  }),
-
-  computed: {
-    filterComponents () {
-      return {
-        SearchFilterTransaction: this.$t('TRANSACTION.TRANSACTION'),
-        SearchFilterDelegate: this.$t('SEARCH.DELEGATE')
-      }
-    }
-  },
-
-  methods: {
-    emitClose () {
-      if (this.outsideClick) {
-        this.$emit('close')
-      }
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

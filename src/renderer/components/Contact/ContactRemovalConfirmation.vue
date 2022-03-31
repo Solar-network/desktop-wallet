@@ -27,39 +27,39 @@
 </template>
 
 <script>
-import { ModalConfirmation } from '@/components/Modal'
-import Identicon from '@/components/utils/Identicon'
+import { ModalConfirmation } from "@/components/Modal";
+import Identicon from "@/components/utils/Identicon";
 
 export default {
-  name: 'ContactRemovalConfirmation',
+    name: "ContactRemovalConfirmation",
 
-  components: {
-    Identicon,
-    ModalConfirmation
-  },
-
-  props: {
-    contact: {
-      type: Object,
-      required: true
-    }
-  },
-
-  methods: {
-    removeContact () {
-      this.$store.dispatch('wallet/delete', this.contact)
-      this.emitRemoved()
+    components: {
+        Identicon,
+        ModalConfirmation
     },
 
-    emitCancel () {
-      this.$emit('cancel')
+    props: {
+        contact: {
+            type: Object,
+            required: true
+        }
     },
 
-    emitRemoved () {
-      this.$emit('removed')
+    methods: {
+        removeContact () {
+            this.$store.dispatch("wallet/delete", this.contact);
+            this.emitRemoved();
+        },
+
+        emitCancel () {
+            this.$emit("cancel");
+        },
+
+        emitRemoved () {
+            this.$emit("removed");
+        }
     }
-  }
-}
+};
 </script>
 
 <style>

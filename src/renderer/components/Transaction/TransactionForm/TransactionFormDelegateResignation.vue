@@ -102,91 +102,91 @@
 </template>
 
 <script>
-import { TRANSACTION_TYPES } from '@config'
-import { InputFee, InputPassword } from '@/components/Input'
-import { ListDivided, ListDividedItem } from '@/components/ListDivided'
-import { ModalLoader } from '@/components/Modal'
-import { PassphraseInput } from '@/components/Passphrase'
-import mixin from './mixin'
+import { TRANSACTION_TYPES } from "@config";
+import { InputFee, InputPassword } from "@/components/Input";
+import { ListDivided, ListDividedItem } from "@/components/ListDivided";
+import { ModalLoader } from "@/components/Modal";
+import { PassphraseInput } from "@/components/Passphrase";
+import mixin from "./mixin";
 
 export default {
-  name: 'TransactionFormDelegateResignation',
+    name: "TransactionFormDelegateResignation",
 
-  transactionType: TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION,
+    transactionType: TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION,
 
-  components: {
-    InputFee,
-    InputPassword,
-    ListDivided,
-    ListDividedItem,
-    ModalLoader,
-    PassphraseInput
-  },
-
-  mixins: [mixin],
-
-  data: () => ({
-    form: {
-      fee: 0,
-      passphrase: '',
-      walletPassword: ''
-    }
-  }),
-
-  computed: {
-    canResign () {
-      if (this.username === null) {
-        return false
-      }
-
-      return this.currentWallet.isDelegate
+    components: {
+        InputFee,
+        InputPassword,
+        ListDivided,
+        ListDividedItem,
+        ModalLoader,
+        PassphraseInput
     },
 
-    username () {
-      const delegate = this.$store.getters['delegate/byAddress'](this.currentWallet.address)
+    mixins: [mixin],
 
-      if (!delegate || !delegate.username) {
-        return null
-      }
+    data: () => ({
+        form: {
+            fee: 0,
+            passphrase: "",
+            walletPassword: ""
+        }
+    }),
 
-      return this.$store.getters['delegate/byAddress'](this.currentWallet.address).username
-    }
-  },
+    computed: {
+        canResign () {
+            if (this.username === null) {
+                return false;
+            }
 
-  methods: {
-    getTransactionData () {
-      const transactionData = {
-        address: this.currentWallet.address,
-        passphrase: this.form.passphrase,
-        fee: this.getFee(),
-        wif: this.form.wif,
-        networkWif: this.walletNetwork.wif,
-        multiSignature: this.currentWallet.multiSignature
-      }
+            return this.currentWallet.isDelegate;
+        },
 
-      if (this.currentWallet.secondPublicKey) {
-        transactionData.secondPassphrase = this.form.secondPassphrase
-      }
+        username () {
+            const delegate = this.$store.getters["delegate/byAddress"](this.currentWallet.address);
 
-      return transactionData
+            if (!delegate || !delegate.username) {
+                return null;
+            }
+
+            return this.$store.getters["delegate/byAddress"](this.currentWallet.address).username;
+        }
     },
 
-    async buildTransaction (transactionData, isAdvancedFee = false, returnObject = false) {
-      return this.$client.buildDelegateResignation(transactionData, isAdvancedFee, returnObject)
+    methods: {
+        getTransactionData () {
+            const transactionData = {
+                address: this.currentWallet.address,
+                passphrase: this.form.passphrase,
+                fee: this.getFee(),
+                wif: this.form.wif,
+                networkWif: this.walletNetwork.wif,
+                multiSignature: this.currentWallet.multiSignature
+            };
+
+            if (this.currentWallet.secondPublicKey) {
+                transactionData.secondPassphrase = this.form.secondPassphrase;
+            }
+
+            return transactionData;
+        },
+
+        async buildTransaction (transactionData, isAdvancedFee = false, returnObject = false) {
+            return this.$client.buildDelegateResignation(transactionData, isAdvancedFee, returnObject);
+        },
+
+        transactionError () {
+            this.$error(this.$t("TRANSACTION.ERROR.VALIDATION.DELEGATE_RESIGNATION"));
+        }
     },
 
-    transactionError () {
-      this.$error(this.$t('TRANSACTION.ERROR.VALIDATION.DELEGATE_RESIGNATION'))
+    validations: {
+        form: {
+            fee: mixin.validators.fee,
+            passphrase: mixin.validators.passphrase,
+            walletPassword: mixin.validators.walletPassword,
+            secondPassphrase: mixin.validators.secondPassphrase
+        }
     }
-  },
-
-  validations: {
-    form: {
-      fee: mixin.validators.fee,
-      passphrase: mixin.validators.passphrase,
-      walletPassword: mixin.validators.walletPassword,
-      secondPassphrase: mixin.validators.secondPassphrase
-    }
-  }
-}
+};
 </script>

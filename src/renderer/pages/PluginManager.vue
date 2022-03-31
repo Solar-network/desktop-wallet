@@ -192,465 +192,465 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron'
-import { isEqual, sortBy, uniq } from 'lodash'
-import { ButtonLayout, ButtonReload } from '@/components/Button'
+import { ipcRenderer } from "electron";
+import { isEqual, sortBy, uniq } from "lodash";
+import { ButtonLayout, ButtonReload } from "@/components/Button";
 import {
-  PluginBlacklistModal,
-  PluginDetailsModal,
-  PluginInstallModal,
-  PluginManagerGrid,
-  PluginManagerSearchBar,
-  PluginManagerSideMenu,
-  PluginManagerTable,
-  PluginPermissionsModal,
-  PluginRemovalModal
-} from '@/components/PluginManager'
-import { ModalLoader } from '@/components/Modal'
-import {
-  PluginManagerButtonFilter,
-  PluginManagerButtonMenu
-} from '@/components/PluginManager/PluginManagerButtons'
-
-export default {
-  name: 'PluginManager',
-
-  components: {
-    ButtonLayout,
-    ButtonReload,
-    ModalLoader,
     PluginBlacklistModal,
     PluginDetailsModal,
     PluginInstallModal,
-    PluginManagerButtonFilter,
-    PluginManagerButtonMenu,
     PluginManagerGrid,
     PluginManagerSearchBar,
     PluginManagerSideMenu,
     PluginManagerTable,
     PluginPermissionsModal,
     PluginRemovalModal
-  },
+} from "@/components/PluginManager";
+import { ModalLoader } from "@/components/Modal";
+import {
+    PluginManagerButtonFilter,
+    PluginManagerButtonMenu
+} from "@/components/PluginManager/PluginManagerButtons";
 
-  data: () => ({
-    activeCategory: 'all',
-    activeFilter: 'all',
-    isBlacklisting: false,
-    isRefreshing: false,
-    isUpdate: false,
-    isRemoving: false,
-    modalRef: null,
-    selectedPlugin: null,
-    modal: '',
-    query: null
-  }),
+export default {
+    name: "PluginManager",
 
-  computed: {
-    installSuccessMessage () {
-      return this.$t(
-        `PAGES.PLUGIN_MANAGER.SUCCESS.${this.isUpdate ? 'UPDATE' : 'INSTALLATION'}`, {
-          plugin: this.selectedPlugin.title
-        }
-      )
+    components: {
+        ButtonLayout,
+        ButtonReload,
+        ModalLoader,
+        PluginBlacklistModal,
+        PluginDetailsModal,
+        PluginInstallModal,
+        PluginManagerButtonFilter,
+        PluginManagerButtonMenu,
+        PluginManagerGrid,
+        PluginManagerSearchBar,
+        PluginManagerSideMenu,
+        PluginManagerTable,
+        PluginPermissionsModal,
+        PluginRemovalModal
     },
 
-    installErrorMessage () {
-      return this.$t('PAGES.PLUGIN_MANAGER.ERRORS.FETCH', {
-        plugin: this.selectedPlugin.title
-      })
-    },
+    data: () => ({
+        activeCategory: "all",
+        activeFilter: "all",
+        isBlacklisting: false,
+        isRefreshing: false,
+        isUpdate: false,
+        isRemoving: false,
+        modalRef: null,
+        selectedPlugin: null,
+        modal: "",
+        query: null
+    }),
 
-    showDetailsModal () {
-      return !!this.selectedPlugin && this.modal === 'details'
-    },
-
-    showInstallModal () {
-      return !!this.selectedPlugin && this.modal === 'install'
-    },
-
-    showUrlModal () {
-      return this.modal === 'url'
-    },
-
-    showRemoveModal () {
-      return !!this.selectedPlugin && this.modal === 'remove'
-    },
-
-    showBlacklistModal () {
-      return !!this.selectedPlugin && this.modal === 'blacklist'
-    },
-
-    showLoadingModal () {
-      return this.modal === 'loading'
-    },
-
-    showPermissionsModal () {
-      return !!this.selectedPlugin && this.modal === 'permissions'
-    },
-
-    hasDarkTheme () {
-      return this.session_hasDarkTheme
-    },
-
-    bannerImage () {
-      const theme = this.hasDarkTheme ? 'dark' : 'light'
-      return this.assets_loadImage(`pages/plugin-manager/banner-${theme}.svg`)
-    },
-
-    colors () {
-      const themeColors = {
-        dark: {
-          background: '#585d6d',
-          title: '#f7f9fb',
-          subtitle: '#787fa3'
+    computed: {
+        installSuccessMessage () {
+            return this.$t(
+                `PAGES.PLUGIN_MANAGER.SUCCESS.${this.isUpdate ? "UPDATE" : "INSTALLATION"}`, {
+                    plugin: this.selectedPlugin.title
+                }
+            );
         },
-        light: {
-          background: '#e7f9fd',
-          title: '#1d6ddb',
-          subtitle: '#2b3748'
-        }
-      }
 
-      let colors = themeColors[this.theme]
+        installErrorMessage () {
+            return this.$t("PAGES.PLUGIN_MANAGER.ERRORS.FETCH", {
+                plugin: this.selectedPlugin.title
+            });
+        },
 
-      if (!colors) {
-        let mode = 'light'
-        const pluginTheme = this.$store.getters['plugin/themes'][this.theme]
-        if (pluginTheme) {
-          mode = pluginTheme.darkMode ? 'dark' : 'light'
-        }
-        colors = themeColors[mode]
-      }
+        showDetailsModal () {
+            return !!this.selectedPlugin && this.modal === "details";
+        },
 
-      return colors
-    },
+        showInstallModal () {
+            return !!this.selectedPlugin && this.modal === "install";
+        },
 
-    isAdvancedModeEnabled () {
-      return this.$store.getters['session/isAdvancedModeEnabled']
-    },
+        showUrlModal () {
+            return this.modal === "url";
+        },
 
-    theme () {
-      return this.$store.getters['session/theme']
-    },
+        showRemoveModal () {
+            return !!this.selectedPlugin && this.modal === "remove";
+        },
 
-    noResultsImage () {
-      const theme = this.hasDarkTheme ? 'dark' : 'light'
-      return this.assets_loadImage(`pages/plugin-manager/noresults-${theme}.svg`)
-    },
+        showBlacklistModal () {
+            return !!this.selectedPlugin && this.modal === "blacklist";
+        },
 
-    hasGridLayout () {
-      return this.layout === 'grid'
-    },
+        showLoadingModal () {
+            return this.modal === "loading";
+        },
 
-    layout: {
-      get () {
-        return this.$store.getters['session/pluginManagerLayout']
-      },
-      set (layout) {
-        this.$store.dispatch('session/setPluginManagerLayout', layout)
+        showPermissionsModal () {
+            return !!this.selectedPlugin && this.modal === "permissions";
+        },
 
-        this.$store.dispatch('profile/update', {
-          ...this.session_profile,
-          pluginManagerLayout: layout
-        })
-      }
-    },
+        hasDarkTheme () {
+            return this.session_hasDarkTheme;
+        },
 
-    isMenuOpen: {
-      get () {
-        return this.$store.getters['session/pluginMenuOpen']
-      },
-      set (open) {
-        this.$store.dispatch('session/setPluginMenuOpen', open)
+        bannerImage () {
+            const theme = this.hasDarkTheme ? "dark" : "light";
+            return this.assets_loadImage(`pages/plugin-manager/banner-${theme}.svg`);
+        },
 
-        this.$store.dispatch('profile/update', {
-          ...this.session_profile,
-          pluginMenuOpen: open
-        })
-      }
-    },
+        colors () {
+            const themeColors = {
+                dark: {
+                    background: "#585d6d",
+                    title: "#f7f9fb",
+                    subtitle: "#787fa3"
+                },
+                light: {
+                    background: "#e7f9fd",
+                    title: "#1d6ddb",
+                    subtitle: "#2b3748"
+                }
+            };
 
-    plugins () {
-      const plugins = this.$store.getters['plugin/filtered'](this.query, this.activeCategory, this.activeFilter)
+            let colors = themeColors[this.theme];
 
-      return sortBy(plugins.map(plugin => plugin.config), 'title')
-    },
-
-    sortParams: {
-      get () {
-        return this.$store.getters['session/pluginSortParams']
-      },
-      set (sortParams) {
-        this.$store.dispatch('session/setPluginSortParams', sortParams)
-
-        this.$store.dispatch('profile/update', {
-          ...this.session_profile,
-          pluginSortParams: sortParams
-        })
-      }
-    },
-
-    loadingModalText () {
-      if (!this.selectedPlugin) {
-        return ''
-      }
-
-      const type = this.isRemoving ? 'REMOVING' : this.isBlacklisting ? 'BLACKLISTING' : this.isUpdate ? 'UPDATING' : 'INSTALLING'
-
-      return this.$t(`PAGES.PLUGIN_MANAGER.${type}`, {
-        plugin: this.selectedPlugin.title
-      })
-    }
-  },
-
-  mounted () {
-    ipcRenderer.on('plugin-manager:plugin-installed', this.onPluginInstalled)
-    ipcRenderer.on('plugin-manager:error', this.onError)
-  },
-
-  beforeDestroy () {
-    ipcRenderer.removeListener('plugin-manager:plugin-installed', this.onPluginInstalled)
-    ipcRenderer.removeListener('plugin-manager:error', this.onError)
-  },
-
-  methods: {
-    async removePlugin (removeOptions) {
-      this.isRemoving = true
-      this.setModal('loading')
-
-      await this.$store.dispatch('plugin/deletePlugin', {
-        pluginId: this.selectedPlugin.id,
-        removeOptions
-      })
-
-      this.$success(this.$t('PAGES.PLUGIN_MANAGER.SUCCESS.REMOVE', {
-        plugin: this.selectedPlugin.title
-      }))
-
-      this.reset()
-    },
-
-    async blacklistPlugin () {
-      this.isBlacklisting = true
-      this.setModal('loading')
-
-      for (const profile of this.$store.getters['profile/all']) {
-        if (this.$store.getters['plugin/isEnabled'](this.selectedPlugin.id, profile.id)) {
-          await this.disablePlugin(this.selectedPlugin.id, profile.id)
-        }
-      }
-
-      this.$store.dispatch('plugin/setBlacklisted', {
-        scope: 'local',
-        plugins: uniq([...this.$store.getters['plugin/blacklisted'].local, this.selectedPlugin.id])
-      })
-
-      this.$success(this.$t('PAGES.PLUGIN_MANAGER.SUCCESS.BLACKLIST', {
-        plugin: this.selectedPlugin.title
-      }))
-
-      this.reset()
-    },
-
-    async reloadPlugins () {
-      this.isRefreshing = true
-
-      try {
-        await this.$plugins.fetchPlugins(true)
-        this.$success(this.$t('PAGES.PLUGIN_MANAGER.SUCCESS.RELOAD'))
-      } catch (error) {
-        this.$error(this.$t('COMMON.FAILED_FETCH', {
-          name: 'plugins',
-          msg: error.message
-        }))
-      } finally {
-        this.isRefreshing = false
-      }
-    },
-
-    setModal (modal) {
-      this.modal = modal
-    },
-
-    resetModal () {
-      this.modal = null
-    },
-
-    resetIsUpdate () {
-      if (this.isUpdate) {
-        this.isUpdate = false
-      }
-    },
-
-    setPlugin (plugin) {
-      this.selectedPlugin = plugin
-    },
-
-    resetPlugin () {
-      this.selectedPlugin = null
-    },
-
-    toggleLayout () {
-      this.layout = this.layout === 'grid' ? 'tabular' : 'grid'
-    },
-
-    toggleMenu () {
-      this.isMenuOpen = !this.isMenuOpen
-    },
-
-    openDetailsModal (plugin) {
-      this.setPlugin(plugin)
-      this.setModal('details')
-    },
-
-    openPermissionsModal (ref = '') {
-      this.modalRef = ref
-      this.setModal('permissions')
-    },
-
-    closePermissionsModal (ref) {
-      if (ref) {
-        this.setModal(ref)
-      } else {
-        this.resetModal()
-      }
-
-      this.resetIsUpdate()
-    },
-
-    reset () {
-      this.resetPlugin()
-      this.resetModal()
-      this.resetIsUpdate()
-      this.isBlacklisting = false
-      this.isRemoving = false
-    },
-
-    async fetchPluginData (url) {
-      try {
-        const plugin = await this.$plugins.fetchPluginFromUrl(url)
-
-        if (this.$store.getters['plugin/isInstalled'](plugin.id)) {
-          this.$error(this.$t('PAGES.PLUGIN_MANAGER.ERRORS.ALREADY_INSTALLED', {
-            plugin: plugin.id
-          }))
-          this.resetModal()
-        } else {
-          this.openDetailsModal(plugin)
-        }
-      } catch (error) {
-        this.$error(this.$t('COMMON.FAILED_FETCH', {
-          name: 'plugin',
-          msg: error.message
-        }))
-        this.resetModal()
-      }
-    },
-
-    onCategoryChange (category) {
-      this.activeCategory = category
-    },
-
-    onFilterChange (filter) {
-      this.activeFilter = filter
-    },
-
-    onDownload (source) {
-      ipcRenderer.send('plugin-manager:download', {
-        url: source
-      })
-    },
-
-    onInstall () {
-      this.setModal('loading')
-
-      const installedPlugin = this.$store.getters['plugin/installedById'](this.selectedPlugin.id)
-
-      ipcRenderer.send('plugin-manager:install', {
-        pluginId: this.selectedPlugin.id,
-        pluginPath: installedPlugin ? installedPlugin.fullPath : null
-      })
-    },
-
-    onUpdate () {
-      this.isUpdate = true
-      this.openPermissionsModal('details')
-    },
-
-    onRemove () {
-      this.setModal('remove')
-    },
-
-    onReport () {
-      this.setModal('blacklist')
-    },
-
-    onSearch (query) {
-      this.query = query
-    },
-
-    onSortChange (sortParams) {
-      if (!isEqual(sortParams, this.sortParams)) {
-        this.sortParams = sortParams
-      }
-    },
-
-    async onPluginInstalled (_, pluginPath) {
-      try {
-        await this.$plugins.fetchPlugin(pluginPath, this.isUpdate)
-
-        if (this.isUpdate) {
-          for (const profile of this.$store.getters['profile/all']) {
-            if (this.$store.getters['plugin/isEnabled'](this.selectedPlugin.id, profile.id)) {
-              await this.disablePlugin(this.selectedPlugin.id, profile.id)
-              await this.enablePlugin(this.selectedPlugin.id, profile.id)
+            if (!colors) {
+                let mode = "light";
+                const pluginTheme = this.$store.getters["plugin/themes"][this.theme];
+                if (pluginTheme) {
+                    mode = pluginTheme.darkMode ? "dark" : "light";
+                }
+                colors = themeColors[mode];
             }
-          }
-        } else {
-          await this.enablePlugin(this.selectedPlugin.id, this.session_profile.id)
+
+            return colors;
+        },
+
+        isAdvancedModeEnabled () {
+            return this.$store.getters["session/isAdvancedModeEnabled"];
+        },
+
+        theme () {
+            return this.$store.getters["session/theme"];
+        },
+
+        noResultsImage () {
+            const theme = this.hasDarkTheme ? "dark" : "light";
+            return this.assets_loadImage(`pages/plugin-manager/noresults-${theme}.svg`);
+        },
+
+        hasGridLayout () {
+            return this.layout === "grid";
+        },
+
+        layout: {
+            get () {
+                return this.$store.getters["session/pluginManagerLayout"];
+            },
+            set (layout) {
+                this.$store.dispatch("session/setPluginManagerLayout", layout);
+
+                this.$store.dispatch("profile/update", {
+                    ...this.session_profile,
+                    pluginManagerLayout: layout
+                });
+            }
+        },
+
+        isMenuOpen: {
+            get () {
+                return this.$store.getters["session/pluginMenuOpen"];
+            },
+            set (open) {
+                this.$store.dispatch("session/setPluginMenuOpen", open);
+
+                this.$store.dispatch("profile/update", {
+                    ...this.session_profile,
+                    pluginMenuOpen: open
+                });
+            }
+        },
+
+        plugins () {
+            const plugins = this.$store.getters["plugin/filtered"](this.query, this.activeCategory, this.activeFilter);
+
+            return sortBy(plugins.map(plugin => plugin.config), "title");
+        },
+
+        sortParams: {
+            get () {
+                return this.$store.getters["session/pluginSortParams"];
+            },
+            set (sortParams) {
+                this.$store.dispatch("session/setPluginSortParams", sortParams);
+
+                this.$store.dispatch("profile/update", {
+                    ...this.session_profile,
+                    pluginSortParams: sortParams
+                });
+            }
+        },
+
+        loadingModalText () {
+            if (!this.selectedPlugin) {
+                return "";
+            }
+
+            const type = this.isRemoving ? "REMOVING" : this.isBlacklisting ? "BLACKLISTING" : this.isUpdate ? "UPDATING" : "INSTALLING";
+
+            return this.$t(`PAGES.PLUGIN_MANAGER.${type}`, {
+                plugin: this.selectedPlugin.title
+            });
         }
-
-        this.$success(this.installSuccessMessage)
-      } catch (error) {
-        this.$error(this.installErrorMessage)
-      } finally {
-        this.reset()
-      }
     },
 
-    onError (_, error) {
-      this.reset()
-      this.$error(error)
+    mounted () {
+        ipcRenderer.on("plugin-manager:plugin-installed", this.onPluginInstalled);
+        ipcRenderer.on("plugin-manager:error", this.onError);
     },
 
-    async onChangeStatus (enabled, pluginId) {
-      await this.updateStatus({ enabled, pluginId })
+    beforeDestroy () {
+        ipcRenderer.removeListener("plugin-manager:plugin-installed", this.onPluginInstalled);
+        ipcRenderer.removeListener("plugin-manager:error", this.onError);
     },
 
-    async disablePlugin (pluginId, profileId) {
-      await this.updateStatus({ enabled: false, pluginId, profileId })
-    },
+    methods: {
+        async removePlugin (removeOptions) {
+            this.isRemoving = true;
+            this.setModal("loading");
 
-    async enablePlugin (pluginId, profileId) {
-      await this.updateStatus({ enabled: true, pluginId, profileId })
-    },
+            await this.$store.dispatch("plugin/deletePlugin", {
+                pluginId: this.selectedPlugin.id,
+                removeOptions
+            });
 
-    async updateStatus ({ enabled, pluginId, profileId = null }) {
-      try {
-        await this.$store.dispatch('plugin/setEnabled', {
-          enabled,
-          pluginId,
-          profileId
-        })
-      } catch (error) {
-        this.$error(this.$t(`PAGES.PLUGIN_MANAGER.ERRORS.${enabled ? 'ENABLE' : 'DISABLE'}`, {
-          plugin: pluginId,
-          error: error.message
-        }))
-      }
+            this.$success(this.$t("PAGES.PLUGIN_MANAGER.SUCCESS.REMOVE", {
+                plugin: this.selectedPlugin.title
+            }));
+
+            this.reset();
+        },
+
+        async blacklistPlugin () {
+            this.isBlacklisting = true;
+            this.setModal("loading");
+
+            for (const profile of this.$store.getters["profile/all"]) {
+                if (this.$store.getters["plugin/isEnabled"](this.selectedPlugin.id, profile.id)) {
+                    await this.disablePlugin(this.selectedPlugin.id, profile.id);
+                }
+            }
+
+            this.$store.dispatch("plugin/setBlacklisted", {
+                scope: "local",
+                plugins: uniq([...this.$store.getters["plugin/blacklisted"].local, this.selectedPlugin.id])
+            });
+
+            this.$success(this.$t("PAGES.PLUGIN_MANAGER.SUCCESS.BLACKLIST", {
+                plugin: this.selectedPlugin.title
+            }));
+
+            this.reset();
+        },
+
+        async reloadPlugins () {
+            this.isRefreshing = true;
+
+            try {
+                await this.$plugins.fetchPlugins(true);
+                this.$success(this.$t("PAGES.PLUGIN_MANAGER.SUCCESS.RELOAD"));
+            } catch (error) {
+                this.$error(this.$t("COMMON.FAILED_FETCH", {
+                    name: "plugins",
+                    msg: error.message
+                }));
+            } finally {
+                this.isRefreshing = false;
+            }
+        },
+
+        setModal (modal) {
+            this.modal = modal;
+        },
+
+        resetModal () {
+            this.modal = null;
+        },
+
+        resetIsUpdate () {
+            if (this.isUpdate) {
+                this.isUpdate = false;
+            }
+        },
+
+        setPlugin (plugin) {
+            this.selectedPlugin = plugin;
+        },
+
+        resetPlugin () {
+            this.selectedPlugin = null;
+        },
+
+        toggleLayout () {
+            this.layout = this.layout === "grid" ? "tabular" : "grid";
+        },
+
+        toggleMenu () {
+            this.isMenuOpen = !this.isMenuOpen;
+        },
+
+        openDetailsModal (plugin) {
+            this.setPlugin(plugin);
+            this.setModal("details");
+        },
+
+        openPermissionsModal (ref = "") {
+            this.modalRef = ref;
+            this.setModal("permissions");
+        },
+
+        closePermissionsModal (ref) {
+            if (ref) {
+                this.setModal(ref);
+            } else {
+                this.resetModal();
+            }
+
+            this.resetIsUpdate();
+        },
+
+        reset () {
+            this.resetPlugin();
+            this.resetModal();
+            this.resetIsUpdate();
+            this.isBlacklisting = false;
+            this.isRemoving = false;
+        },
+
+        async fetchPluginData (url) {
+            try {
+                const plugin = await this.$plugins.fetchPluginFromUrl(url);
+
+                if (this.$store.getters["plugin/isInstalled"](plugin.id)) {
+                    this.$error(this.$t("PAGES.PLUGIN_MANAGER.ERRORS.ALREADY_INSTALLED", {
+                        plugin: plugin.id
+                    }));
+                    this.resetModal();
+                } else {
+                    this.openDetailsModal(plugin);
+                }
+            } catch (error) {
+                this.$error(this.$t("COMMON.FAILED_FETCH", {
+                    name: "plugin",
+                    msg: error.message
+                }));
+                this.resetModal();
+            }
+        },
+
+        onCategoryChange (category) {
+            this.activeCategory = category;
+        },
+
+        onFilterChange (filter) {
+            this.activeFilter = filter;
+        },
+
+        onDownload (source) {
+            ipcRenderer.send("plugin-manager:download", {
+                url: source
+            });
+        },
+
+        onInstall () {
+            this.setModal("loading");
+
+            const installedPlugin = this.$store.getters["plugin/installedById"](this.selectedPlugin.id);
+
+            ipcRenderer.send("plugin-manager:install", {
+                pluginId: this.selectedPlugin.id,
+                pluginPath: installedPlugin ? installedPlugin.fullPath : null
+            });
+        },
+
+        onUpdate () {
+            this.isUpdate = true;
+            this.openPermissionsModal("details");
+        },
+
+        onRemove () {
+            this.setModal("remove");
+        },
+
+        onReport () {
+            this.setModal("blacklist");
+        },
+
+        onSearch (query) {
+            this.query = query;
+        },
+
+        onSortChange (sortParams) {
+            if (!isEqual(sortParams, this.sortParams)) {
+                this.sortParams = sortParams;
+            }
+        },
+
+        async onPluginInstalled (_, pluginPath) {
+            try {
+                await this.$plugins.fetchPlugin(pluginPath, this.isUpdate);
+
+                if (this.isUpdate) {
+                    for (const profile of this.$store.getters["profile/all"]) {
+                        if (this.$store.getters["plugin/isEnabled"](this.selectedPlugin.id, profile.id)) {
+                            await this.disablePlugin(this.selectedPlugin.id, profile.id);
+                            await this.enablePlugin(this.selectedPlugin.id, profile.id);
+                        }
+                    }
+                } else {
+                    await this.enablePlugin(this.selectedPlugin.id, this.session_profile.id);
+                }
+
+                this.$success(this.installSuccessMessage);
+            } catch (error) {
+                this.$error(this.installErrorMessage);
+            } finally {
+                this.reset();
+            }
+        },
+
+        onError (_, error) {
+            this.reset();
+            this.$error(error);
+        },
+
+        async onChangeStatus (enabled, pluginId) {
+            await this.updateStatus({ enabled, pluginId });
+        },
+
+        async disablePlugin (pluginId, profileId) {
+            await this.updateStatus({ enabled: false, pluginId, profileId });
+        },
+
+        async enablePlugin (pluginId, profileId) {
+            await this.updateStatus({ enabled: true, pluginId, profileId });
+        },
+
+        async updateStatus ({ enabled, pluginId, profileId = null }) {
+            try {
+                await this.$store.dispatch("plugin/setEnabled", {
+                    enabled,
+                    pluginId,
+                    profileId
+                });
+            } catch (error) {
+                this.$error(this.$t(`PAGES.PLUGIN_MANAGER.ERRORS.${enabled ? "ENABLE" : "DISABLE"}`, {
+                    plugin: pluginId,
+                    error: error.message
+                }));
+            }
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

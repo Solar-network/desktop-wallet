@@ -82,64 +82,64 @@
 </template>
 
 <script>
-import { ButtonModal, ButtonReload } from '@/components/Button'
-import { ModalQrCode } from '@/components/Modal'
-import { TransactionModal } from '@/components/Transaction'
-import { ContactRenameModal } from '@/components/Contact'
-import SvgIcon from '@/components/SvgIcon'
+import { ButtonModal, ButtonReload } from "@/components/Button";
+import { ModalQrCode } from "@/components/Modal";
+import { TransactionModal } from "@/components/Transaction";
+import { ContactRenameModal } from "@/components/Contact";
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'WalletHeadingPrimaryActions',
+    name: "WalletHeadingPrimaryActions",
 
-  inject: ['switchToTab', 'walletVote'],
+    inject: ["switchToTab", "walletVote"],
 
-  components: {
-    ButtonModal,
-    ButtonReload,
-    ModalQrCode,
-    TransactionModal,
-    ContactRenameModal,
-    SvgIcon
-  },
-
-  data: () => ({
-    isRefreshing: false
-  }),
-
-  computed: {
-    buttonStyle () {
-      return 'option-heading-button mr-2 px-3 py-2'
+    components: {
+        ButtonModal,
+        ButtonReload,
+        ModalQrCode,
+        TransactionModal,
+        ContactRenameModal,
+        SvgIcon
     },
 
-    currentWallet () {
-      return this.wallet_fromRoute
+    data: () => ({
+        isRefreshing: false
+    }),
+
+    computed: {
+        buttonStyle () {
+            return "option-heading-button mr-2 px-3 py-2";
+        },
+
+        currentWallet () {
+            return this.wallet_fromRoute;
+        },
+
+        doesNotExist () {
+            return !this.$store.getters["wallet/byAddress"](this.currentWallet.address);
+        },
+
+        isVoting () {
+            return !!this.walletVote.username;
+        }
     },
 
-    doesNotExist () {
-      return !this.$store.getters['wallet/byAddress'](this.currentWallet.address)
-    },
+    methods: {
+        goToDelegates () {
+            this.switchToTab("WalletDelegates");
+        },
 
-    isVoting () {
-      return !!this.walletVote.username
+        async refreshWallet () {
+            this.isRefreshing = true;
+            await this.$eventBus.emit("wallet:reload");
+            this.isRefreshing = false;
+        },
+
+        closeTransactionModal (toggleMethod, isOpen) {
+            if (isOpen) {
+                toggleMethod();
+            }
+        }
     }
-  },
-
-  methods: {
-    goToDelegates () {
-      this.switchToTab('WalletDelegates')
-    },
-
-    async refreshWallet () {
-      this.isRefreshing = true
-      await this.$eventBus.emit('wallet:reload')
-      this.isRefreshing = false
-    },
-
-    closeTransactionModal (toggleMethod, isOpen) {
-      if (isOpen) {
-        toggleMethod()
-      }
-    }
-  }
-}
+};
 </script>

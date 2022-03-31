@@ -80,77 +80,77 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
-import TableWrapper from '@/components/utils/TableWrapper'
+import SvgIcon from "@/components/SvgIcon";
+import TableWrapper from "@/components/utils/TableWrapper";
 
 export default {
-  name: 'PluginTable',
+    name: "PluginTable",
 
-  components: {
-    SvgIcon,
-    TableWrapper
-  },
+    components: {
+        SvgIcon,
+        TableWrapper
+    },
 
-  computed: {
-    columns () {
-      const columns = [
-        {
-          label: this.$t('PLUGIN_TABLE.ID'),
-          field: 'id'
-        },
-        {
-          label: this.$t('PLUGIN_TABLE.NAME'),
-          field: 'name'
-        },
-        {
-          label: this.$t('PLUGIN_TABLE.DESCRIPTION'),
-          field: 'description'
-        },
-        {
-          label: this.$t('PLUGIN_TABLE.PERMISSIONS'),
-          field: 'permissions',
-          sortFn: this.sortByPermissions
-        },
-        {
-          label: this.$t('PLUGIN_TABLE.STATUS'),
-          field: 'isEnabled',
-          type: 'boolean',
-          thClass: 'text-left',
-          tdClass: 'text-left'
-        },
-        {
-          label: this.$t('PLUGIN_TABLE.ACTIONS'),
-          field: 'actions',
-          sortable: false,
-          thClass: 'text-center not-sortable',
-          tdClass: 'text-center'
+    computed: {
+        columns () {
+            const columns = [
+                {
+                    label: this.$t("PLUGIN_TABLE.ID"),
+                    field: "id"
+                },
+                {
+                    label: this.$t("PLUGIN_TABLE.NAME"),
+                    field: "name"
+                },
+                {
+                    label: this.$t("PLUGIN_TABLE.DESCRIPTION"),
+                    field: "description"
+                },
+                {
+                    label: this.$t("PLUGIN_TABLE.PERMISSIONS"),
+                    field: "permissions",
+                    sortFn: this.sortByPermissions
+                },
+                {
+                    label: this.$t("PLUGIN_TABLE.STATUS"),
+                    field: "isEnabled",
+                    type: "boolean",
+                    thClass: "text-left",
+                    tdClass: "text-left"
+                },
+                {
+                    label: this.$t("PLUGIN_TABLE.ACTIONS"),
+                    field: "actions",
+                    sortable: false,
+                    thClass: "text-center not-sortable",
+                    tdClass: "text-center"
+                }
+            ];
+
+            return columns;
         }
-      ]
-
-      return columns
-    }
-  },
-
-  methods: {
-    onSortChange (sortOptions) {
-      this.$emit('on-sort-change', sortOptions[0])
     },
 
-    sortByPermissions (x, y) {
-      const values = []
+    methods: {
+        onSortChange (sortOptions) {
+            this.$emit("on-sort-change", sortOptions[0]);
+        },
 
-      for (const perms of [x, y]) {
-        values.push(perms ? perms.join(', ') : '')
-      }
+        sortByPermissions (x, y) {
+            const values = [];
 
-      return values[0].localeCompare(values[1], undefined, { sensitivity: 'base', numeric: true })
-    },
+            for (const perms of [x, y]) {
+                values.push(perms ? perms.join(", ") : "");
+            }
 
-    toggleStatus (plugin) {
-      this.$emit('toggle', plugin)
+            return values[0].localeCompare(values[1], undefined, { sensitivity: "base", numeric: true });
+        },
+
+        toggleStatus (plugin) {
+            this.$emit("toggle", plugin);
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

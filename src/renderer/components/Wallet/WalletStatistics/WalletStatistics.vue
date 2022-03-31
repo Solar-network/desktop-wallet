@@ -6,12 +6,12 @@
 
 <script>
 export default {
-  name: 'WalletStatistics',
+    name: "WalletStatistics",
 
-  components: {
-  },
+    components: {
+    },
 
-  props: {
-  }
-}
+    props: {
+    }
+};
 </script>

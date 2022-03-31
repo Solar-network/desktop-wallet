@@ -16,61 +16,61 @@
 </template>
 
 <script>
-import { ButtonClose } from '@/components/Button'
+import { ButtonClose } from "@/components/Button";
 
 export default {
-  name: 'AlertMessage',
+    name: "AlertMessage",
 
-  components: {
-    ButtonClose
-  },
-
-  props: {
-    duration: {
-      type: Number,
-      default: 5000
-    }
-  },
-
-  data: () => ({
-    queue: [],
-    timer: null,
-    alert: null
-  }),
-
-  mounted () {
-    this.$eventBus.on('alert', this.queueAlert)
-  },
-
-  methods: {
-    queueAlert (alert) {
-      this.queue.push(alert)
-
-      if (this.queue.length === 1) {
-        this.showNext()
-      }
+    components: {
+        ButtonClose
     },
 
-    showNext () {
-      clearTimeout(this.timer)
-
-      if (this.alert) {
-        this.queue.shift()
-      }
-      let duration = this.duration
-      if (this.queue.length) {
-        this.alert = this.queue[0]
-        if (this.alert.duration && Number.isFinite(this.alert.duration)) {
-          duration = this.alert.duration
+    props: {
+        duration: {
+            type: Number,
+            default: 5000
         }
-      } else {
-        this.alert = null
-      }
+    },
 
-      this.timer = setTimeout(this.showNext, duration)
+    data: () => ({
+        queue: [],
+        timer: null,
+        alert: null
+    }),
+
+    mounted () {
+        this.$eventBus.on("alert", this.queueAlert);
+    },
+
+    methods: {
+        queueAlert (alert) {
+            this.queue.push(alert);
+
+            if (this.queue.length === 1) {
+                this.showNext();
+            }
+        },
+
+        showNext () {
+            clearTimeout(this.timer);
+
+            if (this.alert) {
+                this.queue.shift();
+            }
+            let duration = this.duration;
+            if (this.queue.length) {
+                this.alert = this.queue[0];
+                if (this.alert.duration && Number.isFinite(this.alert.duration)) {
+                    duration = this.alert.duration;
+                }
+            } else {
+                this.alert = null;
+            }
+
+            this.timer = setTimeout(this.showNext, duration);
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

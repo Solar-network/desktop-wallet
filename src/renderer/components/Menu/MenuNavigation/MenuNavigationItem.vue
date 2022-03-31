@@ -38,72 +38,72 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'MenuNavigationItem',
+    name: "MenuNavigationItem",
 
-  inject: ['switchToItem'],
+    inject: ["switchToItem"],
 
-  components: {
-    SvgIcon
-  },
+    components: {
+        SvgIcon
+    },
 
-  props: {
-    id: {
-      type: [String, Number],
-      required: true
+    props: {
+        id: {
+            type: [String, Number],
+            required: true
+        },
+        icon: {
+            type: String,
+            required: false,
+            default: null
+        },
+        showBadge: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        viewBox: {
+            type: String,
+            required: false,
+            default: "0 0 23 23"
+        },
+        isDisabled: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        isHorizontal: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        canActivate: {
+            type: Boolean,
+            required: false,
+            default: true
+        }
     },
-    icon: {
-      type: String,
-      required: false,
-      default: null
-    },
-    showBadge: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    viewBox: {
-      type: String,
-      required: false,
-      default: '0 0 23 23'
-    },
-    isDisabled: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isHorizontal: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    canActivate: {
-      type: Boolean,
-      required: false,
-      default: true
+
+    data: () => ({
+        isActive: false
+    }),
+
+    methods: {
+        onClick () {
+            if (this.canActivate) {
+                this.switchToItem(this.id);
+            }
+
+            this.$emit("click", this.id);
+        },
+
+        toggle (isActive) {
+            this.isActive = isActive;
+        }
     }
-  },
-
-  data: () => ({
-    isActive: false
-  }),
-
-  methods: {
-    onClick () {
-      if (this.canActivate) {
-        this.switchToItem(this.id)
-      }
-
-      this.$emit('click', this.id)
-    },
-
-    toggle (isActive) {
-      this.isActive = isActive
-    }
-  }
-}
+};
 </script>
 
 <style scoped>

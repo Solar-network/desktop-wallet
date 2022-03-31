@@ -153,215 +153,215 @@
 </template>
 
 <script>
-import { required } from 'vuelidate/lib/validators'
-import { InputAddress, InputPassword, InputSwitch, InputText } from '@/components/Input'
-import { MenuStep, MenuStepItem } from '@/components/Menu'
-import { ModalLoader } from '@/components/Modal'
-import { PassphraseInput } from '@/components/Passphrase'
-import WalletService from '@/services/wallet'
-import Wallet from '@/models/wallet'
-import onCreate from './mixin-on-create'
+import { required } from "vuelidate/lib/validators";
+import { InputAddress, InputPassword, InputSwitch, InputText } from "@/components/Input";
+import { MenuStep, MenuStepItem } from "@/components/Menu";
+import { ModalLoader } from "@/components/Modal";
+import { PassphraseInput } from "@/components/Passphrase";
+import WalletService from "@/services/wallet";
+import Wallet from "@/models/wallet";
+import onCreate from "./mixin-on-create";
 
 export default {
-  name: 'WalletImport',
+    name: "WalletImport",
 
-  components: {
-    InputAddress,
-    InputPassword,
-    InputSwitch,
-    InputText,
-    MenuStep,
-    MenuStepItem,
-    ModalLoader,
-    PassphraseInput
-  },
-
-  mixins: [onCreate],
-
-  schema: Wallet.schema,
-
-  data: () => ({
-    ensureEntirePassphrase: false,
-    step: 1,
-    useOnlyAddress: false,
-    useOnlyPassphrase: false,
-    wallet: {},
-    walletPassword: null,
-    walletConfirmPassword: null,
-    showEncryptLoader: false,
-    backgroundImages: {
-      1: 'pages/wallet-new/import-wallet.svg',
-      2: 'pages/wallet-new/encrypt-wallet.svg',
-      3: 'pages/wallet-new/protect-wallet.svg'
-    }
-  }),
-
-  computed: {
-    nameError () {
-      if (this.$v.schema.name.$invalid) {
-        if (!this.$v.schema.name.contactDoesNotExist) {
-          return this.$t('VALIDATION.NAME.EXISTS_AS_CONTACT', [this.schema.name])
-        } else if (!this.$v.schema.name.walletDoesNotExist) {
-          return this.$t('VALIDATION.NAME.EXISTS_AS_WALLET', [this.schema.name])
-        } else if (!this.$v.schema.name.schemaMaxLength) {
-          return this.$t('VALIDATION.NAME.MAX_LENGTH', [Wallet.schema.properties.name.maxLength])
-        // NOTE: not used, unless the minimum length is changed
-        } else if (!this.$v.schema.name.schemaMinLength) {
-          return this.$tc('VALIDATION.NAME.MIN_LENGTH', Wallet.schema.properties.name.minLength)
-        }
-      }
-      return null
+    components: {
+        InputAddress,
+        InputPassword,
+        InputSwitch,
+        InputText,
+        MenuStep,
+        MenuStepItem,
+        ModalLoader,
+        PassphraseInput
     },
-    addressError () {
-      if (this.$v.schema.address.$invalid) {
-        if (!this.$v.schema.address.contactDoesNotExist) {
-          return this.$t('VALIDATION.ADDRESS.EXISTS_AS_CONTACT', [this.schema.address])
-        } else if (!this.$v.schema.address.walletDoesNotExist) {
-          return this.$t('VALIDATION.ADDRESS.EXISTS_AS_WALLET', [this.schema.address])
-        }
-      }
-      return null
-    }
-  },
 
-  watch: {
+    mixins: [onCreate],
+
+    schema: Wallet.schema,
+
+    data: () => ({
+        ensureEntirePassphrase: false,
+        step: 1,
+        useOnlyAddress: false,
+        useOnlyPassphrase: false,
+        wallet: {},
+        walletPassword: null,
+        walletConfirmPassword: null,
+        showEncryptLoader: false,
+        backgroundImages: {
+            1: "pages/wallet-new/import-wallet.svg",
+            2: "pages/wallet-new/encrypt-wallet.svg",
+            3: "pages/wallet-new/protect-wallet.svg"
+        }
+    }),
+
+    computed: {
+        nameError () {
+            if (this.$v.schema.name.$invalid) {
+                if (!this.$v.schema.name.contactDoesNotExist) {
+                    return this.$t("VALIDATION.NAME.EXISTS_AS_CONTACT", [this.schema.name]);
+                } else if (!this.$v.schema.name.walletDoesNotExist) {
+                    return this.$t("VALIDATION.NAME.EXISTS_AS_WALLET", [this.schema.name]);
+                } else if (!this.$v.schema.name.schemaMaxLength) {
+                    return this.$t("VALIDATION.NAME.MAX_LENGTH", [Wallet.schema.properties.name.maxLength]);
+                    // NOTE: not used, unless the minimum length is changed
+                } else if (!this.$v.schema.name.schemaMinLength) {
+                    return this.$tc("VALIDATION.NAME.MIN_LENGTH", Wallet.schema.properties.name.minLength);
+                }
+            }
+            return null;
+        },
+        addressError () {
+            if (this.$v.schema.address.$invalid) {
+                if (!this.$v.schema.address.contactDoesNotExist) {
+                    return this.$t("VALIDATION.ADDRESS.EXISTS_AS_CONTACT", [this.schema.address]);
+                } else if (!this.$v.schema.address.walletDoesNotExist) {
+                    return this.$t("VALIDATION.ADDRESS.EXISTS_AS_WALLET", [this.schema.address]);
+                }
+            }
+            return null;
+        }
+    },
+
+    watch: {
     /**
      * Generate always the address when moving to the step 2
      */
-    step () {
-      if (this.step === 2 && !this.useOnlyAddress) {
-        // Important: .normalize('NFD') is needed to properly work with Korean bip39 words
-        // It alters the passphrase string, so no need to normalize again in the onCreate function
-        this.schema.address = WalletService.getAddress(this.schema.passphrase, this.session_network.version)
-      }
+        step () {
+            if (this.step === 2 && !this.useOnlyAddress) {
+                // Important: .normalize('NFD') is needed to properly work with Korean bip39 words
+                // It alters the passphrase string, so no need to normalize again in the onCreate function
+                this.schema.address = WalletService.getAddress(this.schema.passphrase, this.session_network.version);
+            }
+        }
+    },
+
+    beforeRouteEnter (to, from, next) {
+        next(vm => {
+            vm.$synchronizer.focus();
+            vm.$synchronizer.pause("market");
+        });
+    },
+
+    methods: {
+        async createWallet () {
+            try {
+                try {
+                    const wallet = await this.$client.fetchWallet(this.wallet.address);
+                    if (wallet.multiSignature) {
+                        this.wallet.multiSignature = wallet.multiSignature;
+                    }
+                } catch (error) {
+                    //
+                }
+
+                const { address } = await this.$store.dispatch("wallet/create", this.wallet);
+                this.$router.push({ name: "wallet-show", params: { address } });
+            } catch (error) {
+                this.$error(`${this.$t("PAGES.WALLET_IMPORT.FAILED")}: ${error.message}`);
+            }
+        },
+
+        moveTo (step) {
+            this.step = step;
+        },
+
+        setOnlyAddress (useOnlyAddress) {
+            this.useOnlyPassphrase = false;
+            this.useOnlyAddress = useOnlyAddress;
+        },
+
+        setOnlyPassphrase (useOnlyPassphrase) {
+            this.useOnlyAddress = false;
+            this.useOnlyPassphrase = useOnlyPassphrase;
+        }
+    },
+
+    validations: {
+        step1: ["schema.address", "schema.passphrase"],
+        step2: ["walletPassword", "walletConfirmPassword"],
+        step3: ["schema.name"],
+        walletPassword: {
+            isValid () {
+                if (!this.walletPassword || !this.walletPassword.length) {
+                    return true;
+                }
+
+                if (this.$refs.password) {
+                    return !this.$refs.password.$v.$invalid;
+                }
+
+                return false;
+            }
+        },
+        walletConfirmPassword: {
+            isValid () {
+                if (!this.walletPassword || !this.walletPassword.length) {
+                    return true;
+                }
+
+                if (this.$refs.confirmPassword) {
+                    return !this.$refs.confirmPassword.$v.$invalid;
+                }
+
+                return false;
+            }
+        },
+        schema: {
+            address: {
+                isRequired (value) {
+                    return this.useOnlyPassphrase || required(value);
+                },
+                isValid () {
+                    if (this.useOnlyPassphrase) {
+                        return true;
+                    }
+
+                    if (this.$refs.addressInput) {
+                        return !this.$refs.addressInput.$v.$invalid;
+                    }
+
+                    return false;
+                },
+                contactDoesNotExist (value) {
+                    const contact = this.$store.getters["wallet/byAddress"](value);
+                    return value === "" || !(contact && contact.isContact);
+                },
+                walletDoesNotExist (value) {
+                    const wallet = this.$store.getters["wallet/byAddress"](value);
+                    return value === "" || !(wallet && !wallet.isContact);
+                }
+            },
+            name: {
+                contactDoesNotExist (value) {
+                    const contact = this.$store.getters["wallet/byName"](value);
+                    return value === "" || !(contact && contact.isContact);
+                },
+                walletDoesNotExist (value) {
+                    const wallet = this.$store.getters["wallet/byName"](value);
+                    return value === "" || !(wallet && !wallet.isContact);
+                }
+            },
+            passphrase: {
+                isRequired (value) {
+                    return this.useOnlyAddress || required(value);
+                },
+                isValid () {
+                    if (this.useOnlyAddress) {
+                        return true;
+                    }
+
+                    if (this.$refs.passphrase) {
+                        return !this.$refs.passphrase.$v.$invalid;
+                    }
+
+                    return false;
+                }
+            }
+        }
     }
-  },
-
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.$synchronizer.focus()
-      vm.$synchronizer.pause('market')
-    })
-  },
-
-  methods: {
-    async createWallet () {
-      try {
-        try {
-          const wallet = await this.$client.fetchWallet(this.wallet.address)
-          if (wallet.multiSignature) {
-            this.wallet.multiSignature = wallet.multiSignature
-          }
-        } catch (error) {
-          //
-        }
-
-        const { address } = await this.$store.dispatch('wallet/create', this.wallet)
-        this.$router.push({ name: 'wallet-show', params: { address } })
-      } catch (error) {
-        this.$error(`${this.$t('PAGES.WALLET_IMPORT.FAILED')}: ${error.message}`)
-      }
-    },
-
-    moveTo (step) {
-      this.step = step
-    },
-
-    setOnlyAddress (useOnlyAddress) {
-      this.useOnlyPassphrase = false
-      this.useOnlyAddress = useOnlyAddress
-    },
-
-    setOnlyPassphrase (useOnlyPassphrase) {
-      this.useOnlyAddress = false
-      this.useOnlyPassphrase = useOnlyPassphrase
-    }
-  },
-
-  validations: {
-    step1: ['schema.address', 'schema.passphrase'],
-    step2: ['walletPassword', 'walletConfirmPassword'],
-    step3: ['schema.name'],
-    walletPassword: {
-      isValid () {
-        if (!this.walletPassword || !this.walletPassword.length) {
-          return true
-        }
-
-        if (this.$refs.password) {
-          return !this.$refs.password.$v.$invalid
-        }
-
-        return false
-      }
-    },
-    walletConfirmPassword: {
-      isValid () {
-        if (!this.walletPassword || !this.walletPassword.length) {
-          return true
-        }
-
-        if (this.$refs.confirmPassword) {
-          return !this.$refs.confirmPassword.$v.$invalid
-        }
-
-        return false
-      }
-    },
-    schema: {
-      address: {
-        isRequired (value) {
-          return this.useOnlyPassphrase || required(value)
-        },
-        isValid () {
-          if (this.useOnlyPassphrase) {
-            return true
-          }
-
-          if (this.$refs.addressInput) {
-            return !this.$refs.addressInput.$v.$invalid
-          }
-
-          return false
-        },
-        contactDoesNotExist (value) {
-          const contact = this.$store.getters['wallet/byAddress'](value)
-          return value === '' || !(contact && contact.isContact)
-        },
-        walletDoesNotExist (value) {
-          const wallet = this.$store.getters['wallet/byAddress'](value)
-          return value === '' || !(wallet && !wallet.isContact)
-        }
-      },
-      name: {
-        contactDoesNotExist (value) {
-          const contact = this.$store.getters['wallet/byName'](value)
-          return value === '' || !(contact && contact.isContact)
-        },
-        walletDoesNotExist (value) {
-          const wallet = this.$store.getters['wallet/byName'](value)
-          return value === '' || !(wallet && !wallet.isContact)
-        }
-      },
-      passphrase: {
-        isRequired (value) {
-          return this.useOnlyAddress || required(value)
-        },
-        isValid () {
-          if (this.useOnlyAddress) {
-            return true
-          }
-
-          if (this.$refs.passphrase) {
-            return !this.$refs.passphrase.$v.$invalid
-          }
-
-          return false
-        }
-      }
-    }
-  }
-}
+};
 </script>
 
 <style>

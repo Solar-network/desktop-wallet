@@ -10,30 +10,30 @@
 </template>
 
 <script>
-import { ModalConfirmation } from '@/components/Modal'
+import { ModalConfirmation } from "@/components/Modal";
 
 export default {
-  name: 'PluginBlacklistConfirmation',
+    name: "PluginBlacklistConfirmation",
 
-  components: {
-    ModalConfirmation
-  },
-
-  props: {
-    plugin: {
-      type: Object,
-      required: true
-    }
-  },
-
-  methods: {
-    emitCancel () {
-      this.$emit('cancel')
+    components: {
+        ModalConfirmation
     },
 
-    emitConfirm () {
-      this.$emit('confirm')
+    props: {
+        plugin: {
+            type: Object,
+            required: true
+        }
+    },
+
+    methods: {
+        emitCancel () {
+            this.$emit("cancel");
+        },
+
+        emitConfirm () {
+            this.$emit("confirm");
+        }
     }
-  }
-}
+};
 </script>

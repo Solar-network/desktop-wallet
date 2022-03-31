@@ -1,6 +1,6 @@
-import WalletIpfs from './WalletIpfs'
+import WalletIpfs from "./WalletIpfs";
 
-export default WalletIpfs
+export default WalletIpfs;
 export {
-  WalletIpfs
-}
+    WalletIpfs
+};

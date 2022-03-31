@@ -1,7 +1,7 @@
-import WalletStatistics from './WalletStatistics'
+import WalletStatistics from "./WalletStatistics";
 
-export default WalletStatistics
+export default WalletStatistics;
 
 export {
-  WalletStatistics
-}
+    WalletStatistics
+};

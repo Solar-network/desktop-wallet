@@ -24,36 +24,36 @@
 
 <script>
 export default {
-  name: 'MenuDropdownItem',
+    name: "MenuDropdownItem",
 
-  props: {
+    props: {
     /**
      * The value of the item
      */
-    value: {
-      type: String,
-      required: true
-    },
-    /**
+        value: {
+            type: String,
+            required: true
+        },
+        /**
      * The visible text of the item
      */
-    item: {
-      type: String,
-      required: true
+        item: {
+            type: String,
+            required: true
+        },
+        isActive: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
     },
-    isActive: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
-  },
 
-  methods: {
-    emitClick () {
-      this.$emit('click', this.value)
+    methods: {
+        emitClick () {
+            this.$emit("click", this.value);
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

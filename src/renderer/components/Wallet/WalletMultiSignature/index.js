@@ -1,6 +1,6 @@
-import WalletMultiSignature from './WalletMultiSignature'
+import WalletMultiSignature from "./WalletMultiSignature";
 
-export default WalletMultiSignature
+export default WalletMultiSignature;
 export {
-  WalletMultiSignature
-}
+    WalletMultiSignature
+};

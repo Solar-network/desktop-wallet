@@ -47,80 +47,80 @@
 </template>
 
 <script>
-import Identicon from '@/components/utils/Identicon'
-import SvgIcon from '@/components/SvgIcon'
+import Identicon from "@/components/utils/Identicon";
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'TransactionDetail',
+    name: "TransactionDetail",
 
-  components: {
-    Identicon,
-    SvgIcon
-  },
+    components: {
+        Identicon,
+        SvgIcon
+    },
 
-  props: {
-    senderAddress: {
-      type: String,
-      required: true
+    props: {
+        senderAddress: {
+            type: String,
+            required: true
+        },
+        recipientAddress: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        amount: {
+            type: String,
+            required: true
+        },
+        type: {
+            type: Number,
+            required: false,
+            default: 0
+        }
     },
-    recipientAddress: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    amount: {
-      type: String,
-      required: true
-    },
-    type: {
-      type: Number,
-      required: false,
-      default: 0
+
+    computed: {
+        currency () {
+            return this.$store.getters["session/network"].token;
+        },
+        iconName () {
+            switch (this.type) {
+            case 1:
+                return "2nd-passphrase";
+            case 2:
+                return "register-delegate";
+            case 3:
+                return "vote";
+            default:
+                return "wallet";
+            }
+        },
+        backgroundColor () {
+            switch (this.type) {
+            case 1:
+                return "bg-theme-send-circle-second-signature";
+            case 2:
+                return "bg-theme-send-circle-register-delegate";
+            case 3:
+                return "bg-theme-send-circle-vote";
+            default:
+                return "bg-theme-heading-background";
+            }
+        },
+        textColor () {
+            switch (this.type) {
+            case 1:
+                return "text-theme-send-circle-second-signature-text";
+            case 2:
+                return "text-theme-send-circle-register-delegate-text";
+            case 3:
+                return "text-theme-send-circle-vote-text";
+            default:
+                return "text-white";
+            }
+        }
     }
-  },
-
-  computed: {
-    currency () {
-      return this.$store.getters['session/network'].token
-    },
-    iconName () {
-      switch (this.type) {
-        case 1:
-          return '2nd-passphrase'
-        case 2:
-          return 'register-delegate'
-        case 3:
-          return 'vote'
-        default:
-          return 'wallet'
-      }
-    },
-    backgroundColor () {
-      switch (this.type) {
-        case 1:
-          return 'bg-theme-send-circle-second-signature'
-        case 2:
-          return 'bg-theme-send-circle-register-delegate'
-        case 3:
-          return 'bg-theme-send-circle-vote'
-        default:
-          return 'bg-theme-heading-background'
-      }
-    },
-    textColor () {
-      switch (this.type) {
-        case 1:
-          return 'text-theme-send-circle-second-signature-text'
-        case 2:
-          return 'text-theme-send-circle-register-delegate-text'
-        case 3:
-          return 'text-theme-send-circle-vote-text'
-        default:
-          return 'text-white'
-      }
-    }
-  }
-}
+};
 </script>
 
 <style>

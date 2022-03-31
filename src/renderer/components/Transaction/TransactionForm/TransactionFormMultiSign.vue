@@ -61,71 +61,71 @@
 </template>
 
 <script>
-import { TRANSACTION_TYPES } from '@config'
-import { InputPassword } from '@/components/Input'
-import { ModalLoader } from '@/components/Modal'
-import { PassphraseInput } from '@/components/Passphrase'
-import mixin from './mixin'
+import { TRANSACTION_TYPES } from "@config";
+import { InputPassword } from "@/components/Input";
+import { ModalLoader } from "@/components/Modal";
+import { PassphraseInput } from "@/components/Passphrase";
+import mixin from "./mixin";
 
 export default {
-  name: 'TransactionFormMultiSign',
+    name: "TransactionFormMultiSign",
 
-  transactionType: TRANSACTION_TYPES.MULTI_SIGN,
+    transactionType: TRANSACTION_TYPES.MULTI_SIGN,
 
-  components: {
-    InputPassword,
-    ModalLoader,
-    PassphraseInput
-  },
-
-  mixins: [mixin],
-
-  props: {
-    transaction: {
-      type: Object,
-      required: true
-    }
-  },
-
-  data: () => ({
-    form: {
-      passphrase: '',
-      walletPassword: ''
-    }
-  }),
-
-  methods: {
-    getTransactionData () {
-      const transactionData = {
-        publicKey: this.currentWallet.publicKey,
-        passphrase: this.form.passphrase,
-        wif: this.form.wif,
-        networkWif: this.walletNetwork.wif,
-        multiSignature: this.transaction.multiSignature
-      }
-
-      if (this.currentWallet.secondPublicKey) {
-        transactionData.secondPassphrase = this.form.secondPassphrase
-      }
-
-      return transactionData
+    components: {
+        InputPassword,
+        ModalLoader,
+        PassphraseInput
     },
 
-    async buildTransaction (transactionData) {
-      return this.$client.multiSign(this.transaction, transactionData)
+    mixins: [mixin],
+
+    props: {
+        transaction: {
+            type: Object,
+            required: true
+        }
     },
 
-    transactionError () {
-      this.$error(this.$t('TRANSACTION.ERROR.VALIDATION.MULTI_SIGN'))
-    }
-  },
+    data: () => ({
+        form: {
+            passphrase: "",
+            walletPassword: ""
+        }
+    }),
 
-  validations: {
-    form: {
-      passphrase: mixin.validators.passphrase,
-      walletPassword: mixin.validators.walletPassword,
-      secondPassphrase: mixin.validators.secondPassphrase
+    methods: {
+        getTransactionData () {
+            const transactionData = {
+                publicKey: this.currentWallet.publicKey,
+                passphrase: this.form.passphrase,
+                wif: this.form.wif,
+                networkWif: this.walletNetwork.wif,
+                multiSignature: this.transaction.multiSignature
+            };
+
+            if (this.currentWallet.secondPublicKey) {
+                transactionData.secondPassphrase = this.form.secondPassphrase;
+            }
+
+            return transactionData;
+        },
+
+        async buildTransaction (transactionData) {
+            return this.$client.multiSign(this.transaction, transactionData);
+        },
+
+        transactionError () {
+            this.$error(this.$t("TRANSACTION.ERROR.VALIDATION.MULTI_SIGN"));
+        }
+    },
+
+    validations: {
+        form: {
+            passphrase: mixin.validators.passphrase,
+            walletPassword: mixin.validators.walletPassword,
+            secondPassphrase: mixin.validators.secondPassphrase
+        }
     }
-  }
-}
+};
 </script>

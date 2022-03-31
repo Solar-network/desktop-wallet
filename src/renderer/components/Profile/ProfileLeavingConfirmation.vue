@@ -28,38 +28,38 @@
 </template>
 
 <script>
-import { ModalConfirmation } from '@/components/Modal'
-import { ProfileAvatar } from '@/components/Profile'
+import { ModalConfirmation } from "@/components/Modal";
+import { ProfileAvatar } from "@/components/Profile";
 
 export default {
-  name: 'ProfileLeavingConfirmation',
+    name: "ProfileLeavingConfirmation",
 
-  components: {
-    ModalConfirmation,
-    ProfileAvatar
-  },
-
-  props: {
-    profile: {
-      type: Object,
-      required: true
-    }
-  },
-
-  methods: {
-    emitIgnore () {
-      this.$emit('ignore')
+    components: {
+        ModalConfirmation,
+        ProfileAvatar
     },
 
-    emitSave () {
-      this.$emit('save')
+    props: {
+        profile: {
+            type: Object,
+            required: true
+        }
     },
 
-    emitClose () {
-      this.$emit('close')
+    methods: {
+        emitIgnore () {
+            this.$emit("ignore");
+        },
+
+        emitSave () {
+            this.$emit("save");
+        },
+
+        emitClose () {
+            this.$emit("close");
+        }
     }
-  }
-}
+};
 </script>
 
 <style>

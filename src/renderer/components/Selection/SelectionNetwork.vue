@@ -54,87 +54,87 @@
 </template>
 
 <script>
-import { NetworkModal, NetworkSelectionModal } from '@/components/Network'
-import SelectionNetworkButton from './SelectionNetworkButton'
-import { pullAllBy } from 'lodash'
+import { NetworkModal, NetworkSelectionModal } from "@/components/Network";
+import SelectionNetworkButton from "./SelectionNetworkButton";
+import { pullAllBy } from "lodash";
 
 export default {
-  name: 'SelectionNetwork',
+    name: "SelectionNetwork",
 
-  maxItems: 2,
-  buttonClasses: '',
+    maxItems: 2,
+    buttonClasses: "",
 
-  components: {
-    NetworkModal,
-    NetworkSelectionModal,
-    SelectionNetworkButton
-  },
-
-  model: {
-    prop: 'selected',
-    event: 'select'
-  },
-
-  props: {
-    networks: {
-      type: Array,
-      required: true
+    components: {
+        NetworkModal,
+        NetworkSelectionModal,
+        SelectionNetworkButton
     },
-    selected: {
-      type: [Object],
-      required: false,
-      default: null
+
+    model: {
+        prop: "selected",
+        event: "select"
     },
-    isCustom: {
-      type: Boolean,
-      required: false,
-      default: false
+
+    props: {
+        networks: {
+            type: Array,
+            required: true
+        },
+        selected: {
+            type: [Object],
+            required: false,
+            default: null
+        },
+        isCustom: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        addButton: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
     },
-    addButton: {
-      type: Boolean,
-      required: false,
-      default: false
+
+    data: () => ({
+        isModalOpen: false,
+        showAddNetwork: false
+    }),
+
+    computed: {
+        availableNetworks () {
+            return this.networks.slice(0, this.$options.maxItems);
+        },
+
+        othersNetworks () {
+            return pullAllBy(this.networks, this.availableNetworks);
+        },
+
+        isOtherSelected () {
+            return this.othersNetworks.map(n => n.id).includes(this.selected.id);
+        }
+    },
+
+    methods: {
+        select (network) {
+            this.$emit(this.$options.model.event, network);
+            this.closeModal();
+        },
+
+        openModal () {
+            this.isModalOpen = true;
+        },
+
+        closeModal () {
+            this.isModalOpen = false;
+        },
+
+        toggleAddNetwork () {
+            this.showAddNetwork = !this.showAddNetwork;
+        }
     }
-  },
-
-  data: () => ({
-    isModalOpen: false,
-    showAddNetwork: false
-  }),
-
-  computed: {
-    availableNetworks () {
-      return this.networks.slice(0, this.$options.maxItems)
-    },
-
-    othersNetworks () {
-      return pullAllBy(this.networks, this.availableNetworks)
-    },
-
-    isOtherSelected () {
-      return this.othersNetworks.map(n => n.id).includes(this.selected.id)
-    }
-  },
-
-  methods: {
-    select (network) {
-      this.$emit(this.$options.model.event, network)
-      this.closeModal()
-    },
-
-    openModal () {
-      this.isModalOpen = true
-    },
-
-    closeModal () {
-      this.isModalOpen = false
-    },
-
-    toggleAddNetwork () {
-      this.showAddNetwork = !this.showAddNetwork
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

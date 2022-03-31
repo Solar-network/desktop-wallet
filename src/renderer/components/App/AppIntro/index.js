@@ -1,7 +1,7 @@
-import AppIntro from './AppIntro'
-import AppIntroScreen from './AppIntroScreen'
+import AppIntro from "./AppIntro";
+import AppIntroScreen from "./AppIntroScreen";
 
 export {
-  AppIntro,
-  AppIntroScreen
-}
+    AppIntro,
+    AppIntroScreen
+};

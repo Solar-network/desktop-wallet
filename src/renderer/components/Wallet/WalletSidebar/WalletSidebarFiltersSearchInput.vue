@@ -25,53 +25,53 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'WalletSidebarFiltersInputSearch',
+    name: "WalletSidebarFiltersInputSearch",
 
-  components: {
-    SvgIcon
-  },
-
-  props: {
-    placeholder: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    value: {
-      type: String,
-      required: true,
-      default: ''
-    }
-  },
-
-  data () {
-    return {
-      inputValue: this.value
-    }
-  },
-
-  watch: {
-    value (value) {
-      this.inputValue = value
-    }
-  },
-
-  methods: {
-    emitInput () {
-      this.$emit('input', this.inputValue)
+    components: {
+        SvgIcon
     },
 
-    updateInput (event) {
-      this.inputValue = event.target.value
-      this.emitInput()
+    props: {
+        placeholder: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        value: {
+            type: String,
+            required: true,
+            default: ""
+        }
     },
 
-    focus () {
-      this.$refs.input.focus()
+    data () {
+        return {
+            inputValue: this.value
+        };
+    },
+
+    watch: {
+        value (value) {
+            this.inputValue = value;
+        }
+    },
+
+    methods: {
+        emitInput () {
+            this.$emit("input", this.inputValue);
+        },
+
+        updateInput (event) {
+            this.inputValue = event.target.value;
+            this.emitInput();
+        },
+
+        focus () {
+            this.$refs.input.focus();
+        }
     }
-  }
-}
+};
 </script>

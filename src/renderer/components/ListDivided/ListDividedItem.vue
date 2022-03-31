@@ -41,34 +41,34 @@
 
 <script>
 export default {
-  name: 'ListDividedItem',
+    name: "ListDividedItem",
 
-  inject: {
-    isFloatingLabel: {
-      default: false
-    }
-  },
+    inject: {
+        isFloatingLabel: {
+            default: false
+        }
+    },
 
-  props: {
-    label: {
-      type: String,
-      required: true
-    },
-    value: {
-      type: [String, Number],
-      required: false,
-      default: null
-    },
-    itemLabelClass: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    itemValueClass: {
-      type: String,
-      required: false,
-      default: ''
+    props: {
+        label: {
+            type: String,
+            required: true
+        },
+        value: {
+            type: [String, Number],
+            required: false,
+            default: null
+        },
+        itemLabelClass: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        itemValueClass: {
+            type: String,
+            required: false,
+            default: ""
+        }
     }
-  }
-}
+};
 </script>

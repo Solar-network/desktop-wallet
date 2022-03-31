@@ -24,28 +24,28 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'WalletButtonCreate',
+    name: "WalletButtonCreate",
 
-  components: {
-    SvgIcon
-  },
+    components: {
+        SvgIcon
+    },
 
-  props: {
-    forceText: {
-      type: Boolean,
-      default: false
+    props: {
+        forceText: {
+            type: Boolean,
+            default: false
+        }
+    },
+
+    computed: {
+        hideText () {
+            return !this.forceText && this.$store.getters["session/hideWalletButtonText"];
+        }
     }
-  },
-
-  computed: {
-    hideText () {
-      return !this.forceText && this.$store.getters['session/hideWalletButtonText']
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

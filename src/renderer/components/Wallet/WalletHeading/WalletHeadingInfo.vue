@@ -114,174 +114,174 @@
 </template>
 
 <script>
-import { ButtonClipboard } from '@/components/Button'
-import SvgIcon from '@/components/SvgIcon'
-import { WalletIdenticon } from '../'
-import WalletService from '@/services/wallet'
+import { ButtonClipboard } from "@/components/Button";
+import SvgIcon from "@/components/SvgIcon";
+import { WalletIdenticon } from "../";
+import WalletService from "@/services/wallet";
 
 export default {
-  name: 'WalletHeadingInfo',
+    name: "WalletHeadingInfo",
 
-  components: {
-    ButtonClipboard,
-    WalletIdenticon,
-    SvgIcon
-  },
-
-  data: () => ({
-    showPublicKey: false,
-    lazyWallet: {}
-  }),
-
-  computed: {
-    address () {
-      return this.currentWallet ? this.currentWallet.address : ''
+    components: {
+        ButtonClipboard,
+        WalletIdenticon,
+        SvgIcon
     },
 
-    publicKey () {
-      if (this.currentWallet) {
-        if (this.currentWallet.multiSignature) {
-          return WalletService.getPublicKeyFromMultiSignatureAsset(this.currentWallet.multiSignature)
-        } else if (this.currentWallet.publicKey) {
-          return this.currentWallet.publicKey
+    data: () => ({
+        showPublicKey: false,
+        lazyWallet: {}
+    }),
+
+    computed: {
+        address () {
+            return this.currentWallet ? this.currentWallet.address : "";
+        },
+
+        publicKey () {
+            if (this.currentWallet) {
+                if (this.currentWallet.multiSignature) {
+                    return WalletService.getPublicKeyFromMultiSignatureAsset(this.currentWallet.multiSignature);
+                } else if (this.currentWallet.publicKey) {
+                    return this.currentWallet.publicKey;
+                }
+            }
+
+            return this.lazyWallet.publicKey;
+        },
+
+        secondPublicKey () {
+            const secondPublicKey = this.currentWallet ? this.currentWallet.secondPublicKey : "";
+            const lazySecondPublicKey = this.lazyWallet.secondPublicKey;
+
+            return secondPublicKey || lazySecondPublicKey;
+        },
+
+        alternativeBalance () {
+            const unitBalance = this.currency_subToUnit(this.rawBalance);
+            const price = this.price || 0;
+            return this.currency_format(unitBalance * price, { currency: this.alternativeCurrency });
+        },
+
+        alternativeCurrency () {
+            return this.$store.getters["session/currency"];
+        },
+
+        balance () {
+            return this.formatter_networkCurrency(this.rawBalance);
+        },
+
+        rawBalance () {
+            return this.currentWallet.profileId.length
+                ? this.currentWallet.balance
+                : (this.lazyWallet.balance || 0);
+        },
+
+        pendingBalance () {
+            return this.formatter_networkCurrency(this.pendingTransactionsRawAmount.add(this.rawBalance));
+        },
+
+        pendingTransactionsRawAmount () {
+            return this.getStoredTransactions().reduce((sum, transaction) => {
+                if (transaction.recipient === this.currentWallet.address) {
+                    sum = sum.add(transaction.amount);
+                }
+
+                if (transaction.sender === this.currentWallet.address) {
+                    sum = sum.subtract(transaction.amount).subtract(transaction.fee);
+                }
+
+                return sum;
+            }, this.currency_toBuilder(0));
+        },
+
+        pendingTransactionsCount () {
+            return this.getStoredTransactions().length;
+        },
+
+        pendingBalanceTooltip () {
+            return !this.pendingTransactionsRawAmount.isEqualTo(0)
+                ? this.$tc("WALLET_HEADING.PENDING_BALANCE", this.pendingTransactionsCount, { amount: this.pendingBalance })
+                : "";
+        },
+
+        name () {
+            return this.wallet_name(this.currentWallet.address);
+        },
+
+        currentWallet () {
+            return this.wallet_fromRoute;
+        },
+
+        isMarketEnabled () {
+            return this.session_network.market.enabled;
+        },
+
+        price () {
+            return this.$store.getters["market/lastPrice"];
+        },
+
+        label () {
+            return this.showPublicKey ? this.publicKey : this.address;
+        },
+
+        labelTooltip () {
+            return this.showPublicKey ? this.$t("WALLET_HEADING.ACTIONS.SHOW_ADDRESS") : this.$t("WALLET_HEADING.ACTIONS.SHOW_PUBLIC_KEY");
+        },
+
+        verifiedAddressText () {
+            let verifiedText = "";
+            const knownWallet = this.isKnownWallet();
+            if (knownWallet && knownWallet !== this.name) {
+                verifiedText = `${knownWallet} - `;
+            }
+
+            return verifiedText + this.$t("COMMON.VERIFIED_ADDRESS");
         }
-      }
-
-      return this.lazyWallet.publicKey
     },
 
-    secondPublicKey () {
-      const secondPublicKey = this.currentWallet ? this.currentWallet.secondPublicKey : ''
-      const lazySecondPublicKey = this.lazyWallet.secondPublicKey
-
-      return secondPublicKey || lazySecondPublicKey
-    },
-
-    alternativeBalance () {
-      const unitBalance = this.currency_subToUnit(this.rawBalance)
-      const price = this.price || 0
-      return this.currency_format(unitBalance * price, { currency: this.alternativeCurrency })
-    },
-
-    alternativeCurrency () {
-      return this.$store.getters['session/currency']
-    },
-
-    balance () {
-      return this.formatter_networkCurrency(this.rawBalance)
-    },
-
-    rawBalance () {
-      return this.currentWallet.profileId.length
-        ? this.currentWallet.balance
-        : (this.lazyWallet.balance || 0)
-    },
-
-    pendingBalance () {
-      return this.formatter_networkCurrency(this.pendingTransactionsRawAmount.add(this.rawBalance))
-    },
-
-    pendingTransactionsRawAmount () {
-      return this.getStoredTransactions().reduce((sum, transaction) => {
-        if (transaction.recipient === this.currentWallet.address) {
-          sum = sum.add(transaction.amount)
+    watch: {
+        publicKey () {
+            if (!this.publicKey) this.showPublicKey = false;
         }
+    },
 
-        if (transaction.sender === this.currentWallet.address) {
-          sum = sum.subtract(transaction.amount).subtract(transaction.fee)
+    methods: {
+        togglePublicKey () {
+            this.showPublicKey = !this.showPublicKey;
+        },
+
+        isKnownWallet () {
+            return this.session_network.knownWallets[this.address];
+        },
+
+        // Called by the parent when the address changed
+        // Fetch watch-only address, since the wallet is not stored on vuex
+        async refreshWallet () {
+            const updateLedger = this.currentWallet.isLedger && !this.$store.getters["session/backgroundUpdateLedger"];
+            if (!updateLedger && this.currentWallet.profileId.length) {
+                return;
+            }
+
+            this.lazyWallet = await this.$client.fetchWallet(this.currentWallet.address);
+            if (updateLedger) {
+                const ledgerWallet = this.$store.getters["ledger/wallet"](this.currentWallet.address);
+                this.$store.dispatch("ledger/updateWallet", {
+                    ...ledgerWallet,
+                    balance: this.lazyWallet.balance
+                });
+            }
+        },
+
+        getStoredTransactions () {
+            if (!this.currentWallet.profileId.length) {
+                return [];
+            }
+
+            return this.$store.getters["transaction/byAddress"](this.currentWallet.address, {
+                includeExpired: false
+            });
         }
-
-        return sum
-      }, this.currency_toBuilder(0))
-    },
-
-    pendingTransactionsCount () {
-      return this.getStoredTransactions().length
-    },
-
-    pendingBalanceTooltip () {
-      return !this.pendingTransactionsRawAmount.isEqualTo(0)
-        ? this.$tc('WALLET_HEADING.PENDING_BALANCE', this.pendingTransactionsCount, { amount: this.pendingBalance })
-        : ''
-    },
-
-    name () {
-      return this.wallet_name(this.currentWallet.address)
-    },
-
-    currentWallet () {
-      return this.wallet_fromRoute
-    },
-
-    isMarketEnabled () {
-      return this.session_network.market.enabled
-    },
-
-    price () {
-      return this.$store.getters['market/lastPrice']
-    },
-
-    label () {
-      return this.showPublicKey ? this.publicKey : this.address
-    },
-
-    labelTooltip () {
-      return this.showPublicKey ? this.$t('WALLET_HEADING.ACTIONS.SHOW_ADDRESS') : this.$t('WALLET_HEADING.ACTIONS.SHOW_PUBLIC_KEY')
-    },
-
-    verifiedAddressText () {
-      let verifiedText = ''
-      const knownWallet = this.isKnownWallet()
-      if (knownWallet && knownWallet !== this.name) {
-        verifiedText = `${knownWallet} - `
-      }
-
-      return verifiedText + this.$t('COMMON.VERIFIED_ADDRESS')
     }
-  },
-
-  watch: {
-    publicKey () {
-      if (!this.publicKey) this.showPublicKey = false
-    }
-  },
-
-  methods: {
-    togglePublicKey () {
-      this.showPublicKey = !this.showPublicKey
-    },
-
-    isKnownWallet () {
-      return this.session_network.knownWallets[this.address]
-    },
-
-    // Called by the parent when the address changed
-    // Fetch watch-only address, since the wallet is not stored on vuex
-    async refreshWallet () {
-      const updateLedger = this.currentWallet.isLedger && !this.$store.getters['session/backgroundUpdateLedger']
-      if (!updateLedger && this.currentWallet.profileId.length) {
-        return
-      }
-
-      this.lazyWallet = await this.$client.fetchWallet(this.currentWallet.address)
-      if (updateLedger) {
-        const ledgerWallet = this.$store.getters['ledger/wallet'](this.currentWallet.address)
-        this.$store.dispatch('ledger/updateWallet', {
-          ...ledgerWallet,
-          balance: this.lazyWallet.balance
-        })
-      }
-    },
-
-    getStoredTransactions () {
-      if (!this.currentWallet.profileId.length) {
-        return []
-      }
-
-      return this.$store.getters['transaction/byAddress'](this.currentWallet.address, {
-        includeExpired: false
-      })
-    }
-  }
-}
+};
 </script>

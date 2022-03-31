@@ -227,121 +227,121 @@
 </template>
 
 <script>
-import { TRANSACTION_TYPES } from '@config'
-import { ListDivided, ListDividedItem } from '@/components/ListDivided'
-import { ModalWindow } from '@/components/Modal'
-import { ButtonClipboard, ButtonModal } from '@/components/Button'
-import SvgIcon from '@/components/SvgIcon'
-import { TransactionAmount, TransactionModal, TransactionStatusIcon } from '@/components/Transaction'
-import TransactionService from '@/services/transaction'
-import WalletAddress from '@/components/Wallet/WalletAddress'
-import WalletService from '@/services/wallet'
+import { TRANSACTION_TYPES } from "@config";
+import { ListDivided, ListDividedItem } from "@/components/ListDivided";
+import { ModalWindow } from "@/components/Modal";
+import { ButtonClipboard, ButtonModal } from "@/components/Button";
+import SvgIcon from "@/components/SvgIcon";
+import { TransactionAmount, TransactionModal, TransactionStatusIcon } from "@/components/Transaction";
+import TransactionService from "@/services/transaction";
+import WalletAddress from "@/components/Wallet/WalletAddress";
+import WalletService from "@/services/wallet";
 
 export default {
-  name: 'TransactionShowMultiSignature',
+    name: "TransactionShowMultiSignature",
 
-  components: {
-    ListDivided,
-    ListDividedItem,
-    ModalWindow,
-    ButtonClipboard,
-    ButtonModal,
-    SvgIcon,
-    TransactionAmount,
-    TransactionModal,
-    TransactionStatusIcon,
-    WalletAddress
-  },
+    components: {
+        ListDivided,
+        ListDividedItem,
+        ModalWindow,
+        ButtonClipboard,
+        ButtonModal,
+        SvgIcon,
+        TransactionAmount,
+        TransactionModal,
+        TransactionStatusIcon,
+        WalletAddress
+    },
 
-  props: {
-    transaction: {
-      type: Object,
-      required: true
+    props: {
+        transaction: {
+            type: Object,
+            required: true
+        }
+    },
+
+    data: () => ({
+        votedDelegate: null
+    }),
+
+    computed: {
+        totalCount () {
+            return this.$t("COMMON.X_OF_Y", [
+                (this.transaction.signatures || []).length,
+                this.transaction.multiSignature.publicKeys.length
+            ]);
+        },
+
+        canSign () {
+            return TransactionService.needsWalletSignature(this.transaction, WalletService.getPublicKeyFromWallet(this.wallet_fromRoute));
+        },
+
+        canBeSent () {
+            return TransactionService.isMultiSignatureReady(this.transaction);
+        },
+
+        votePublicKey () {
+            if (this.transaction && this.transaction.asset && this.transaction.asset.votes) {
+                const vote = this.transaction.asset.votes[0];
+                return vote.substr(1);
+            }
+            return "";
+        },
+
+        multiSignatureWalletAddress () {
+            if (this.transaction.type !== TRANSACTION_TYPES.GROUP_1.MULTI_SIGNATURE || !this.transaction.multiSignature) {
+                return null;
+            }
+
+            return WalletService.getAddressFromMultiSignatureAsset(this.transaction.multiSignature);
+        }
+    },
+
+    async mounted () {
+        if (this.votePublicKey) {
+            this.determineVote();
+        }
+    },
+
+    methods: {
+        openTransaction () {
+            this.network_openExplorer("transaction", this.transaction.id);
+        },
+
+        openAddress (address) {
+            this.network_openExplorer("address", address);
+        },
+
+        openBlock () {
+            this.network_openExplorer("block", this.transaction.blockId);
+        },
+
+        closeTransactionModal (toggleMethod, isOpen) {
+            if (isOpen) {
+                toggleMethod();
+            }
+
+            this.emitClose();
+        },
+
+        emitClose () {
+            this.$emit("close", "navigateToTransactions");
+        },
+
+        openAddressInWallet (address) {
+            this.$router.push({ name: "wallet-show", params: { address } });
+            this.emitClose();
+        },
+
+        determineVote () {
+            this.votedDelegate = this.$store.getters["delegate/byPublicKey"](this.votePublicKey);
+        },
+
+        getAddress (transaction) {
+            return transaction.sender || WalletService.getAddressFromPublicKey(transaction.senderPublicKey, this.session_network.version);
+        }
     }
-  },
-
-  data: () => ({
-    votedDelegate: null
-  }),
-
-  computed: {
-    totalCount () {
-      return this.$t('COMMON.X_OF_Y', [
-        (this.transaction.signatures || []).length,
-        this.transaction.multiSignature.publicKeys.length
-      ])
-    },
-
-    canSign () {
-      return TransactionService.needsWalletSignature(this.transaction, WalletService.getPublicKeyFromWallet(this.wallet_fromRoute))
-    },
-
-    canBeSent () {
-      return TransactionService.isMultiSignatureReady(this.transaction)
-    },
-
-    votePublicKey () {
-      if (this.transaction && this.transaction.asset && this.transaction.asset.votes) {
-        const vote = this.transaction.asset.votes[0]
-        return vote.substr(1)
-      }
-      return ''
-    },
-
-    multiSignatureWalletAddress () {
-      if (this.transaction.type !== TRANSACTION_TYPES.GROUP_1.MULTI_SIGNATURE || !this.transaction.multiSignature) {
-        return null
-      }
-
-      return WalletService.getAddressFromMultiSignatureAsset(this.transaction.multiSignature)
-    }
-  },
-
-  async mounted () {
-    if (this.votePublicKey) {
-      this.determineVote()
-    }
-  },
-
-  methods: {
-    openTransaction () {
-      this.network_openExplorer('transaction', this.transaction.id)
-    },
-
-    openAddress (address) {
-      this.network_openExplorer('address', address)
-    },
-
-    openBlock () {
-      this.network_openExplorer('block', this.transaction.blockId)
-    },
-
-    closeTransactionModal (toggleMethod, isOpen) {
-      if (isOpen) {
-        toggleMethod()
-      }
-
-      this.emitClose()
-    },
-
-    emitClose () {
-      this.$emit('close', 'navigateToTransactions')
-    },
-
-    openAddressInWallet (address) {
-      this.$router.push({ name: 'wallet-show', params: { address } })
-      this.emitClose()
-    },
-
-    determineVote () {
-      this.votedDelegate = this.$store.getters['delegate/byPublicKey'](this.votePublicKey)
-    },
-
-    getAddress (transaction) {
-      return transaction.sender || WalletService.getAddressFromPublicKey(transaction.senderPublicKey, this.session_network.version)
-    }
-  }
-}
+};
 </script>
 
 <style>

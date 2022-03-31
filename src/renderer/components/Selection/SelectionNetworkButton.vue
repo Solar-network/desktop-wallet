@@ -26,55 +26,55 @@
 
 <script>
 export default {
-  name: 'SelectionNetworkButton',
+    name: "SelectionNetworkButton",
 
-  props: {
-    tag: {
-      type: String,
-      required: false,
-      default: 'button',
-      validator: (value) => ['button', 'div'].includes(value)
+    props: {
+        tag: {
+            type: String,
+            required: false,
+            default: "button",
+            validator: (value) => ["button", "div"].includes(value)
+        },
+        network: {
+            type: Object,
+            required: false,
+            default: () => ({})
+        },
+        size: {
+            type: String,
+            required: false,
+            default: "default",
+            validator: (value) => ["small", "default"].includes(value)
+        },
+        isCustom: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        showTitle: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        networkImage: {
+            type: String,
+            required: false,
+            default: null
+        }
     },
-    network: {
-      type: Object,
-      required: false,
-      default: () => ({})
-    },
-    size: {
-      type: String,
-      required: false,
-      default: 'default',
-      validator: (value) => ['small', 'default'].includes(value)
-    },
-    isCustom: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    showTitle: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    networkImage: {
-      type: String,
-      required: false,
-      default: null
-    }
-  },
 
-  computed: {
-    image () {
-      if (this.networkImage) {
-        return this.assets_loadImage(this.networkImage)
-      } else if (this.isCustom) {
-        return this.assets_loadImage('networks/default.svg')
-      } else {
-        return this.assets_loadImage(`networks/${this.network.id}.svg`)
-      }
+    computed: {
+        image () {
+            if (this.networkImage) {
+                return this.assets_loadImage(this.networkImage);
+            } else if (this.isCustom) {
+                return this.assets_loadImage("networks/default.svg");
+            } else {
+                return this.assets_loadImage(`networks/${this.network.id}.svg`);
+            }
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

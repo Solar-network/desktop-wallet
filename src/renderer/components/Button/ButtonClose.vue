@@ -13,34 +13,34 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'ButtonClose',
+    name: "ButtonClose",
 
-  components: {
-    SvgIcon
-  },
-
-  props: {
-    iconClass: {
-      type: String,
-      required: false,
-      default: ''
+    components: {
+        SvgIcon
     },
-    iconName: {
-      type: String,
-      required: false,
-      default: 'cross'
-    }
-  },
 
-  methods: {
-    emitClick () {
-      this.$emit('click')
+    props: {
+        iconClass: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        iconName: {
+            type: String,
+            required: false,
+            default: "cross"
+        }
+    },
+
+    methods: {
+        emitClick () {
+            this.$emit("click");
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

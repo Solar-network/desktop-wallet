@@ -65,25 +65,25 @@
 </template>
 
 <script>
-import '@/styles/style.css'
-import packageJson from '../../package.json'
+import "@/styles/style.css";
+import packageJson from "../../package.json";
 
 export default {
-  name: 'SplashScreen',
+    name: "SplashScreen",
 
-  computed: {
-    version () {
-      return packageJson.version
-    },
-    loadingMessage () {
-      if (window.navigator.onLine) {
-        return this.$t('COMMON.INITIALIZING')
-      }
+    computed: {
+        version () {
+            return packageJson.version;
+        },
+        loadingMessage () {
+            if (window.navigator.onLine) {
+                return this.$t("COMMON.INITIALIZING");
+            }
 
-      return this.$t('COMMON.NO_INTERNET_CONNECTION')
+            return this.$t("COMMON.NO_INTERNET_CONNECTION");
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

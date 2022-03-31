@@ -32,92 +32,92 @@
 </template>
 
 <script>
-import Loader from '@/components/utils/Loader'
-import PluginLogo from '@/components/PluginManager/PluginLogo'
-import ModalWindow from './ModalWindow'
+import Loader from "@/components/utils/Loader";
+import PluginLogo from "@/components/PluginManager/PluginLogo";
+import ModalWindow from "./ModalWindow";
 
 export default {
-  name: 'ModalLoader',
+    name: "ModalLoader",
 
-  components: {
-    Loader,
-    ModalWindow,
-    PluginLogo
-  },
-
-  props: {
-    message: {
-      type: String,
-      required: true
-    },
-    plugin: {
-      type: Object,
-      required: false,
-      default: null
-    },
-    visible: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    allowClose: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    closeWarningDelay: {
-      type: Number,
-      required: false,
-      default: 15000
-    },
-    closeWarningMessage: {
-      type: String,
-      required: false,
-      default: null
-    }
-  },
-
-  data (vm) {
-    return {
-      showClose: false,
-      showCloseTimeout: null,
-      isVisible: vm.visible
-    }
-  },
-
-  watch: {
-    visible: function (value) {
-      this.isVisible = value
-      if (value) {
-        this.triggerShowClose()
-      }
-    }
-  },
-
-  mounted () {
-    this.triggerShowClose()
-  },
-
-  methods: {
-    toggle () {
-      this.isVisible = !this.isVisible
-
-      if (!this.isVisible) {
-        this.$emit('close')
-      }
+    components: {
+        Loader,
+        ModalWindow,
+        PluginLogo
     },
 
-    triggerShowClose () {
-      if (this.allowClose) {
-        if (this.showCloseTimeout || this.showClose) {
-          clearInterval(this.showCloseTimeout)
-          this.showClose = false
+    props: {
+        message: {
+            type: String,
+            required: true
+        },
+        plugin: {
+            type: Object,
+            required: false,
+            default: null
+        },
+        visible: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        allowClose: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        closeWarningDelay: {
+            type: Number,
+            required: false,
+            default: 15000
+        },
+        closeWarningMessage: {
+            type: String,
+            required: false,
+            default: null
         }
-        this.showCloseTimeout = setTimeout(() => {
-          this.showClose = true
-        }, this.closeWarningDelay)
-      }
+    },
+
+    data (vm) {
+        return {
+            showClose: false,
+            showCloseTimeout: null,
+            isVisible: vm.visible
+        };
+    },
+
+    watch: {
+        visible: function (value) {
+            this.isVisible = value;
+            if (value) {
+                this.triggerShowClose();
+            }
+        }
+    },
+
+    mounted () {
+        this.triggerShowClose();
+    },
+
+    methods: {
+        toggle () {
+            this.isVisible = !this.isVisible;
+
+            if (!this.isVisible) {
+                this.$emit("close");
+            }
+        },
+
+        triggerShowClose () {
+            if (this.allowClose) {
+                if (this.showCloseTimeout || this.showClose) {
+                    clearInterval(this.showCloseTimeout);
+                    this.showClose = false;
+                }
+                this.showCloseTimeout = setTimeout(() => {
+                    this.showClose = true;
+                }, this.closeWarningDelay);
+            }
+        }
     }
-  }
-}
+};
 </script>

@@ -42,54 +42,54 @@
 </template>
 
 <script>
-import { ButtonSwitch } from '@/components/Button'
+import { ButtonSwitch } from "@/components/Button";
 
 export default {
-  name: 'MarketChartHeader',
+    name: "MarketChartHeader",
 
-  periods: {
-    day: 'MARKET.DAY',
-    week: 'MARKET.WEEK',
-    month: 'MARKET.MONTH'
-  },
+    periods: {
+        day: "MARKET.DAY",
+        week: "MARKET.WEEK",
+        month: "MARKET.MONTH"
+    },
 
-  inject: {
-    getPeriod: { default: () => {} },
-    getIsExpanded: { default: () => {} }
-  },
+    inject: {
+        getPeriod: { default: () => {} },
+        getIsExpanded: { default: () => {} }
+    },
 
-  components: {
-    ButtonSwitch
-  },
+    components: {
+        ButtonSwitch
+    },
 
-  computed: {
-    activePeriod () {
-      return this.getPeriod()
+    computed: {
+        activePeriod () {
+            return this.getPeriod();
+        },
+        isExpanded () {
+            return this.getIsExpanded();
+        },
+        currency () {
+            return this.$store.getters["session/currency"];
+        },
+        price () {
+            return this.$store.getters["market/lastPrice"];
+        },
+        ticker () {
+            return this.session_network.market.ticker;
+        }
     },
-    isExpanded () {
-      return this.getIsExpanded()
-    },
-    currency () {
-      return this.$store.getters['session/currency']
-    },
-    price () {
-      return this.$store.getters['market/lastPrice']
-    },
-    ticker () {
-      return this.session_network.market.ticker
+
+    methods: {
+        emitToggle (value) {
+            this.$emit("toggle", value);
+        },
+
+        emitPeriodChange (period) {
+            this.$emit("period-change", period);
+        }
     }
-  },
-
-  methods: {
-    emitToggle (value) {
-      this.$emit('toggle', value)
-    },
-
-    emitPeriodChange (period) {
-      this.$emit('period-change', period)
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

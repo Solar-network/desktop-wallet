@@ -97,132 +97,132 @@
 </template>
 
 <script>
-import { isEqual } from 'lodash'
-import { ButtonLayout } from '@/components/Button'
-import { ContactRemovalConfirmation, ContactRenameModal } from '@/components/Contact'
-import { WalletGrid, WalletIdenticonPlaceholder } from '@/components/Wallet'
-import WalletTable from '@/components/Wallet/WalletTable'
-import SvgIcon from '@/components/SvgIcon'
+import { isEqual } from "lodash";
+import { ButtonLayout } from "@/components/Button";
+import { ContactRemovalConfirmation, ContactRenameModal } from "@/components/Contact";
+import { WalletGrid, WalletIdenticonPlaceholder } from "@/components/Wallet";
+import WalletTable from "@/components/Wallet/WalletTable";
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'ContactAll',
+    name: "ContactAll",
 
-  components: {
-    ButtonLayout,
-    ContactRemovalConfirmation,
-    ContactRenameModal,
-    WalletGrid,
-    WalletIdenticonPlaceholder,
-    WalletTable,
-    SvgIcon
-  },
-
-  data: () => ({
-    contactToRemove: null,
-    contactToRename: null
-  }),
-
-  computed: {
-    contacts () {
-      const contacts = this.$store.getters['wallet/contactsByProfileId'](this.session_profile.id)
-      return this.wallet_sortByName(contacts)
+    components: {
+        ButtonLayout,
+        ContactRemovalConfirmation,
+        ContactRenameModal,
+        WalletGrid,
+        WalletIdenticonPlaceholder,
+        WalletTable,
+        SvgIcon
     },
 
-    hasWalletGridLayout () {
-      return this.$store.getters['session/hasWalletGridLayout']
+    data: () => ({
+        contactToRemove: null,
+        contactToRename: null
+    }),
+
+    computed: {
+        contacts () {
+            const contacts = this.$store.getters["wallet/contactsByProfileId"](this.session_profile.id);
+            return this.wallet_sortByName(contacts);
+        },
+
+        hasWalletGridLayout () {
+            return this.$store.getters["session/hasWalletGridLayout"];
+        },
+
+        walletLayout: {
+            get () {
+                return this.$store.getters["session/walletLayout"];
+            },
+            set (layout) {
+                this.$store.dispatch("session/setWalletLayout", layout);
+
+                this.$store.dispatch("profile/update", {
+                    ...this.session_profile,
+                    walletLayout: layout
+                });
+            }
+        },
+
+        sortParams: {
+            get () {
+                return this.$store.getters["session/contactSortParams"];
+            },
+            set (sortParams) {
+                this.$store.dispatch("session/setContactSortParams", sortParams);
+
+                this.$store.dispatch("profile/update", {
+                    ...this.session_profile,
+                    contactSortParams: sortParams
+                });
+            }
+        },
+
+        showVotedDelegates () {
+            return this.contacts.some(contact => Object.prototype.hasOwnProperty.call(contact, "vote"));
+        }
     },
 
-    walletLayout: {
-      get () {
-        return this.$store.getters['session/walletLayout']
-      },
-      set (layout) {
-        this.$store.dispatch('session/setWalletLayout', layout)
-
-        this.$store.dispatch('profile/update', {
-          ...this.session_profile,
-          walletLayout: layout
-        })
-      }
+    beforeRouteEnter (to, from, next) {
+        next(vm => {
+            vm.$synchronizer.focus("contacts");
+        });
     },
 
-    sortParams: {
-      get () {
-        return this.$store.getters['session/contactSortParams']
-      },
-      set (sortParams) {
-        this.$store.dispatch('session/setContactSortParams', sortParams)
+    methods: {
+        hideRemovalConfirmation () {
+            this.contactToRemove = null;
+        },
 
-        this.$store.dispatch('profile/update', {
-          ...this.session_profile,
-          contactSortParams: sortParams
-        })
-      }
-    },
+        hideRenameModal () {
+            this.contactToRename = null;
+        },
 
-    showVotedDelegates () {
-      return this.contacts.some(contact => Object.prototype.hasOwnProperty.call(contact, 'vote'))
+        openRemovalConfirmation (contact) {
+            this.contactToRemove = contact;
+        },
+
+        openRenameModal (contact) {
+            this.contactToRename = contact;
+        },
+
+        removeContact () {
+            this.hideRemovalConfirmation();
+        },
+
+        toggleWalletLayout () {
+            this.walletLayout = this.walletLayout === "grid" ? "tabular" : "grid";
+        },
+
+        onRemoveContact (contact) {
+            this.openRemovalConfirmation(contact);
+        },
+
+        onRenameContact (contact) {
+            this.openRenameModal(contact);
+        },
+
+        onContactRenamed () {
+            this.hideRenameModal();
+        },
+
+        createContact () {
+            this.$router.push({ name: "contact-new" });
+        },
+
+        onSortChange (sortParams) {
+            if (!isEqual(sortParams, this.sortParams)) {
+                this.sortParams = sortParams;
+            }
+        },
+
+        showContact (contactId) {
+            this.$router.push({ name: "wallet-show", params: { address: contactId } });
+        }
     }
-  },
-
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.$synchronizer.focus('contacts')
-    })
-  },
-
-  methods: {
-    hideRemovalConfirmation () {
-      this.contactToRemove = null
-    },
-
-    hideRenameModal () {
-      this.contactToRename = null
-    },
-
-    openRemovalConfirmation (contact) {
-      this.contactToRemove = contact
-    },
-
-    openRenameModal (contact) {
-      this.contactToRename = contact
-    },
-
-    removeContact () {
-      this.hideRemovalConfirmation()
-    },
-
-    toggleWalletLayout () {
-      this.walletLayout = this.walletLayout === 'grid' ? 'tabular' : 'grid'
-    },
-
-    onRemoveContact (contact) {
-      this.openRemovalConfirmation(contact)
-    },
-
-    onRenameContact (contact) {
-      this.openRenameModal(contact)
-    },
-
-    onContactRenamed () {
-      this.hideRenameModal()
-    },
-
-    createContact () {
-      this.$router.push({ name: 'contact-new' })
-    },
-
-    onSortChange (sortParams) {
-      if (!isEqual(sortParams, this.sortParams)) {
-        this.sortParams = sortParams
-      }
-    },
-
-    showContact (contactId) {
-      this.$router.push({ name: 'wallet-show', params: { address: contactId } })
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

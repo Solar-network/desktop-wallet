@@ -17,36 +17,36 @@
 </template>
 
 <script>
-import { SearchInput, SearchFilter, SearchFilterButton } from '@/components/Search'
+import { SearchInput, SearchFilter, SearchFilterButton } from "@/components/Search";
 
 export default {
-  name: 'SearchPage',
+    name: "SearchPage",
 
-  components: {
-    SearchInput,
-    SearchFilter,
-    SearchFilterButton
-  },
-
-  data: () => ({
-    showFilter: false
-  }),
-
-  beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.$synchronizer.focus()
-      vm.$synchronizer.pause('market')
-    })
-  },
-
-  methods: {
-    toggleFilter () {
-      this.showFilter = !this.showFilter
+    components: {
+        SearchInput,
+        SearchFilter,
+        SearchFilterButton
     },
 
-    hideFilter () {
-      this.showFilter = false
+    data: () => ({
+        showFilter: false
+    }),
+
+    beforeRouteEnter (to, from, next) {
+        next(vm => {
+            vm.$synchronizer.focus();
+            vm.$synchronizer.pause("market");
+        });
+    },
+
+    methods: {
+        toggleFilter () {
+            this.showFilter = !this.showFilter;
+        },
+
+        hideFilter () {
+            this.showFilter = false;
+        }
     }
-  }
-}
+};
 </script>

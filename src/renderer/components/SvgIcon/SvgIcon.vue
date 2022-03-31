@@ -13,27 +13,27 @@
 
 <script>
 export default {
-  name: 'SvgIcon',
+    name: "SvgIcon",
 
-  props: {
-    name: {
-      type: String,
-      required: true
+    props: {
+        name: {
+            type: String,
+            required: true
+        },
+        viewBox: {
+            type: [Array, String],
+            required: false,
+            default: "0 0 50 50"
+        }
     },
-    viewBox: {
-      type: [Array, String],
-      required: false,
-      default: '0 0 50 50'
-    }
-  },
 
-  computed: {
-    styles () {
-      const size = Array.isArray(this.viewBox) ? this.viewBox : this.viewBox.split(' ')
-      const [x, y, width, height] = size.map(i => i + 'px')
+    computed: {
+        styles () {
+            const size = Array.isArray(this.viewBox) ? this.viewBox : this.viewBox.split(" ");
+            const [x, y, width, height] = size.map(i => i + "px");
 
-      return { x, y, width, height }
+            return { x, y, width, height };
+        }
     }
-  }
-}
+};
 </script>

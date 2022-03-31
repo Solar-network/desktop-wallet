@@ -19,42 +19,42 @@
 
 <script>
 export default {
-  name: 'ProgressBar',
+    name: "ProgressBar",
 
-  props: {
-    percent: {
-      type: [String, Number],
-      required: false,
-      default: 0
+    props: {
+        percent: {
+            type: [String, Number],
+            required: false,
+            default: 0
+        },
+        status: {
+            type: String,
+            required: false,
+            default: "active",
+            validator: (value) => ["active", "exception", "success"].includes(value)
+        },
+        size: {
+            type: String,
+            required: false,
+            default: "normal",
+            validator: (value) => ["normal", "small", "large"].includes(value)
+        }
     },
-    status: {
-      type: String,
-      required: false,
-      default: 'active',
-      validator: (value) => ['active', 'exception', 'success'].includes(value)
-    },
-    size: {
-      type: String,
-      required: false,
-      default: 'normal',
-      validator: (value) => ['normal', 'small', 'large'].includes(value)
+
+    computed: {
+        getCurrentPercent () {
+            return parseInt(this.percent.toString(), 10);
+        },
+
+        getStatus () {
+            if (this.status === "active" && this.getCurrentPercent >= 100) {
+                return "success";
+            }
+
+            return this.status;
+        }
     }
-  },
-
-  computed: {
-    getCurrentPercent () {
-      return parseInt(this.percent.toString(), 10)
-    },
-
-    getStatus () {
-      if (this.status === 'active' && this.getCurrentPercent >= 100) {
-        return 'success'
-      }
-
-      return this.status
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

@@ -188,145 +188,145 @@
 </template>
 
 <script>
-import { PLUGINS } from '@config'
-import { ButtonGeneric, ButtonIconGeneric } from '@/components/Button'
-import { PluginLogo, PluginManagerCheckmark, PluginManagerGrants } from '@/components/PluginManager'
-import { ModalWindow } from '@/components/Modal'
-import { PluginManagerButtonSwitch } from '@/components/PluginManager/PluginManagerButtons'
-import { SliderImage, SliderImageModal } from '@/components/Slider'
-import SvgIcon from '@/components/SvgIcon'
-import domain from 'getdomain'
+import { PLUGINS } from "@config";
+import { ButtonGeneric, ButtonIconGeneric } from "@/components/Button";
+import { PluginLogo, PluginManagerCheckmark, PluginManagerGrants } from "@/components/PluginManager";
+import { ModalWindow } from "@/components/Modal";
+import { PluginManagerButtonSwitch } from "@/components/PluginManager/PluginManagerButtons";
+import { SliderImage, SliderImageModal } from "@/components/Slider";
+import SvgIcon from "@/components/SvgIcon";
+import domain from "getdomain";
 
 export default {
-  name: 'PluginDetailsModal',
+    name: "PluginDetailsModal",
 
-  components: {
-    ButtonGeneric,
-    ButtonIconGeneric,
-    PluginManagerCheckmark,
-    PluginManagerGrants,
-    PluginManagerButtonSwitch,
-    ModalWindow,
-    PluginLogo,
-    SliderImage,
-    SliderImageModal,
-    SvgIcon
-  },
+    components: {
+        ButtonGeneric,
+        ButtonIconGeneric,
+        PluginManagerCheckmark,
+        PluginManagerGrants,
+        PluginManagerButtonSwitch,
+        ModalWindow,
+        PluginLogo,
+        SliderImage,
+        SliderImageModal,
+        SvgIcon
+    },
 
-  props: {
-    plugin: {
-      type: Object,
-      required: true
+    props: {
+        plugin: {
+            type: Object,
+            required: true
+        }
+    },
+
+    computed: {
+        isEnabled () {
+            return this.$store.getters["plugin/isEnabled"](this.plugin.id);
+        },
+
+        isAvailable () {
+            return this.$store.getters["plugin/isAvailable"](this.plugin.id);
+        },
+
+        isInstalled () {
+            return this.$store.getters["plugin/isInstalled"](this.plugin.id);
+        },
+
+        isInstalledSupported () {
+            return this.$store.getters["plugin/isInstalledSupported"](this.plugin.id);
+        },
+
+        isBlacklisted () {
+            return this.$store.getters["plugin/isBlacklisted"](this.plugin.id);
+        },
+
+        isUpdateAvailable () {
+            return this.$store.getters["plugin/isUpdateAvailable"](this.plugin.id);
+        },
+
+        updateTooltipContent () {
+            if (this.isUpdateAvailable) {
+                const version = this.$store.getters["plugin/latestVersion"](this.plugin.id);
+                return this.$t("PAGES.PLUGIN_MANAGER.UPDATE.AVAILABLE", { version });
+            }
+
+            return this.$t("PAGES.PLUGIN_MANAGER.UPDATE.NOT_AVAILABLE");
+        },
+
+        categoryTooltip () {
+            if (this.plugin.categories.length <= 1) {
+                return;
+            }
+
+            return {
+                content: this.plugin.categories.map(category => {
+                    return this.$t(`PAGES.PLUGIN_MANAGER.CATEGORIES.${category.toUpperCase()}`);
+                }).join("\n"),
+                placement: "right"
+            };
+        },
+
+        keywordsText () {
+            const keywords = this.plugin.keywords.slice(0, PLUGINS.maxKeywords).join(", ");
+            return this.showKeywordsTooltip ? `${keywords}, ` : keywords;
+        },
+
+        keywordsTooltip () {
+            return this.plugin.keywords.slice(PLUGINS.maxKeywords).join("\n");
+        },
+
+        showKeywordsTooltip () {
+            return this.plugin.keywords.length > PLUGINS.maxKeywords;
+        },
+
+        homepageLink () {
+            try {
+                return domain.get(this.plugin.homepage);
+            } catch (error) {
+                return null;
+            }
+        },
+
+        hasImages () {
+            return this.plugin.images && this.plugin.images.length > 0;
+        }
+    },
+
+    methods: {
+        emitClose () {
+            this.$emit("close");
+        },
+
+        emitUpdate () {
+            this.$emit("update", this.plugin);
+        },
+
+        emitRemove () {
+            this.$emit("remove", this.plugin);
+        },
+
+        emitShowPermissions () {
+            this.$emit("show-permissions");
+        },
+
+        toggleStatus (enabled) {
+            this.$emit("change-status", enabled, this.plugin.id);
+        },
+
+        reportPlugin () {
+            const params = new URLSearchParams({
+                subject: "desktop_wallet_plugin_report",
+                plugin_id: this.plugin.id,
+                plugin_version: this.plugin.version
+            });
+
+            this.electron_openExternal(`${PLUGINS.reportUrl}?${params.toString()}`);
+
+            this.$emit("report");
+        }
     }
-  },
-
-  computed: {
-    isEnabled () {
-      return this.$store.getters['plugin/isEnabled'](this.plugin.id)
-    },
-
-    isAvailable () {
-      return this.$store.getters['plugin/isAvailable'](this.plugin.id)
-    },
-
-    isInstalled () {
-      return this.$store.getters['plugin/isInstalled'](this.plugin.id)
-    },
-
-    isInstalledSupported () {
-      return this.$store.getters['plugin/isInstalledSupported'](this.plugin.id)
-    },
-
-    isBlacklisted () {
-      return this.$store.getters['plugin/isBlacklisted'](this.plugin.id)
-    },
-
-    isUpdateAvailable () {
-      return this.$store.getters['plugin/isUpdateAvailable'](this.plugin.id)
-    },
-
-    updateTooltipContent () {
-      if (this.isUpdateAvailable) {
-        const version = this.$store.getters['plugin/latestVersion'](this.plugin.id)
-        return this.$t('PAGES.PLUGIN_MANAGER.UPDATE.AVAILABLE', { version })
-      }
-
-      return this.$t('PAGES.PLUGIN_MANAGER.UPDATE.NOT_AVAILABLE')
-    },
-
-    categoryTooltip () {
-      if (this.plugin.categories.length <= 1) {
-        return
-      }
-
-      return {
-        content: this.plugin.categories.map(category => {
-          return this.$t(`PAGES.PLUGIN_MANAGER.CATEGORIES.${category.toUpperCase()}`)
-        }).join('\n'),
-        placement: 'right'
-      }
-    },
-
-    keywordsText () {
-      const keywords = this.plugin.keywords.slice(0, PLUGINS.maxKeywords).join(', ')
-      return this.showKeywordsTooltip ? `${keywords}, ` : keywords
-    },
-
-    keywordsTooltip () {
-      return this.plugin.keywords.slice(PLUGINS.maxKeywords).join('\n')
-    },
-
-    showKeywordsTooltip () {
-      return this.plugin.keywords.length > PLUGINS.maxKeywords
-    },
-
-    homepageLink () {
-      try {
-        return domain.get(this.plugin.homepage)
-      } catch (error) {
-        return null
-      }
-    },
-
-    hasImages () {
-      return this.plugin.images && this.plugin.images.length > 0
-    }
-  },
-
-  methods: {
-    emitClose () {
-      this.$emit('close')
-    },
-
-    emitUpdate () {
-      this.$emit('update', this.plugin)
-    },
-
-    emitRemove () {
-      this.$emit('remove', this.plugin)
-    },
-
-    emitShowPermissions () {
-      this.$emit('show-permissions')
-    },
-
-    toggleStatus (enabled) {
-      this.$emit('change-status', enabled, this.plugin.id)
-    },
-
-    reportPlugin () {
-      const params = new URLSearchParams({
-        subject: 'desktop_wallet_plugin_report',
-        plugin_id: this.plugin.id,
-        plugin_version: this.plugin.version
-      })
-
-      this.electron_openExternal(`${PLUGINS.reportUrl}?${params.toString()}`)
-
-      this.$emit('report')
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

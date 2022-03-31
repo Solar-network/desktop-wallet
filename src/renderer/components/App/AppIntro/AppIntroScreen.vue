@@ -78,72 +78,72 @@
 </template>
 
 <script>
-import { ButtonGeneric } from '@/components/Button'
+import { ButtonGeneric } from "@/components/Button";
 
 export default {
-  name: 'AppIntroScreen',
+    name: "AppIntroScreen",
 
-  components: {
-    ButtonGeneric
-  },
+    components: {
+        ButtonGeneric
+    },
 
-  props: {
-    showBack: {
-      type: Boolean,
-      required: false,
-      default: true
+    props: {
+        showBack: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        showLogo: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        showNext: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        showSkip: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        image: {
+            type: String,
+            required: true
+        },
+        showGradient: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        contentClasses: {
+            type: String,
+            required: false,
+            default: "font-medium px-16 mt-10 overflow-y-auto"
+        }
     },
-    showLogo: {
-      type: Boolean,
-      required: false,
-      default: true
+
+    computed: {
+        showFooter () {
+            return this.showBack || this.showNext || this.showSkip;
+        }
     },
-    showNext: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    showSkip: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    image: {
-      type: String,
-      required: true
-    },
-    showGradient: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    contentClasses: {
-      type: String,
-      required: false,
-      default: 'font-medium px-16 mt-10 overflow-y-auto'
+
+    methods: {
+        emitBack () {
+            this.$emit("back");
+        },
+
+        emitNext () {
+            this.$emit("next");
+        },
+
+        emitSkip () {
+            this.$emit("skip");
+        }
     }
-  },
-
-  computed: {
-    showFooter () {
-      return this.showBack || this.showNext || this.showSkip
-    }
-  },
-
-  methods: {
-    emitBack () {
-      this.$emit('back')
-    },
-
-    emitNext () {
-      this.$emit('next')
-    },
-
-    emitSkip () {
-      this.$emit('skip')
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

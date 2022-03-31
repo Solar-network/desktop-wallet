@@ -14,38 +14,38 @@
 </template>
 
 <script>
-import ModalRename from '@/components/Modal/ModalRename'
+import ModalRename from "@/components/Modal/ModalRename";
 
 export default {
-  name: 'ContactRenameModal',
+    name: "ContactRenameModal",
 
-  components: {
-    ModalRename
-  },
-
-  props: {
-    wallet: {
-      type: Object,
-      required: true
+    components: {
+        ModalRename
     },
-    isNewContact: {
-      type: Boolean,
-      default: false
+
+    props: {
+        wallet: {
+            type: Object,
+            required: true
+        },
+        isNewContact: {
+            type: Boolean,
+            default: false
+        }
+    },
+
+    methods: {
+        emitCancel () {
+            this.$emit("cancel");
+        },
+
+        emitRenamed () {
+            this.$emit("renamed");
+        },
+
+        emitCreated () {
+            this.$emit("created");
+        }
     }
-  },
-
-  methods: {
-    emitCancel () {
-      this.$emit('cancel')
-    },
-
-    emitRenamed () {
-      this.$emit('renamed')
-    },
-
-    emitCreated () {
-      this.$emit('created')
-    }
-  }
-}
+};
 </script>

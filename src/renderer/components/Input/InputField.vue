@@ -33,52 +33,52 @@
 
 <script>
 export default {
-  name: 'InputField',
+    name: "InputField",
 
-  props: {
-    label: {
-      type: String,
-      required: false,
-      default: null
+    props: {
+        label: {
+            type: String,
+            required: false,
+            default: null
+        },
+        helperText: {
+            type: String,
+            required: false,
+            default: null
+        },
+        isDirty: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        isDisabled: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        isFocused: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        isInvalid: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        warningText: {
+            type: String,
+            required: false,
+            default: null
+        }
     },
-    helperText: {
-      type: String,
-      required: false,
-      default: null
-    },
-    isDirty: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isDisabled: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isFocused: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isInvalid: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    warningText: {
-      type: String,
-      required: false,
-      default: null
-    }
-  },
 
-  computed: {
-    inputClass () {
-      return 'InputField__input w-full pt-3 pin-l bg-transparent transition border-b border-theme-input-field-border text-theme-page-text hover:border-theme-page-text focus:border-blue h-10'
+    computed: {
+        inputClass () {
+            return "InputField__input w-full pt-3 pin-l bg-transparent transition border-b border-theme-input-field-border text-theme-page-text hover:border-theme-page-text focus:border-blue h-10";
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

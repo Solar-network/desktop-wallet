@@ -13,34 +13,34 @@
 </template>
 
 <script>
-import ModalRename from '@/components/Modal/ModalRename'
+import ModalRename from "@/components/Modal/ModalRename";
 
 export default {
-  name: 'WalletRenameModal',
+    name: "WalletRenameModal",
 
-  components: {
-    ModalRename
-  },
-
-  props: {
-    wallet: {
-      type: Object,
-      required: true
-    }
-  },
-
-  methods: {
-    emitCancel () {
-      this.$emit('cancel')
+    components: {
+        ModalRename
     },
 
-    emitRenamed () {
-      this.$emit('renamed')
+    props: {
+        wallet: {
+            type: Object,
+            required: true
+        }
     },
 
-    emitCreated () {
-      this.$emit('created')
+    methods: {
+        emitCancel () {
+            this.$emit("cancel");
+        },
+
+        emitRenamed () {
+            this.$emit("renamed");
+        },
+
+        emitCreated () {
+            this.$emit("created");
+        }
     }
-  }
-}
+};
 </script>

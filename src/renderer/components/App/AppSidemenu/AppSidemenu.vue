@@ -139,100 +139,100 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import AppSidemenuPlugins from './AppSidemenuPlugins'
-import AppSidemenuSettings from './AppSidemenuSettings'
-import AppSidemenuNetworkStatus from './AppSidemenuNetworkStatus'
-import AppSidemenuImportantNotification from './AppSidemenuImportantNotification'
-import { MenuNavigation, MenuNavigationItem } from '@/components/Menu'
-import { ProfileAvatar } from '@/components/Profile'
-import SvgIcon from '@/components/SvgIcon'
-import { ipcRenderer } from 'electron'
+import { mapGetters } from "vuex";
+import AppSidemenuPlugins from "./AppSidemenuPlugins";
+import AppSidemenuSettings from "./AppSidemenuSettings";
+import AppSidemenuNetworkStatus from "./AppSidemenuNetworkStatus";
+import AppSidemenuImportantNotification from "./AppSidemenuImportantNotification";
+import { MenuNavigation, MenuNavigationItem } from "@/components/Menu";
+import { ProfileAvatar } from "@/components/Profile";
+import SvgIcon from "@/components/SvgIcon";
+import { ipcRenderer } from "electron";
 
 export default {
-  name: 'AppSidemenu',
+    name: "AppSidemenu",
 
-  components: {
-    AppSidemenuPlugins,
-    AppSidemenuSettings,
-    AppSidemenuNetworkStatus,
-    AppSidemenuImportantNotification,
-    MenuNavigation,
-    MenuNavigationItem,
-    ProfileAvatar,
-    SvgIcon
-  },
+    components: {
+        AppSidemenuPlugins,
+        AppSidemenuSettings,
+        AppSidemenuNetworkStatus,
+        AppSidemenuImportantNotification,
+        MenuNavigation,
+        MenuNavigationItem,
+        ProfileAvatar,
+        SvgIcon
+    },
 
-  props: {
-    isHorizontal: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
-  },
+    props: {
+        isHorizontal: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
+    },
 
-  data: vm => ({
-    isImportantNotificationVisible: true,
-    isPluginMenuVisible: false,
-    activeItem: vm.$route.name
-  }),
-
-  computed: {
-    ...mapGetters({
-      hasAvailableRelease: 'updater/hasAvailableRelease',
-      unreadAnnouncements: 'announcements/unread'
+    data: vm => ({
+        isImportantNotificationVisible: true,
+        isPluginMenuVisible: false,
+        activeItem: vm.$route.name
     }),
-    showUnread () {
-      return this.unreadAnnouncements.length > 0
-    },
-    hasPluginMenuItems () {
-      return this.$store.getters['plugin/menuItems'].length
-    },
-    hasStandardAvatar () {
-      return this.session_profile.avatar && typeof this.session_profile.avatar === 'string'
-    },
-    pluginAvatar () {
-      if (this.session_profile.avatar && this.session_profile.avatar.pluginId) {
-        return this.$store.getters['plugin/avatar'](this.session_profile.avatar)
-      }
 
-      return null
+    computed: {
+        ...mapGetters({
+            hasAvailableRelease: "updater/hasAvailableRelease",
+            unreadAnnouncements: "announcements/unread"
+        }),
+        showUnread () {
+            return this.unreadAnnouncements.length > 0;
+        },
+        hasPluginMenuItems () {
+            return this.$store.getters["plugin/menuItems"].length;
+        },
+        hasStandardAvatar () {
+            return this.session_profile.avatar && typeof this.session_profile.avatar === "string";
+        },
+        pluginAvatar () {
+            if (this.session_profile.avatar && this.session_profile.avatar.pluginId) {
+                return this.$store.getters["plugin/avatar"](this.session_profile.avatar);
+            }
+
+            return null;
+        }
+    },
+
+    created () {
+        ipcRenderer.on("app:preferences", () => {
+            this.$refs.settings.showSettings();
+        });
+    },
+
+    methods: {
+        redirect (name) {
+            this.setActive(name);
+            this.$router.push({ name });
+        },
+
+        setActive (name) {
+            this.activeItem = name;
+        },
+
+        hideImportantNotification () {
+            this.isImportantNotificationVisible = false;
+        },
+
+        toggleShowPluginMenu () {
+            this.isPluginMenuVisible = !this.isPluginMenuVisible;
+        },
+
+        closeShowPlugins (setActive) {
+            if (setActive) {
+                this.setActive("plugin-pages");
+            }
+
+            this.isPluginMenuVisible = false;
+        }
     }
-  },
-
-  created () {
-    ipcRenderer.on('app:preferences', () => {
-      this.$refs.settings.showSettings()
-    })
-  },
-
-  methods: {
-    redirect (name) {
-      this.setActive(name)
-      this.$router.push({ name })
-    },
-
-    setActive (name) {
-      this.activeItem = name
-    },
-
-    hideImportantNotification () {
-      this.isImportantNotificationVisible = false
-    },
-
-    toggleShowPluginMenu () {
-      this.isPluginMenuVisible = !this.isPluginMenuVisible
-    },
-
-    closeShowPlugins (setActive) {
-      if (setActive) {
-        this.setActive('plugin-pages')
-      }
-
-      this.isPluginMenuVisible = false
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

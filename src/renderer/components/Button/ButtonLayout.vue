@@ -27,28 +27,28 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon'
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'ButtonLayout',
+    name: "ButtonLayout",
 
-  components: {
-    SvgIcon
-  },
+    components: {
+        SvgIcon
+    },
 
-  props: {
-    gridLayout: {
-      type: Boolean,
-      required: true
+    props: {
+        gridLayout: {
+            type: Boolean,
+            required: true
+        }
+    },
+
+    methods: {
+        emitClick () {
+            this.$emit("click");
+        }
     }
-  },
-
-  methods: {
-    emitClick () {
-      this.$emit('click')
-    }
-  }
-}
+};
 </script>
 
 <style>

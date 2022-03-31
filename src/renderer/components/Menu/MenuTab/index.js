@@ -1,8 +1,8 @@
-import MenuTab from './MenuTab'
-import MenuTabItem from './MenuTabItem'
+import MenuTab from "./MenuTab";
+import MenuTabItem from "./MenuTabItem";
 
-export default MenuTab
+export default MenuTab;
 export {
-  MenuTab,
-  MenuTabItem
-}
+    MenuTab,
+    MenuTabItem
+};

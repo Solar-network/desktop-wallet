@@ -1,12 +1,12 @@
 export default method => {
-  let consoleMethod
+    let consoleMethod;
 
-  beforeEach(() => {
-    consoleMethod = console[method]
-    console[method] = jest.fn()
-  })
+    beforeEach(() => {
+        consoleMethod = console[method];
+        console[method] = jest.fn();
+    });
 
-  afterEach(() => {
-    console[method] = consoleMethod
-  })
-}
+    afterEach(() => {
+        console[method] = consoleMethod;
+    });
+};

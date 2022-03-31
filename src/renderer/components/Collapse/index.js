@@ -1,8 +1,8 @@
-import Collapse from './Collapse'
-import CollapseAccordion from './CollapseAccordion'
+import Collapse from "./Collapse";
+import CollapseAccordion from "./CollapseAccordion";
 
-export default Collapse
+export default Collapse;
 export {
-  Collapse,
-  CollapseAccordion
-}
+    Collapse,
+    CollapseAccordion
+};

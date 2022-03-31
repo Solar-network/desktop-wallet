@@ -12,22 +12,22 @@
 </template>
 
 <script>
-import { InputText } from '@/components/Input'
+import { InputText } from "@/components/Input";
 
 export default {
-  name: 'PassphraseWords',
+    name: "PassphraseWords",
 
-  components: {
-    InputText
-  },
+    components: {
+        InputText
+    },
 
-  props: {
-    passphraseWords: {
-      type: Array,
-      required: true
+    props: {
+        passphraseWords: {
+            type: Array,
+            required: true
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss">

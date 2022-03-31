@@ -25,70 +25,70 @@
 
 <script>
 export default {
-  name: 'PluginManagerButtonSwitch',
+    name: "PluginManagerButtonSwitch",
 
-  model: {
-    prop: 'isActive',
-    event: 'change'
-  },
-
-  props: {
-    isActive: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    isDisabled: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    labels: {
-      type: Object,
-      required: false,
-      default: () => ({
-        active: 'PAGES.PLUGIN_MANAGER.ENABLED',
-        inactive: 'PAGES.PLUGIN_MANAGER.DISABLED'
-      })
-    }
-  },
-
-  data: vm => ({
-    inputIsActive: vm.isActive
-  }),
-
-  computed: {
     model: {
-      get () {
-        return this.inputIsActive
-      },
-      set (value) {
-        this.inputIsActive = value
-        this.$emit('change', value)
-      }
+        prop: "isActive",
+        event: "change"
     },
 
-    label () {
-      return this.inputIsActive ? this.$t(this.labels.active) : this.$t(this.labels.inactive)
-    }
-  },
+    props: {
+        isActive: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        isDisabled: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        labels: {
+            type: Object,
+            required: false,
+            default: () => ({
+                active: "PAGES.PLUGIN_MANAGER.ENABLED",
+                inactive: "PAGES.PLUGIN_MANAGER.DISABLED"
+            })
+        }
+    },
 
-  watch: {
-    isActive (isActive) {
-      this.inputIsActive = isActive
-    }
-  },
+    data: vm => ({
+        inputIsActive: vm.isActive
+    }),
 
-  methods: {
-    toggle () {
-      if (this.isDisabled) {
-        return
-      }
+    computed: {
+        model: {
+            get () {
+                return this.inputIsActive;
+            },
+            set (value) {
+                this.inputIsActive = value;
+                this.$emit("change", value);
+            }
+        },
 
-      this.model = !this.model
+        label () {
+            return this.inputIsActive ? this.$t(this.labels.active) : this.$t(this.labels.inactive);
+        }
+    },
+
+    watch: {
+        isActive (isActive) {
+            this.inputIsActive = isActive;
+        }
+    },
+
+    methods: {
+        toggle () {
+            if (this.isDisabled) {
+                return;
+            }
+
+            this.model = !this.model;
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

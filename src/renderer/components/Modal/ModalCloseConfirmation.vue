@@ -54,73 +54,73 @@
 <script>
 
 export default {
-  name: 'ModalCloseConfirmation',
+    name: "ModalCloseConfirmation",
 
-  props: {
-    cancelButton: {
-      type: String,
-      required: false,
-      default () {
-        return this.$t('MODAL_CLOSE_CONFIRMATION.CANCEL')
-      }
+    props: {
+        cancelButton: {
+            type: String,
+            required: false,
+            default () {
+                return this.$t("MODAL_CLOSE_CONFIRMATION.CANCEL");
+            }
+        },
+        confirmButton: {
+            type: String,
+            required: false,
+            default () {
+                return this.$t("MODAL_CLOSE_CONFIRMATION.CONFIRM");
+            }
+        },
+        containerClasses: {
+            type: String,
+            required: false,
+            default: "ModalConfirmationClose"
+        },
+        footer: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        note: {
+            type: String,
+            required: false,
+            default: null
+        },
+        question: {
+            type: String,
+            required: false,
+            default () {
+                return this.$t("MODAL_CLOSE_CONFIRMATION.QUESTION");
+            }
+        },
+        title: {
+            type: String,
+            required: false,
+            default () {
+                return this.$t("MODAL_CONFIRMATION.TITLE");
+            }
+        },
+        portalTarget: {
+            type: String,
+            required: false,
+            default: "modal"
+        }
     },
-    confirmButton: {
-      type: String,
-      required: false,
-      default () {
-        return this.$t('MODAL_CLOSE_CONFIRMATION.CONFIRM')
-      }
-    },
-    containerClasses: {
-      type: String,
-      required: false,
-      default: 'ModalConfirmationClose'
-    },
-    footer: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    note: {
-      type: String,
-      required: false,
-      default: null
-    },
-    question: {
-      type: String,
-      required: false,
-      default () {
-        return this.$t('MODAL_CLOSE_CONFIRMATION.QUESTION')
-      }
-    },
-    title: {
-      type: String,
-      required: false,
-      default () {
-        return this.$t('MODAL_CONFIRMATION.TITLE')
-      }
-    },
-    portalTarget: {
-      type: String,
-      required: false,
-      default: 'modal'
+
+    methods: {
+        emitCancel () {
+            this.$emit("cancel");
+        },
+
+        emitConfirm () {
+            this.$emit("confirm");
+        },
+
+        onBackdropClick () {
+            this.$emit("cancel");
+        }
     }
-  },
-
-  methods: {
-    emitCancel () {
-      this.$emit('cancel')
-    },
-
-    emitConfirm () {
-      this.$emit('confirm')
-    },
-
-    onBackdropClick () {
-      this.$emit('cancel')
-    }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

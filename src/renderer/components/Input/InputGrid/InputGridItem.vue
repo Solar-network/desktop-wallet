@@ -55,63 +55,63 @@
 </template>
 
 <script>
-import { ButtonLetter } from '@/components/Button'
-import { SvgIcon } from '@/components/SvgIcon'
+import { ButtonLetter } from "@/components/Button";
+import { SvgIcon } from "@/components/SvgIcon";
 
 export default {
-  name: 'InputGridItem',
+    name: "InputGridItem",
 
-  components: {
-    ButtonLetter,
-    SvgIcon
-  },
+    components: {
+        ButtonLetter,
+        SvgIcon
+    },
 
-  props: {
-    imagePath: {
-      type: [String, Boolean],
-      required: false,
-      default: null
+    props: {
+        imagePath: {
+            type: [String, Boolean],
+            required: false,
+            default: null
+        },
+        textContent: {
+            type: String,
+            default: null
+        },
+        onlyLetter: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
+        component: {
+            type: [Object, Function],
+            required: false,
+            default: () => {}
+        },
+        isForModal: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        isSelected: {
+            type: Boolean,
+            required: true
+        },
+        title: {
+            type: String,
+            required: false,
+            default: null
+        }
     },
-    textContent: {
-      type: String,
-      default: null
-    },
-    onlyLetter: {
-      type: Boolean,
-      required: false,
-      default: false
-    },
-    component: {
-      type: [Object, Function],
-      required: false,
-      default: () => {}
-    },
-    isForModal: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    isSelected: {
-      type: Boolean,
-      required: true
-    },
-    title: {
-      type: String,
-      required: false,
-      default: null
+
+    computed: {
+        currentNetwork () {
+            // To avoid failing after removing the current and last profile
+            return this.$store.getters["session/profile"] ? this.session_network : null;
+        },
+
+        label () {
+            const symbol = this.currentNetwork ? this.currentNetwork.symbol : null;
+            return this.textContent || symbol;
+        }
     }
-  },
-
-  computed: {
-    currentNetwork () {
-      // To avoid failing after removing the current and last profile
-      return this.$store.getters['session/profile'] ? this.session_network : null
-    },
-
-    label () {
-      const symbol = this.currentNetwork ? this.currentNetwork.symbol : null
-      return this.textContent || symbol
-    }
-  }
-}
+};
 </script>

@@ -11,26 +11,26 @@
 </template>
 
 <script>
-import TransactionService from '@/services/transaction'
+import TransactionService from "@/services/transaction";
 
 export default {
-  name: 'TransactionAmount',
+    name: "TransactionAmount",
 
-  props: {
-    transaction: {
-      type: Object,
-      required: true
-    }
-  },
-
-  computed: {
-    totalAmount () {
-      return TransactionService.getAmount(this, this.transaction, this.wallet_fromRoute)
+    props: {
+        transaction: {
+            type: Object,
+            required: true
+        }
     },
 
-    isTransfer () {
-      return TransactionService.isTransfer(this.transaction)
+    computed: {
+        totalAmount () {
+            return TransactionService.getAmount(this, this.transaction, this.wallet_fromRoute);
+        },
+
+        isTransfer () {
+            return TransactionService.isTransfer(this.transaction);
+        }
     }
-  }
-}
+};
 </script>

@@ -13,13 +13,13 @@
 </template>
 
 <script>
-import SearchFilterItem from './SearchFilterItem'
+import SearchFilterItem from "./SearchFilterItem";
 
 export default {
-  name: 'SearchFilterTransaction',
+    name: "SearchFilterTransaction",
 
-  components: {
-    SearchFilterItem
-  }
-}
+    components: {
+        SearchFilterItem
+    }
+};
 </script>

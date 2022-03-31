@@ -1,11 +1,11 @@
-import WalletHeading from './WalletHeading'
-import WalletHeadingInfo from './WalletHeadingInfo'
-import WalletHeadingMenuLedger from './WalletHeadingMenuLedger'
+import WalletHeading from "./WalletHeading";
+import WalletHeadingInfo from "./WalletHeadingInfo";
+import WalletHeadingMenuLedger from "./WalletHeadingMenuLedger";
 
-export default WalletHeading
+export default WalletHeading;
 
 export {
-  WalletHeading,
-  WalletHeadingInfo,
-  WalletHeadingMenuLedger
-}
+    WalletHeading,
+    WalletHeadingInfo,
+    WalletHeadingMenuLedger
+};

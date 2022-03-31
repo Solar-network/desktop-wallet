@@ -1,7 +1,7 @@
-import WalletDelegates from './WalletDelegates'
+import WalletDelegates from "./WalletDelegates";
 
-export default WalletDelegates
+export default WalletDelegates;
 
 export {
-  WalletDelegates
-}
+    WalletDelegates
+};

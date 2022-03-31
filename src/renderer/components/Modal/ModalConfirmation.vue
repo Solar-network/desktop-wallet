@@ -50,81 +50,81 @@
 </template>
 
 <script>
-import ModalWindow from './ModalWindow'
+import ModalWindow from "./ModalWindow";
 
 export default {
-  name: 'ModalConfirmation',
+    name: "ModalConfirmation",
 
-  components: {
-    ModalWindow
-  },
+    components: {
+        ModalWindow
+    },
 
-  props: {
-    cancelButton: {
-      type: String,
-      required: false,
-      default () {
-        return this.$t('MODAL_CONFIRMATION.CANCEL')
-      }
+    props: {
+        cancelButton: {
+            type: String,
+            required: false,
+            default () {
+                return this.$t("MODAL_CONFIRMATION.CANCEL");
+            }
+        },
+        showCancelButton: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
+        containerClasses: {
+            type: String,
+            required: false,
+            default: "ModalConfirmation"
+        },
+        continueButton: {
+            type: String,
+            required: false,
+            default () {
+                return this.$t("MODAL_CONFIRMATION.CONTINUE");
+            }
+        },
+        footer: {
+            type: String,
+            required: false,
+            default: ""
+        },
+        note: {
+            type: String,
+            required: false,
+            default: null
+        },
+        question: {
+            type: String,
+            required: false,
+            default: null
+        },
+        title: {
+            type: String,
+            required: false,
+            default () {
+                return this.$t("MODAL_CONFIRMATION.TITLE");
+            }
+        },
+        portalTarget: {
+            type: String,
+            required: false,
+            default: "modal"
+        }
     },
-    showCancelButton: {
-      type: Boolean,
-      required: false,
-      default: true
-    },
-    containerClasses: {
-      type: String,
-      required: false,
-      default: 'ModalConfirmation'
-    },
-    continueButton: {
-      type: String,
-      required: false,
-      default () {
-        return this.$t('MODAL_CONFIRMATION.CONTINUE')
-      }
-    },
-    footer: {
-      type: String,
-      required: false,
-      default: ''
-    },
-    note: {
-      type: String,
-      required: false,
-      default: null
-    },
-    question: {
-      type: String,
-      required: false,
-      default: null
-    },
-    title: {
-      type: String,
-      required: false,
-      default () {
-        return this.$t('MODAL_CONFIRMATION.TITLE')
-      }
-    },
-    portalTarget: {
-      type: String,
-      required: false,
-      default: 'modal'
+
+    methods: {
+        emitCancel () {
+            this.$emit("cancel");
+        },
+
+        emitClose () {
+            this.$emit("close");
+        },
+
+        emitContinue () {
+            this.$emit("continue");
+        }
     }
-  },
-
-  methods: {
-    emitCancel () {
-      this.$emit('cancel')
-    },
-
-    emitClose () {
-      this.$emit('close')
-    },
-
-    emitContinue () {
-      this.$emit('continue')
-    }
-  }
-}
+};
 </script>

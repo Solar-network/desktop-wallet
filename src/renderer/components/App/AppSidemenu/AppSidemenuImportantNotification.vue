@@ -24,53 +24,53 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import AppUpdater from '@/components/App/AppUpdater'
-import SvgIcon from '@/components/SvgIcon'
+import { mapGetters } from "vuex";
+import AppUpdater from "@/components/App/AppUpdater";
+import SvgIcon from "@/components/SvgIcon";
 
 /**
  * A component to display a notification icon (a bell) and display important
  * notifications, such as, new relesases
  */
 export default {
-  name: 'AppSidemenuImportantNotification',
+    name: "AppSidemenuImportantNotification",
 
-  components: {
-    SvgIcon,
-    AppUpdater
-  },
-
-  props: {
-    isHorizontal: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
-  },
-
-  data: () => ({
-    isNotificationVisible: false
-  }),
-
-  computed: {
-    ...mapGetters('updater', ['availableRelease']),
-    releaseVersion () {
-      return this.availableRelease && this.availableRelease.version
+    components: {
+        SvgIcon,
+        AppUpdater
     },
-    tooltipText () {
-      return this.$t('APP_SIDEMENU_NOTIFICATION.TOOLTIP', { version: this.releaseVersion })
-    }
-  },
 
-  methods: {
-    closeNotification () {
-      this.isNotificationVisible = false
+    props: {
+        isHorizontal: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
     },
-    openNotification () {
-      this.isNotificationVisible = true
+
+    data: () => ({
+        isNotificationVisible: false
+    }),
+
+    computed: {
+        ...mapGetters("updater", ["availableRelease"]),
+        releaseVersion () {
+            return this.availableRelease && this.availableRelease.version;
+        },
+        tooltipText () {
+            return this.$t("APP_SIDEMENU_NOTIFICATION.TOOLTIP", { version: this.releaseVersion });
+        }
+    },
+
+    methods: {
+        closeNotification () {
+            this.isNotificationVisible = false;
+        },
+        openNotification () {
+            this.isNotificationVisible = true;
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

@@ -31,64 +31,64 @@
 </template>
 
 <script>
-import VNodes from '@/components/utils/VNodes'
+import VNodes from "@/components/utils/VNodes";
 export default {
-  name: 'MenuTab',
+    name: "MenuTab",
 
-  components: {
-    VNodes
-  },
-
-  model: {
-    prop: 'tab',
-    event: 'input'
-  },
-
-  props: {
-    tab: {
-      type: [String, Number],
-      required: false,
-      default: null
-    }
-  },
-
-  data: vm => ({
-    activeTab: vm.tab,
-    items: []
-  }),
-
-  watch: {
-    tab () {
-      this.switchToTab(this.tab)
-    }
-  },
-
-  mounted () {
-    this.collectItems()
-    this.switchToTab(this.activeTab)
-  },
-
-  methods: {
-    collectItems () {
-      this.items = this.$children.filter(child => {
-        return child.$options.name === 'MenuTabItem'
-      })
+    components: {
+        VNodes
     },
 
-    switchToTab (newTab) {
-      this.resetScroll()
-      this.items.forEach(item => item.toggle(item.tab === newTab))
-      this.activeTab = newTab
-      this.$emit('input', this.activeTab)
+    model: {
+        prop: "tab",
+        event: "input"
     },
 
-    resetScroll () {
-      if (this.$el.scrollTop > 0) {
-        this.$el.scrollTo(0, 0)
-      }
+    props: {
+        tab: {
+            type: [String, Number],
+            required: false,
+            default: null
+        }
+    },
+
+    data: vm => ({
+        activeTab: vm.tab,
+        items: []
+    }),
+
+    watch: {
+        tab () {
+            this.switchToTab(this.tab);
+        }
+    },
+
+    mounted () {
+        this.collectItems();
+        this.switchToTab(this.activeTab);
+    },
+
+    methods: {
+        collectItems () {
+            this.items = this.$children.filter(child => {
+                return child.$options.name === "MenuTabItem";
+            });
+        },
+
+        switchToTab (newTab) {
+            this.resetScroll();
+            this.items.forEach(item => item.toggle(item.tab === newTab));
+            this.activeTab = newTab;
+            this.$emit("input", this.activeTab);
+        },
+
+        resetScroll () {
+            if (this.$el.scrollTop > 0) {
+                this.$el.scrollTo(0, 0);
+            }
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

@@ -14,22 +14,22 @@
 </template>
 
 <script>
-import { PLUGINS } from '@config'
-import SvgIcon from '@/components/SvgIcon'
+import { PLUGINS } from "@config";
+import SvgIcon from "@/components/SvgIcon";
 
 export default {
-  name: 'PluginManagerCheckmark',
+    name: "PluginManagerCheckmark",
 
-  components: {
-    SvgIcon
-  },
+    components: {
+        SvgIcon
+    },
 
-  computed: {
-    author () {
-      return PLUGINS.officialAuthor
+    computed: {
+        author () {
+            return PLUGINS.officialAuthor;
+        }
     }
-  }
-}
+};
 </script>
 
 <style lang="postcss" scoped>

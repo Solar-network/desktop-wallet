@@ -27,35 +27,35 @@
 </template>
 
 <script>
-import SvgIcon from '@/components/SvgIcon/SvgIcon'
+import SvgIcon from "@/components/SvgIcon/SvgIcon";
 
 export default {
-  name: 'Navigation',
+    name: "Navigation",
 
-  components: {
-    SvgIcon
-  },
-
-  props: {
-    leftButtonClass: {
-      type: String,
-      required: false,
-      default: null
+    components: {
+        SvgIcon
     },
 
-    rightButtonClass: {
-      type: String,
-      required: false,
-      default: null
-    }
-  },
+    props: {
+        leftButtonClass: {
+            type: String,
+            required: false,
+            default: null
+        },
 
-  methods: {
-    triggerPageAdvance (direction) {
-      this.$emit('navigationclick', direction)
+        rightButtonClass: {
+            type: String,
+            required: false,
+            default: null
+        }
+    },
+
+    methods: {
+        triggerPageAdvance (direction) {
+            this.$emit("navigationclick", direction);
+        }
     }
-  }
-}
+};
 </script>
 
 <style scoped>

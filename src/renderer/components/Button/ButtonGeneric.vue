@@ -13,24 +13,24 @@
 <script>
 
 export default {
-  name: 'ButtonGeneric',
+    name: "ButtonGeneric",
 
-  props: {
-    label: {
-      type: String,
-      required: true
+    props: {
+        label: {
+            type: String,
+            required: true
+        },
+        isSmall: {
+            type: Boolean,
+            required: false,
+            default: false
+        }
     },
-    isSmall: {
-      type: Boolean,
-      required: false,
-      default: false
-    }
-  },
 
-  methods: {
-    emitClick () {
-      this.$emit('click')
+    methods: {
+        emitClick () {
+            this.$emit("click");
+        }
     }
-  }
-}
+};
 </script>
