@@ -106,7 +106,7 @@ export default {
             },
             BACKUP: {
                 ALWAYS: "Always backup your passphrase and keep it in a safe place.",
-                OPTIONS: "You can write it down on thick paper and store multiple copies in secure locations. You can also store it on an encrypted flash drive. Alternatively, you can use a Ledger Nano S USB hardware device, available at Ledger.com, to store and access your funds and the Solar Desktop Wallet. You can plug your Ledger Nano S into your computer and access the Solar blockchain without needing to enter your passphrase."
+                OPTIONS: "You can write it down on thick paper and store multiple copies in secure locations. You can also store it on an encrypted flash drive. Alternatively, you can use a Ledger Nano S or Nano X USB hardware device, available at Ledger.com, to store and access your funds and the Solar Desktop Wallet. You can plug your Ledger Nano S or Nano X into your computer and access the Solar blockchain without needing to enter your passphrase."
             },
             REMEMBER: "Remember, anyone who has your passphrase can access your funds. Never share your account with anyone and avoid storing it in locations that are susceptible to hacks, such as the Cloud."
         },
