@@ -51,6 +51,7 @@
     "vendorField": {
         "maxLength": 255
     },
+    "activeDelegates": 53,
     "nethash": "72db1365ae549683980a8e29ff744c6d4d9920c3cd215e462f40a58da3f13dce",
     "explorer": "https://texplorer.solar.org",
     "knownWalletsUrl": "https://raw.githubusercontent.com/Solar-network/peers/main/testnet/known-wallets.json",
