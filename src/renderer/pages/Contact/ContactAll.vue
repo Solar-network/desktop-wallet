@@ -247,7 +247,7 @@ export default {
   @apply .flex .items-center .justify-center .h-10 .w-10 .rounded-l .bg-theme-button-inner-box;
 }
 .ContactAll__CreateButton:hover .ContactAll__CreateButton__icon {
-  background-color: #0169f4;
+  background-color: #ff5722;
   @apply .text-white;
 }
 </style>
