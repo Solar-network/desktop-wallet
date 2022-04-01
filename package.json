@@ -202,6 +202,7 @@
         "appId": "org.solar.desktop-wallet",
         "artifactName": "${name}-${os}-${arch}-${version}.${ext}",
         "afterSign": "scripts/notarize.js",
+        "buildDependenciesFromSource": true,
         "npmRebuild": false,
         "publish": {
             "provider": "github",
