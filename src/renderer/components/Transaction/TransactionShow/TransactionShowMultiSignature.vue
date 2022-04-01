@@ -280,7 +280,7 @@ export default {
             return TransactionService.isMultiSignatureReady(this.transaction);
         },
 
-        votePublicKey () {
+        votePublicKeyOrUsername () {
             if (this.transaction && this.transaction.asset && this.transaction.asset.votes) {
                 const vote = this.transaction.asset.votes[0];
                 return vote.substr(1);
@@ -298,7 +298,7 @@ export default {
     },
 
     async mounted () {
-        if (this.votePublicKey) {
+        if (this.votePublicKeyOrUsername) {
             this.determineVote();
         }
     },
@@ -334,7 +334,11 @@ export default {
         },
 
         determineVote () {
-            this.votedDelegate = this.$store.getters["delegate/byPublicKey"](this.votePublicKey);
+            if (this.votePublicKeyOrUsername.length === 66) {
+                this.votedDelegate = this.$store.getters["delegate/byPublicKey"](this.votePublicKeyOrUsername);
+            } else {
+                this.votedDelegate = this.$store.getters["delegate/byUsername"](this.votePublicKeyOrUsername);
+            }
         },
 
         getAddress (transaction) {

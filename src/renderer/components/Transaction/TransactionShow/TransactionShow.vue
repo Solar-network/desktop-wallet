@@ -293,7 +293,7 @@ export default {
         numberOfActiveDelegates () {
             return at(this, "session_network.constants.activeDelegates") || 51;
         },
-        votePublicKey () {
+        votePublicKeyOrUsername () {
             const transaction = this.getTransaction();
             if (transaction && transaction.asset && transaction.asset.votes) {
                 const vote = transaction.asset.votes[0];
@@ -349,7 +349,7 @@ export default {
     },
 
     mounted () {
-        if (this.votePublicKey) {
+        if (this.votePublicKeyOrUsername) {
             this.determineVote();
         }
     },
@@ -399,7 +399,11 @@ export default {
         },
 
         determineVote () {
-            this.votedDelegate = this.$store.getters["delegate/byPublicKey"](this.votePublicKey);
+            if (this.votePublicKeyOrUsername.length === 66) {
+                this.votedDelegate = this.$store.getters["delegate/byPublicKey"](this.votePublicKeyOrUsername);
+            } else {
+                this.votedDelegate = this.$store.getters["delegate/byUsername"](this.votePublicKeyOrUsername);
+            }
         }
     }
 };

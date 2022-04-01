@@ -295,11 +295,12 @@ export default {
 
     methods: {
         getTransactionData () {
+            const voteAsset = this.$client.isSolar() ? this.delegate.username : this.delegate.publicKey;
             const transactionData = {
                 address: this.currentWallet.address,
                 passphrase: this.form.passphrase,
                 votes: [
-                    `${this.isVoter ? "-" : "+"}${this.delegate.publicKey}`
+                    `${this.isVoter ? "-" : "+"}${voteAsset}`
                 ],
                 fee: this.getFee(),
                 wif: this.form.wif,
@@ -312,7 +313,8 @@ export default {
             }
 
             if (this.isVoter === false && !!this.votedDelegate && this.$client.satisfiesCoreVersion(">=3")) {
-                transactionData.votes.unshift(`-${this.votedDelegate.publicKey}`);
+                const votedDelegateAsset = this.$client.isSolar() ? this.votedDelegate.username : this.votedDelegate.publicKey;
+                transactionData.votes.unshift(`-${votedDelegateAsset}`);
             }
 
             return transactionData;

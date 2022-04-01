@@ -529,6 +529,15 @@ export default class ClientService {
         return semver.satisfies(semver.coerce(network.apiVersion), expectedVersion);
     }
 
+    isSolar () {
+        const network = store.getters["session/network"];
+        if (!network) {
+            return false;
+        }
+
+        return network.id.startsWith("solar.");
+    }
+
     async getNonceForAddress ({ address, networkId }) {
         let network;
         if (networkId) {

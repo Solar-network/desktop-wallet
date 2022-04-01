@@ -272,7 +272,7 @@ export default {
             return this.asset && this.asset.votes && this.asset.votes[0].charAt(0) === "-";
         },
 
-        votePublicKey () {
+        votePublicKeyOrUsername () {
             if (this.asset && this.asset.votes) {
                 const vote = this.hasMultipleVotes ? this.asset.votes.find(vote => vote.charAt(0) === "+") : this.asset.votes[0];
                 return vote.substr(1);
@@ -281,8 +281,12 @@ export default {
         },
 
         votedDelegate () {
-            if (this.votePublicKey) {
-                return this.$store.getters["delegate/byPublicKey"](this.votePublicKey);
+            if (this.votePublicKeyOrUsername) {
+                if (this.votePublicKeyOrUsername.length === 66) {
+                    return this.$store.getters["delegate/byPublicKey"](this.votePublicKeyOrUsername);
+                } else {
+                    return this.$store.getters["delegate/byUsername"](this.votePublicKeyOrUsername);
+                }
             }
 
             return null;
@@ -327,7 +331,7 @@ export default {
         },
 
         openAddress () {
-            if (this.votePublicKey) {
+            if (this.votePublicKeyOrUsername) {
                 this.$router.push({ name: "wallet-show", params: { address: this.votedDelegateAddress } });
             } else {
                 this.$router.push({ name: "wallet-show", params: { address: this.address } });
