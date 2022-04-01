@@ -4,6 +4,7 @@
     "private": true,
     "description": "Solar Desktop Wallet",
     "homepage": "https://github.com/solar-network/desktop-wallet#readme",
+    "author": "Solar and ARK Ecosystem <hello@solar.org>",
     "bugs": {
         "url": "https://github.com/solar-network/desktop-wallet/issues"
     },
