@@ -272,7 +272,7 @@ export default {
         },
         priceApi: {
             get () {
-                return this.$store.getters["session/priceApi"] || "coingecko";
+                return this.$store.getters["session/priceApi"] || "cryptocompare";
             },
             set (priceApi) {
                 this.selectPriceApi(priceApi);
@@ -296,8 +296,8 @@ export default {
         },
         priceApis () {
             return {
-                coingecko: "CoinGecko",
                 cryptocompare: "CryptoCompare",
+                coingecko: "CoinGecko",
                 coincap: "CoinCap"
             };
         },

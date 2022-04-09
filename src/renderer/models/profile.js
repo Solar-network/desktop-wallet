@@ -150,7 +150,7 @@ export default new BaseModel({
         },
         priceApi: {
             type: "string",
-            format: data => data.priceApi || "coingecko"
+            format: data => data.priceApi || "cryptocompare"
         },
         isAdvancedModeEnabled: {
             type: "boolean",

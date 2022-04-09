@@ -417,7 +417,7 @@ export default {
             timeFormat: "",
             isAdvancedModeEnabled: false,
             marketChartOptions: {},
-            priceApi: "coingecko",
+            priceApi: "cryptocompare",
             defaultChosenFee: "AVERAGE"
         },
         routeLeaveCallback: null,
@@ -451,8 +451,8 @@ export default {
         },
         priceApis () {
             return {
-                coingecko: "CoinGecko",
                 cryptocompare: "CryptoCompare",
+                coingecko: "Coingecko",
                 coincap: "CoinCap"
             };
         },
@@ -634,7 +634,7 @@ export default {
         this.modified.timeFormat = this.profile.timeFormat || "Default";
         this.modified.marketChartOptions = this.profile.marketChartOptions;
         this.modified.isAdvancedModeEnabled = this.profile.isAdvancedModeEnabled;
-        this.modified.priceApi = this.profile.priceApi || "coingecko";
+        this.modified.priceApi = this.profile.priceApi || "cryptocompare";
         this.modified.defaultChosenFee = this.profile.defaultChosenFee || "AVERAGE";
     },
 

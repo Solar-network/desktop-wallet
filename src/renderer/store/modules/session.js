@@ -32,7 +32,7 @@ export default {
         multiSignaturePeer: null,
         filterBlacklistedPlugins: true,
         pluginAdapter: "npm",
-        priceApi: "coingecko",
+        priceApi: "cryptocompare",
         pluginMenuOpen: true,
         defaultChosenFee: "AVERAGE"
     }),
@@ -265,7 +265,7 @@ export default {
             state.multiSignaturePeer = null;
             state.filterBlacklistedPlugins = true;
             state.pluginAdapter = "npm";
-            state.priceApi = "coingecko";
+            state.priceApi = "cryptocompare";
             state.pluginMenuOpen = true;
             state.defaultChosenFee = "AVERAGE";
         },
