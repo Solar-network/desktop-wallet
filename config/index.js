@@ -121,7 +121,7 @@ exports.PLUGINS = {
     devPath: path.resolve(os.homedir(), ".solar-desktop/plugins-dev"),
     maxKeywords: 5,
     keywords: [
-        "@arkecosystem",
+        "@solar-network",
         "desktop-wallet",
         "plugin"
     ],
