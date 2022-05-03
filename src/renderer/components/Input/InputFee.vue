@@ -203,7 +203,7 @@ export default {
             return this.$store.getters["session/lastFeeByType"](this.transactionType, this.transactionGroup);
         },
         feeChoiceMin () {
-            return this.currency_subToUnit(1);
+            return this.currency_subToUnit(this.transactionType === 7 && this.transactionGroup === 1 ? 0 : 1);
         },
         feeChoiceMax () {
             return this.isAdvancedFee ? this.feeChoices.MAXIMUM.multipliedBy(10) : this.feeChoices.MAXIMUM;
