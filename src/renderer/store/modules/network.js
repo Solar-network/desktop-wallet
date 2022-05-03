@@ -55,8 +55,8 @@ export default new BaseModule(NetworkModel, {
             if (!isEmpty(all)) {
                 // Update API server on existing networks
                 const servers = {
-                    "solar.testnet": "https://sxp.testnet.sh",
-                    "solar.mainnet": "https://sxp.mainnet.sh"
+                    "solar.testnet": "http://sxp.testnet.sh",
+                    "solar.mainnet": "http://sxp.mainnet.sh"
                 };
                 const sanitizedAll = all.map(network => {
                     const server = servers[network.id] || network.server;
