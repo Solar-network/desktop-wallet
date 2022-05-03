@@ -198,7 +198,7 @@ export default class ClientService {
     async fetchDelegateVoters (delegate, { page, limit } = {}) {
         const { body } = await this.client
             .api("delegates")
-            .voters(delegate.username, { page, limit });
+            .voters(delegate.username);
 
         return body.meta.totalCount;
     }
