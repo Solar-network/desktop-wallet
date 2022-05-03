@@ -39,10 +39,10 @@ export class TransactionSigner {
             passphrase = CryptoUtils.normalizePassphrase(passphrase);
         }
 
-        if (network.constants.aip11) {
-            transaction.version(2).nonce(nonce);
+        if (network.constants.bip340) {
+            transaction.version(3).nonce(nonce);
         } else {
-            transaction.version(1);
+            transaction.version(2).nonce(nonce);
         }
 
         if (multiSignature) {
@@ -121,13 +121,6 @@ export class TransactionSigner {
         }
 
         transaction = CryptoUtils.transactionFromData(transaction);
-
-        const network = store.getters["session/network"];
-        if (!network.constants.aip11) {
-            throw new Error(
-                "Multi-Signature Transactions are not supported yet"
-            );
-        }
 
         let keys;
         if (passphrase) {

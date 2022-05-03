@@ -19,10 +19,6 @@ export class MultiSignatureBuilder {
     isAdvancedFee = false,
     returnObject = false
     ) {
-        if (!store.getters["session/network"].constants.aip11) {
-            throw new Error("AIP-11 transaction not supported on network");
-        }
-
         const staticFee = store.getters["transaction/staticFee"](
             TRANSACTION_TYPES.GROUP_1.MULTI_SIGNATURE,
             1

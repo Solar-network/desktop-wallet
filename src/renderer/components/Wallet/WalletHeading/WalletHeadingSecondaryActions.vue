@@ -162,7 +162,7 @@ export default {
             }
 
             // TODO: Remove ledger check when ledger app supports multisig, business & bridgechain transactions
-            if (this.currentWallet.isLedger || !this.currentNetwork.constants || !this.currentNetwork.constants.aip11) {
+            if (this.currentWallet.isLedger) {
                 return types;
             }
 

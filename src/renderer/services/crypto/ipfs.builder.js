@@ -19,10 +19,6 @@ export class IpfsBuilder {
     isAdvancedFee = false,
     returnObject = false
     ) {
-        if (!store.getters["session/network"].constants.aip11) {
-            throw new Error("AIP-11 transaction not supported on network");
-        }
-
         const staticFee = store.getters["transaction/staticFee"](
             TRANSACTION_TYPES.GROUP_1.IPFS,
             1

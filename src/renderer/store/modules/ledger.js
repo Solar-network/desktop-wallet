@@ -167,15 +167,13 @@ export default {
         /**
          * Update flag to determine if ledger app needs update.
          */
-        async updateVersion ({ commit, dispatch, rootGetters, state }) {
+        async updateVersion ({ commit, dispatch, state }) {
             if (!state.isConnected) {
                 return;
             }
 
-            const network = rootGetters["session/network"];
-
             let needsUpdate = false;
-            if (network.constants && network.constants.aip11 && semver.lt(await dispatch("getVersion"), "1.2.0")) {
+            if (semver.lt(await dispatch("getVersion"), "1.2.0")) {
                 needsUpdate = true;
             }
 

@@ -547,20 +547,16 @@ export default class ClientService {
             network = store.getters["session/network"];
         }
 
-        if (network.constants.aip11) {
-            try {
-                const response = await this.fetchWallet(address);
-                return BigNumber(
-                    response.nonce || 0
-                )
-                    .plus(1)
-                    .toString();
-            } catch (error) {
-                return "1";
-            }
+        try {
+            const response = await this.fetchWallet(address);
+            return BigNumber(
+                response.nonce || 0
+            )
+                .plus(1)
+                .toString();
+        } catch (error) {
+            return "1";
         }
-
-        return undefined;
     }
 
     // todo: move this out

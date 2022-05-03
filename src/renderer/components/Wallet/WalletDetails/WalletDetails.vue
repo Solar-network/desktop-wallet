@@ -242,20 +242,18 @@ export default {
                 });
             }
 
-            if (this.currentNetwork.constants && this.currentNetwork.constants.aip11) {
-                tabs.push({
-                    component: "WalletIpfs",
-                    componentName: "WalletIpfs",
-                    text: this.$t("PAGES.WALLET.IPFS")
-                });
+            tabs.push({
+                component: "WalletIpfs",
+                componentName: "WalletIpfs",
+                text: this.$t("PAGES.WALLET.IPFS")
+            });
 
-                if (this.isOwned) {
-                    tabs.push({
-                        component: "WalletMultiSignature",
-                        componentName: "WalletMultiSignature",
-                        text: this.$t("PAGES.WALLET.MULTI_SIGNATURE")
-                    });
-                }
+            if (this.isOwned) {
+                tabs.push({
+                    component: "WalletMultiSignature",
+                    componentName: "WalletMultiSignature",
+                    text: this.$t("PAGES.WALLET.MULTI_SIGNATURE")
+                });
             }
 
             // TODO enable when there is something to show

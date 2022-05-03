@@ -3,7 +3,7 @@
     class="TransactionFormTransfer flex flex-col"
     @submit.prevent
   >
-    <div v-if="hasAip11">
+    <div v-if="isNotLedger">
       <div class="text-sm text-theme-page-text-light">
         Select a Single or Multiple Recipient Transaction
       </div>
@@ -339,8 +339,8 @@ export default {
             return this.currentWallet && !!this.currentWallet.isLedger;
         },
 
-        hasAip11 () {
-            return this.walletNetwork.constants && !!this.walletNetwork.constants.aip11 && !this.isLedger;
+        isNotLedger () {
+            return !this.isLedger;
         },
 
         hasMoreThanMaximumRecipients () {
@@ -511,7 +511,7 @@ export default {
         },
 
         isMultiPayment () {
-            return this.hasAip11 && this.sendType === "Multiple";
+            return this.isNotLedger && this.sendType === "Multiple";
         },
 
         recipientFieldLabel () {
