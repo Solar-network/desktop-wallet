@@ -452,7 +452,6 @@ export default {
         priceApis () {
             return {
                 cryptocompare: "CryptoCompare",
-                coingecko: "Coingecko",
                 coincap: "CoinCap"
             };
         },
