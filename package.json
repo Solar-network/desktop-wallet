@@ -213,9 +213,9 @@
             "app-update.yml"
         ],
         "protocols": {
-            "name": "Ark URI scheme",
+            "name": "SXP URI scheme",
             "schemes": [
-                "ark"
+                "sxp"
             ],
             "role": "Viewer"
         },
@@ -250,7 +250,7 @@
                 "snap"
             ],
             "desktop": {
-                "MimeType": "x-scheme-handler/ark;"
+                "MimeType": "x-scheme-handler/sxp;"
             }
         },
         "deb": {
