@@ -171,6 +171,7 @@ export default {
         INVALID_PORT: "Invalid Port Number",
         INVALID_FORMAT: "Invalid format",
         INVALID_TYPE: "Invalid type",
+        MAX_LENGTH_CHARACTERS: "Max {0} characters",
         MAX_LENGTH: "Max {0}",
         MIN_LENGTH: "Min {0}",
         MUST_BE_GREATER_THAN: "Must be greater than {0}",

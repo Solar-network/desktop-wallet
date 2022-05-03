@@ -462,7 +462,7 @@ export default {
         },
 
         vendorFieldLabel () {
-            return `${this.$t("TRANSACTION.VENDOR_FIELD")} - ${this.$t("VALIDATION.MAX_LENGTH", [this.vendorFieldMaxLength])}`;
+            return `${this.$t("TRANSACTION.VENDOR_FIELD")} - ${this.$t("VALIDATION.MAX_LENGTH_CHARACTERS", [this.vendorFieldMaxLength])}`;
         },
 
         vendorFieldHelperText () {
