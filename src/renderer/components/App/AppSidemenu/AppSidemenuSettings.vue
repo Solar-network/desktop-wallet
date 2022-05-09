@@ -69,7 +69,7 @@
         </MenuOptionsItem>
 
         <MenuOptionsItem
-          v-if="!isLinux && isScreenshotProtectionEnabled"
+          v-if="false"
           :title="$t('APP_SIDEMENU.SETTINGS.SCREENSHOT_PROTECTION.TITLE')"
           @click="toggleScreenshotProtectionModal"
         >
