@@ -216,9 +216,21 @@ export default class ClientService {
    * @return {Number[]}
    */
     async fetchStaticFees () {
-        const fees = (await this.client.api("transactions").fees()).body.data;
-
-        return fees;
+        return {
+            1: {
+                transfer: "5000000",
+                secondSignature: "5000000",
+                delegateRegistration: "7500000000",
+                vote: "5000000",
+                multiSignature: "5000000",
+                ipfs: "5000000",
+                multiPayment: "50000000",
+                delegateResignation: "0"
+            },
+            2: {
+                burn: "0"
+            }
+        };
     }
 
     /**
