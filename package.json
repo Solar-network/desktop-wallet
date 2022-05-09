@@ -48,7 +48,7 @@
         "preversion": "cross-env ./scripts/version-artifacts.sh"
     },
     "dependencies": {
-        "@alessiodf/crypto": "3.2.2",
+        "@solar-network/crypto": "3.3.0-next.1",
         "@arkecosystem/client": "1.1.4",
         "@arkecosystem/ledger-transport": "1.1.3",
         "@arkecosystem/platform-sdk": "0.0.2",
