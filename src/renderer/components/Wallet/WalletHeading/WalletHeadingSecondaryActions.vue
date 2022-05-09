@@ -166,13 +166,6 @@ export default {
                 return types;
             }
 
-            if (!this.currentWallet.multiSignature) {
-                types.push({
-                    label: this.$t("WALLET_HEADING.ACTIONS.REGISTER_MULTISIGNATURE"),
-                    type: TRANSACTION_TYPES.GROUP_1.MULTI_SIGNATURE
-                });
-            }
-
             if (!this.currentWallet.isLedger && WalletService.canResignDelegate(this.currentWallet)) {
                 types.push({
                     label: this.$t("WALLET_HEADING.ACTIONS.RESIGN_DELEGATE"),
