@@ -1,6 +1,6 @@
 import BaseModule from "../base";
 import { cloneDeep } from "lodash";
-import { Managers } from "@alessiodf/crypto";
+import { Managers } from "@solar-network/crypto";
 import { NETWORKS } from "@config";
 import { isEmpty } from "@/utils";
 import eventBus from "@/plugins/event-bus";

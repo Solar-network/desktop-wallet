@@ -1,5 +1,5 @@
 import * as bip39 from "bip39";
-import { Crypto, Identities } from "@alessiodf/crypto";
+import { Crypto, Identities } from "@solar-network/crypto";
 import { version as mainnetVersion } from "@config/networks/mainnet";
 import store from "@/store";
 import { CryptoUtils } from "./crypto/utils";
@@ -204,7 +204,7 @@ export default class WalletService {
             errors.push({ type: "maxLength" });
         } else if (store.getters["delegate/byUsername"](username)) {
             errors.push({ type: "exists" });
-            // Regex from `@alessiodf/crypto`
+            // Regex from `@solar-network/crypto`
         } else if (!username.match(/^[a-z0-9!@$&_.]+$/)) {
             errors.push({ type: "invalidFormat" });
         }

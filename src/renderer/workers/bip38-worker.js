@@ -3,7 +3,7 @@
 
 const bip38 = require("bip38");
 const wif = require("wif");
-const { Identities } = require("@alessiodf/crypto");
+const { Identities } = require("@solar-network/crypto");
 
 process.on("message", message => {
     if (message.passphrase) {

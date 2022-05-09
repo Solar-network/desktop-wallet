@@ -1,4 +1,4 @@
-import { Identities, Transactions } from "@alessiodf/crypto";
+import { Identities, Transactions } from "@solar-network/crypto";
 import { dayjs } from "@/services/datetime";
 import store from "@/store";
 import TransactionService from "@/services/transaction";

@@ -1,5 +1,5 @@
 import { TRANSACTION_GROUPS, TRANSACTION_TYPES } from "@config";
-import { Crypto, Transactions } from "@alessiodf/crypto";
+import { Crypto, Transactions } from "@solar-network/crypto";
 import BigNumber from "@/plugins/bignumber";
 
 export default class TransactionService {

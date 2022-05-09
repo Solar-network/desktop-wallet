@@ -13,7 +13,7 @@
 
 <script>
 import InputText from "./InputText";
-import { Identities } from "@alessiodf/crypto";
+import { Identities } from "@solar-network/crypto";
 
 export default {
     name: "InputPublicKey",

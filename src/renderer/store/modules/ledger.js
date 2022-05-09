@@ -3,7 +3,7 @@ import { keyBy } from "lodash";
 import logger from "electron-log";
 import Vue from "vue";
 import semver from "semver";
-import { Identities } from "@alessiodf/crypto";
+import { Identities } from "@solar-network/crypto";
 import i18n from "@/i18n";
 import eventBus from "@/plugins/event-bus";
 import ledgerService from "@/services/ledger-service";

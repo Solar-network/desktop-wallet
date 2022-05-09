@@ -1,4 +1,4 @@
-import { Transactions } from "@alessiodf/crypto";
+import { Transactions } from "@solar-network/crypto";
 import { TRANSACTION_TYPES } from "@config";
 import store from "@/store";
 import { CryptoUtils } from "./utils";
