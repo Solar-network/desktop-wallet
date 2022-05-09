@@ -7,30 +7,6 @@
   resolved "https://registry.yarnpkg.com/7zip-bin/-/7zip-bin-5.1.1.tgz#9274ec7460652f9c632c59addf24efb1684ef876"
   integrity sha512-sAP4LldeWNz0lNzmTird3uWfFDWWTeg6V/MsmyyLR9X1idwKBWIgt/ZvinqQldJm3LecKEs1emkbquO6PCiLVQ==
 
-"@alessiodf/crypto@3.2.2":
-  version "3.2.2"
-  resolved "https://registry.yarnpkg.com/@alessiodf/crypto/-/crypto-3.2.2.tgz#722825cfa8e416480304cc77eeb2453f883476fd"
-  integrity sha512-N/P23yYrPUJVUtwQcAM3grUtJK1999cqYw55/mc60U642vNfb0GoqbkFIaNQchCbnkCZaweU6ZnbicpOjRUQ9Q==
-  dependencies:
-    "@solar-network/utils" "3.2.1"
-    ajv "6.12.6"
-    ajv-keywords "3.4.1"
-    bcrypto "5.4.0"
-    bip32 "2.0.6"
-    bip39 "3.0.4"
-    browserify-aes "1.2.0"
-    bstring "0.3.9"
-    buffer-xor "2.0.2"
-    builtin-modules "3.2.0"
-    bytebuffer "5.0.1"
-    dayjs "1.10.7"
-    deepmerge "4.2.2"
-    fast-memoize "2.5.2"
-    ipaddr.js "2.0.1"
-    lodash.get "4.4.2"
-    lodash.set "4.3.2"
-    wif "2.0.6"
-
 "@ampproject/remapping@^2.1.0":
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/@ampproject/remapping/-/remapping-2.1.2.tgz#4edca94973ded9630d20101cd8559cedb8d8bd34"
@@ -1784,6 +1760,30 @@
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-4.6.0.tgz#3c7c9c46e678feefe7a2e5bb609d3dbd665ffb3f"
   integrity sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==
+
+"@solar-network/crypto@3.3.0-next.1":
+  version "3.3.0-next.1"
+  resolved "https://registry.yarnpkg.com/@solar-network/crypto/-/crypto-3.3.0-next.1.tgz#7c3c33ed54af64a5833363a1d87de5161e21483d"
+  integrity sha512-eywO1h03Pss/d006ERg2nT8frgfNS5R8n1L+hSasc+2IgcBHWjcSeMvybWanAFWv0fbufakP8AZbR8ApYo3H5A==
+  dependencies:
+    "@solar-network/utils" "3.2.1"
+    ajv "6.12.6"
+    ajv-keywords "3.4.1"
+    bcrypto "5.4.0"
+    bip32 "2.0.6"
+    bip39 "3.0.4"
+    browserify-aes "1.2.0"
+    bstring "0.3.9"
+    buffer-xor "2.0.2"
+    builtin-modules "3.2.0"
+    bytebuffer "5.0.1"
+    dayjs "1.10.7"
+    deepmerge "4.2.2"
+    fast-memoize "2.5.2"
+    ipaddr.js "2.0.1"
+    lodash.get "4.4.2"
+    lodash.set "4.3.2"
+    wif "2.0.6"
 
 "@solar-network/peers@git+https://github.com/solar-network/peers":
   version "3.2.2"
