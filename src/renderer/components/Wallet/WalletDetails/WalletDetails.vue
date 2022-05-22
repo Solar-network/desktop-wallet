@@ -425,7 +425,7 @@ export default {
                 const walletVote = await this.$client.fetchWalletVote(this.currentWallet.address);
 
                 if (walletVote) {
-                    this.votedDelegate = this.$store.getters["delegate/byPublicKey"](walletVote);
+                    this.votedDelegate = this.$store.getters["delegate/byPublicKey"](walletVote) || this.$store.getters["delegate/byUsername"](walletVote);
                     this.walletVote.username = this.votedDelegate.username;
                 } else {
                     this.votedDelegate = null;
