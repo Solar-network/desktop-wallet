@@ -4,7 +4,7 @@
 
 ## Download
 
-[Latest Release](https://github.com/solar-network/desktop-desktop/releases/latest)
+[Latest Release](https://github.com/solar-network/desktop-wallet/releases/latest)
 
 ## Development
 
