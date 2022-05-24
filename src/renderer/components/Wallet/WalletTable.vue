@@ -252,17 +252,17 @@ export default {
             return a.localeCompare(b, undefined, { sensitivity: "base", numeric: true });
         },
 
-        getDelegate (publicKey) {
-            return this.$store.getters["delegate/byPublicKey"](publicKey);
+        getDelegate (username) {
+            return this.$store.getters["delegate/byUsername"](username);
         },
 
-        getDelegateProperty (publicKey, property) {
-            const delegate = this.getDelegate(publicKey);
+        getDelegateProperty (username, property) {
+            const delegate = this.getDelegate(username);
             return delegate && property ? delegate[property] : null;
         },
 
-        isActiveDelegate (publicKey) {
-            const rank = this.getDelegateProperty(publicKey, "rank");
+        isActiveDelegate (username) {
+            const rank = this.getDelegateProperty(username, "rank");
 
             if (rank) {
                 return rank <= (this.session_network.constants.activeDelegates || 51);
