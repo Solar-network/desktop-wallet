@@ -1761,10 +1761,10 @@
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-4.6.0.tgz#3c7c9c46e678feefe7a2e5bb609d3dbd665ffb3f"
   integrity sha512-t09vSN3MdfsyCHoFcTRCH/iUtG7OJ0CsjzB8cjAmKc/va/kIgeDI/TxsigdncE/4be734m0cvIYwNaV4i2XqAw==
 
-"@solar-network/crypto@3.3.0-next.1":
-  version "3.3.0-next.1"
-  resolved "https://registry.yarnpkg.com/@solar-network/crypto/-/crypto-3.3.0-next.1.tgz#7c3c33ed54af64a5833363a1d87de5161e21483d"
-  integrity sha512-eywO1h03Pss/d006ERg2nT8frgfNS5R8n1L+hSasc+2IgcBHWjcSeMvybWanAFWv0fbufakP8AZbR8ApYo3H5A==
+"@solar-network/crypto@3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@solar-network/crypto/-/crypto-3.3.0.tgz#cd7765da178b6937147c61469416a64ee8b8ffb1"
+  integrity sha512-tG4t21IgW1vOl/OXUzWYaRx7MlcFAlKXyqrgsjBvDtI2oDkSnGMAMnBLirhPOcILWs11emzHVj1AEdb8SnxLlQ==
   dependencies:
     "@solar-network/utils" "3.2.1"
     ajv "6.12.6"
