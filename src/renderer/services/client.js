@@ -493,8 +493,11 @@ export default class ClientService {
             return walletData.attributes.vote;
         }
 
-        if (walletData && walletData.vote) {
-            return walletData.vote;
+        if (walletData && walletData.votingFor) {
+            const voteKeys = Object.keys(walletData.votingFor);
+            if (voteKeys.length > 0) {
+                return voteKeys[0];
+            }
         }
 
         return null;
