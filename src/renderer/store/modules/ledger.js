@@ -8,6 +8,9 @@ import i18n from "@/i18n";
 import eventBus from "@/plugins/event-bus";
 import ledgerService from "@/services/ledger-service";
 
+import createXpub from "create-xpub";
+import HDKey from "hdkey";
+
 export default {
     namespaced: true,
 
@@ -173,7 +176,7 @@ export default {
             }
 
             let needsUpdate = false;
-            if (semver.lt(await dispatch("getVersion"), "1.2.0")) {
+            if (semver.lt(await dispatch("getVersion"), "1.0.0")) {
                 needsUpdate = true;
             }
 
@@ -294,6 +297,7 @@ export default {
             const processId = cryptoLibrary.randomBytes(12).toString("base64");
             try {
                 const profileId = rootGetters["session/profileId"];
+                const network = rootGetters["session/network"];
 
                 if (clearFirst) {
                     commit("SET_WALLETS", {});
@@ -301,7 +305,21 @@ export default {
                 }
 
                 commit("SET_LOADING", processId);
-                const firstWallet = await dispatch("getWallet", 0);
+                const extendedPublicKeyRaw = await dispatch("getExtPublicKey");
+                const extendedPublicKey = createXpub({
+                    chainCode: extendedPublicKeyRaw.slice(-64),
+                    childNumber: 0,
+                    depth: 3,
+                    publicKey: extendedPublicKeyRaw.slice(0, 66)
+                });
+                const extendedAccountKey = HDKey.fromExtendedKey(extendedPublicKey);
+                const firstChildPublicKey = extendedAccountKey.derive("m/0/0").publicKey.toString("hex");
+
+                const firstWallet = {
+                    address: Identities.Address.fromPublicKey(firstChildPublicKey, network.version),
+                    publicKey: firstChildPublicKey
+                };
+
                 const currentWallets = getters.walletsObject;
                 const cachedWallets = getters.cachedWallets(firstWallet.address);
                 let startIndex = 0;
@@ -356,7 +374,11 @@ export default {
                         const index = ledgerIndex + batchIndex;
                         let wallet = firstWallet;
                         if (index > 0) {
-                            wallet = await dispatch("getWallet", index);
+                            const childPublicKey = extendedAccountKey.derive(`m/0/${index}`).publicKey.toString("hex");
+                            wallet = {
+                                address: Identities.Address.fromPublicKey(childPublicKey, network.version),
+                                publicKey: childPublicKey
+                            };
                         }
                         ledgerWallets.push({ ...wallet, ledgerIndex: index });
                         if (quantity && ledgerIndex + ledgerWallets.length >= quantity) {
@@ -369,7 +391,7 @@ export default {
                     const filteredWallets = [];
                     for (const ledgerWallet of ledgerWallets) {
                         const wallet = walletData.find(wallet => wallet.address === ledgerWallet.address);
-                        if (!wallet || (wallet.balance === 0 && !wallet.publicKey)) {
+                        if (!wallet || (+wallet.balance === 0 && !wallet.publicKey)) {
                             filteredWallets.push({ ...ledgerWallet, balance: 0, isCold: true });
                             hasCold = true;
 
@@ -440,7 +462,6 @@ export default {
 
         /**
          * Store ledger wallets in the cache.
-         * @param  {Number} accountIndex Index of wallet to get address for.
          * @return {(String|Boolean)}
          */
         async cacheWallets ({ commit, getters, rootGetters }) {
@@ -454,7 +475,7 @@ export default {
 
         /**
          * Clear all ledger wallets from cache.
-         * @param  {Number} accountIndex Index of wallet to get address for.
+         * @param  {Number} addressIndex Index of wallet to get address for.
          * @return {(String|Boolean)}
          */
         async clearWalletCache ({ commit, rootGetters }) {
@@ -463,7 +484,7 @@ export default {
 
         /**
          * Get address and public key from ledger wallet.
-         * @param  {Number} accountIndex Index of wallet to get data for.
+         * @param  {Number} addressIndex Index of wallet to get data for.
          * @return {Promise<string>}
          */
         async getVersion ({ dispatch }) {
@@ -478,49 +499,15 @@ export default {
         },
 
         /**
-         * Get address and public key from ledger wallet.
-         * @param  {Number} accountIndex Index of wallet to get data for.
-         * @return {(String|Boolean)}
-         */
-        async getWallet ({ dispatch }, accountIndex) {
-            try {
-                return await dispatch("action", {
-                    action: "getWallet",
-                    accountIndex
-                });
-            } catch (error) {
-                logger.error(error);
-                throw new Error(`Could not get wallet: ${error}`);
-            }
-        },
-
-        /**
-         * Get address from ledger wallet.
-         * @param  {Number} accountIndex Index of wallet to get address for.
-         * @return {(String|Boolean)}
-         */
-        async getAddress ({ dispatch }, accountIndex) {
-            try {
-                return await dispatch("action", {
-                    action: "getAddress",
-                    accountIndex
-                });
-            } catch (error) {
-                logger.error(error);
-                throw new Error(`Could not get address: ${error}`);
-            }
-        },
-
-        /**
          * Get public key from ledger wallet.
-         * @param  {Number} [accountIndex] Index of wallet to get public key for.
+         * @param  {Number} [addressIndex] Index of wallet to get public key for.
          * @return {Promise<string>}
          */
-        async getPublicKey ({ dispatch }, accountIndex) {
+        async getPublicKey ({ dispatch }, addressIndex) {
             try {
                 return await dispatch("action", {
                     action: "getPublicKey",
-                    accountIndex
+                    addressIndex
                 });
             } catch (error) {
                 logger.error(error);
@@ -529,42 +516,51 @@ export default {
         },
 
         /**
-         * Sign transaction for ledger wallet using ecdsa signatures.
-         * @param  {Object} obj
-         * @param  {Buffer} obj.transactionBytes Bytes of transaction.
-         * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
+         * Get extended public key from ledger wallet.
          * @return {Promise<string>}
          */
-        async signTransaction ({ dispatch }, { transactionBytes, accountIndex } = {}) {
+        async getExtPublicKey ({ dispatch }) {
             try {
                 return await dispatch("action", {
-                    action: "signTransaction",
-                    accountIndex,
-                    data: transactionBytes
+                    action: "getExtPublicKey"
                 });
             } catch (error) {
                 logger.error(error);
-                throw new Error(`Could not sign transaction: ${error}`);
+                throw new Error(`Could not get extended public key: ${error}`);
             }
         },
 
         /**
-         * Sign transaction for ledger wallet using schnorr signatures.
-         * @param  {Object} obj
-         * @param  {String} obj.transactionBytes Bytes of transaction.
-         * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
+         * Get address from ledger wallet.
+         * @param  {Number} addressIndex Index of wallet to get address for.
          * @return {(String|Boolean)}
          */
-        async signTransactionWithSchnorr ({ dispatch }, { transactionBytes, accountIndex } = {}) {
+        async getAddress ({ dispatch }, addressIndex) {
             try {
                 return await dispatch("action", {
-                    action: "signTransactionWithSchnorr",
-                    accountIndex,
-                    data: transactionBytes
+                    action: "getAddress",
+                    addressIndex
                 });
             } catch (error) {
                 logger.error(error);
-                throw new Error(`Could not sign transaction: ${error}`);
+                throw new Error(`Could not get address: ${error}`);
+            }
+        },
+
+        /**
+         * Get address and public key from ledger wallet.
+         * @param  {Number} addressIndex Index of wallet to get data for.
+         * @return {(String|Boolean)}
+         */
+        async getWallet ({ dispatch }, addressIndex) {
+            try {
+                return await dispatch("action", {
+                    action: "getWallet",
+                    addressIndex
+                });
+            } catch (error) {
+                logger.error(error);
+                throw new Error(`Could not get wallet: ${error}`);
             }
         },
 
@@ -572,14 +568,14 @@ export default {
          * Sign message for ledger wallet using ecdsa signatures.
          * @param  {Object} obj
          * @param  {Buffer} obj.messageBytes Bytes to sign.
-         * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
+         * @param  {Number} obj.addressIndex Index of wallet to sign transaction for.
          * @return {Promise<string>}
          */
-        async signMessage ({ dispatch }, { messageBytes, accountIndex } = {}) {
+        async signMessage ({ dispatch }, { messageBytes, addressIndex } = {}) {
             try {
                 return await dispatch("action", {
                     action: "signMessage",
-                    accountIndex,
+                    addressIndex,
                     data: messageBytes
                 });
             } catch (error) {
@@ -589,22 +585,22 @@ export default {
         },
 
         /**
-         * Sign message for ledger wallet using schnorr signatures.
+         * Sign transaction for ledger wallet using ecdsa signatures.
          * @param  {Object} obj
-         * @param  {String} obj.messageBytes Bytes to sign.
-         * @param  {Number} obj.accountIndex Index of wallet to sign transaction for.
-         * @return {(String|Boolean)}
+         * @param  {Buffer} obj.transactionBytes Bytes of transaction.
+         * @param  {Number} obj.addressIndex Index of wallet to sign transaction for.
+         * @return {Promise<string>}
          */
-        async signMessageWithSchnorr ({ dispatch }, { messageBytes, accountIndex } = {}) {
+        async signTransaction ({ dispatch }, { transactionBytes, addressIndex } = {}) {
             try {
                 return await dispatch("action", {
-                    action: "signMessageWithSchnorr",
-                    accountIndex,
-                    data: messageBytes
+                    action: "signTransaction",
+                    addressIndex,
+                    data: transactionBytes
                 });
             } catch (error) {
                 logger.error(error);
-                throw new Error(`Could not sign message: ${error}`);
+                throw new Error(`Could not sign transaction: ${error}`);
             }
         },
 
@@ -612,15 +608,11 @@ export default {
          * Action method to act as a wrapper for ledger methods
          * @param {Object} obj
          * @param  {String} obj.action       Action to perform
-         * @param  {Number} obj.accountIndex Index of wallet to access.
+         * @param  {Number} obj.addressIndex Index of wallet to access.
          * @param  {*}      obj.data         Data used for any actions that need it.
          * @return {String}
          */
-        async action ({ state, dispatch, rootGetters }, { action, accountIndex, data } = {}) {
-            if (action !== "getVersion" && (accountIndex === undefined || !Number.isFinite(accountIndex))) {
-                throw new Error("accountIndex must be a Number");
-            }
-
+        async action ({ state, dispatch, rootGetters }, { action, addressIndex, data } = {}) {
             if (!state.isConnected) {
                 await dispatch("ensureConnection");
                 if (!state.isConnected) {
@@ -628,8 +620,24 @@ export default {
                 }
             }
 
-            const path = `44'/${state.slip44}'/${accountIndex || 0}'/0/0`;
+            const path = `44'/${state.slip44}'/0'/0/${addressIndex || 0}`;
+            const accountPath = `44'/${state.slip44}'/0'`;
             const actions = {
+                async getVersion () {
+                    return ledgerService.getVersion();
+                },
+                async getPublicKey () {
+                    return ledgerService.getPublicKey(path);
+                },
+                async getExtPublicKey () {
+                    return ledgerService.getExtPublicKey(accountPath);
+                },
+                async getAddress () {
+                    const publicKey = await ledgerService.getPublicKey(path);
+                    const network = rootGetters["session/network"];
+
+                    return Identities.Address.fromPublicKey(publicKey, network.version);
+                },
                 async getWallet () {
                     const publicKey = await ledgerService.getPublicKey(path);
                     const network = rootGetters["session/network"];
@@ -639,29 +647,11 @@ export default {
                         publicKey
                     };
                 },
-                async getAddress () {
-                    const publicKey = await ledgerService.getPublicKey(path);
-                    const network = rootGetters["session/network"];
-
-                    return Identities.Address.fromPublicKey(publicKey, network.version);
-                },
-                async getPublicKey () {
-                    return ledgerService.getPublicKey(path);
-                },
-                async signTransaction () {
-                    return ledgerService.signTransaction(path, data);
-                },
-                async signTransactionWithSchnorr () {
-                    return ledgerService.signTransactionWithSchnorr(path, data);
-                },
                 async signMessage () {
                     return ledgerService.signMessage(path, data);
                 },
-                async signMessageWithSchnorr () {
-                    return ledgerService.signMessageWithSchnorr(path, data);
-                },
-                async getVersion () {
-                    return ledgerService.getVersion();
+                async signTransaction () {
+                    return ledgerService.signTransaction(path, data);
                 }
             };
 

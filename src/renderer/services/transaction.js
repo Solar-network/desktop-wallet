@@ -9,7 +9,7 @@ export default class TransactionService {
    * @return {String}
    */
     static getId (transaction) {
-        return Transactions.Utils.getId(transaction);
+        return Transactions.Utils.getId(transaction, { disableVersionCheck: true });
     }
 
     /*
@@ -19,6 +19,7 @@ export default class TransactionService {
    */
     static getBytes (transaction) {
         return Transactions.Serializer.getBytes(transaction, {
+            disableVersionCheck: true,
             excludeSignature: true,
             excludeSecondSignature: true
         });
@@ -89,21 +90,17 @@ export default class TransactionService {
     static async ledgerSign (wallet, transactionObject, vm) {
         transactionObject.senderPublicKey(wallet.publicKey);
         transactionObject.sign("passphrase"); // Sign with a "fake" passphrase to get the transaction structure
-        const transaction = transactionObject.getStruct();
+        const transaction = transactionObject.data;
         transaction.senderPublicKey = wallet.publicKey; // Restore original sender public key
 
         if (this.isVote(transactionObject.data)) {
             transaction.recipientId = wallet.address;
         }
 
-        const operation = transaction.version >= 2
-            ? "ledger/signTransactionWithSchnorr"
-            : "ledger/signTransaction";
-
         const transactionBytes = this.getBytes(transaction);
-        transaction.signature = await vm.$store.dispatch(operation, {
+        transaction.signature = await vm.$store.dispatch("ledger/signTransaction", {
             transactionBytes: transactionBytes,
-            accountIndex: wallet.ledgerIndex
+            addressIndex: wallet.ledgerIndex
         });
 
         if (!transaction.signature) {
@@ -159,7 +156,7 @@ export default class TransactionService {
     static async ledgerSignMessage (wallet, message, vm) {
         const signature = await vm.$store.dispatch("ledger/signMessage", {
             messageBytes: Buffer.from(message, "utf-8"),
-            accountIndex: wallet.ledgerIndex
+            addressIndex: wallet.ledgerIndex
         });
 
         if (!signature) {
