@@ -460,7 +460,8 @@ export default class ClientService {
             });
         };
 
-        for (const addressChunk of chunk(addresses, 20)) {
+        const randomizedLimit = Math.floor(Math.random() * 41) + 10;
+        for (const addressChunk of chunk(addresses, randomizedLimit)) {
             const { body } = await search(addressChunk);
             walletData.push(...body.data);
         }

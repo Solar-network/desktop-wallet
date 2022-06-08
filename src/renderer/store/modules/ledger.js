@@ -355,8 +355,9 @@ export default {
                     wallets = { ...currentWallets };
                 }
 
-                let batchIncrement = 10;
-                if (quantity && Math.abs(quantity - startIndex) < 10) {
+                const gapLimit = 20;
+                let batchIncrement = gapLimit;
+                if (quantity && Math.abs(quantity - startIndex) < gapLimit) {
                     batchIncrement = Math.abs(quantity - startIndex);
                 } else if (!quantity && Object.keys(wallets).length > 0) {
                     batchIncrement = 2;
@@ -370,7 +371,9 @@ export default {
                     }
 
                     const ledgerWallets = [];
-                    for (let batchIndex = 0; batchIndex < batchIncrement; batchIndex++) {
+                    const batchQuantity = parseInt(quantity);
+                    const batchLimit = batchIncrement + (quantity && batchQuantity > batchIncrement ? batchQuantity : 0);
+                    for (let batchIndex = 0; batchIndex < batchLimit; batchIndex++) {
                         const index = ledgerIndex + batchIndex;
                         let wallet = firstWallet;
                         if (index > 0) {
