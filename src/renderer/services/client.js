@@ -430,6 +430,42 @@ export default class ClientService {
         return walletData;
     }
 
+    fixWallet (data) {
+        if (data) {
+            if (data.attributes) {
+                if (data.attributes.delegate) {
+                    data.isDelegate = true;
+                    data.isResigned = data.attributes.delegate.resigned !== undefined;
+                }
+
+                if (data.attributes.secondPublicKey) {
+                    data.secondPublicKey = data.attributes.secondPublicKey;
+                }
+
+                if (data.attributes.vote) {
+                    data.vote = data.attributes.vote;
+                }
+
+                if (data.attributes.multiSignature) {
+                    data.multiSignature = data.attributes.multiSignature;
+                }
+            }
+
+            if (data.votingFor) {
+                const voteKeys = Object.keys(data.votingFor);
+                if (voteKeys.length > 0) {
+                    data.vote = voteKeys[0];
+                }
+            }
+
+            if (!data.vote) {
+                data.vote = null;
+            }
+        }
+
+        return data;
+    }
+
     /**
    * Fetches wallet data from an address.
    * @param {String} address
@@ -437,7 +473,7 @@ export default class ClientService {
    */
     async fetchWallet (address) {
         const { body } = await this.client.api("wallets").get(address);
-        return body.data;
+        return this.fixWallet(body.data);
     }
 
     /**
@@ -463,7 +499,7 @@ export default class ClientService {
         const randomizedLimit = Math.floor(Math.random() * 41) + 10;
         for (const addressChunk of chunk(addresses, randomizedLimit)) {
             const { body } = await search(addressChunk);
-            walletData.push(...body.data);
+            walletData.push(...body.data.map(wallet => this.fixWallet(wallet)));
         }
 
         return walletData;

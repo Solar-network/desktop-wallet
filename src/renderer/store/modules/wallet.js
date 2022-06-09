@@ -4,28 +4,6 @@ import Vue from "vue";
 
 const includes = (objects, find) => objects.map(a => a.id).includes(find.id);
 const includesMessage = (objects, find) => objects.map(a => a.timestamp).includes(find.timestamp);
-const sanitizeWallet = (wallet) => {
-    if (wallet.attributes) {
-        if (wallet.attributes.delegate) {
-            wallet.isDelegate = true;
-            wallet.isResigned = wallet.attributes.delegate.resigned;
-        }
-
-        if (wallet.attributes.secondPublicKey) {
-            wallet.secondPublicKey = wallet.attributes.secondPublicKey;
-        }
-
-        if (wallet.attributes.vote) {
-            wallet.vote = wallet.attributes.vote;
-        }
-
-        if (wallet.attributes.multiSignature) {
-            wallet.multiSignature = wallet.attributes.multiSignature;
-        }
-    }
-
-    return wallet;
-};
 
 /**
  * Internally the wallets are stored aggregated by `profileId`
@@ -204,13 +182,13 @@ export default {
             commit("STORE", wallets);
         },
         update ({ commit }, wallet) {
-            const data = WalletModel.deserialize(sanitizeWallet(wallet));
+            const data = WalletModel.deserialize(wallet);
             commit("UPDATE", data);
 
             return data;
         },
         updateBulk ({ commit }, wallets) {
-            const data = wallets.map(wallet => WalletModel.deserialize(sanitizeWallet(wallet)));
+            const data = wallets.map(wallet => WalletModel.deserialize(wallet));
             commit("UPDATE_BULK", data);
 
             return data;
