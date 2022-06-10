@@ -69,7 +69,7 @@ export default {
         largeQuantity: {
             type: Number,
             required: false,
-            default: 50
+            default: 500
         }
     },
 
