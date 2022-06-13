@@ -90,12 +90,16 @@ class LedgerService {
                 return false;
             }
 
-            // Make a request to the ledger device to determine if it's accessible
             const appName = await this.__performAction(async () => {
                 return this.ledger.getAppName();
             });
 
-            return appName === "Solar";
+            const isConnected = await this.__performAction(async () => {
+                const randIdx = Math.floor(Math.random() * 2147483647);
+                return this.ledger.getPublicKey(`44'/3333'/${randIdx}'/0/0`);
+            });
+
+            return appName === "Solar" && !!isConnected;
         } catch (error) {
             logger.error(error);
         }
