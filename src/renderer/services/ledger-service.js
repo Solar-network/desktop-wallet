@@ -90,31 +90,17 @@ class LedgerService {
                 return false;
             }
 
-            const appName = await this.__performAction(async () => {
-                return this.ledger.getAppName();
-            });
-
             const isConnected = await this.__performAction(async () => {
                 const randIdx = Math.floor(Math.random() * 2147483647);
                 return this.ledger.getPublicKey(`44'/3333'/${randIdx}'/0/0`);
             });
 
-            return appName === "Solar" && !!isConnected;
+            return !!isConnected;
         } catch (error) {
             logger.error(error);
         }
 
         return false;
-    }
-
-    /**
-   * Get the name of currently-opened ledger app.
-   * @return {Promise<string>}
-   */
-    async getAppName () {
-        return this.__performAction(async () => {
-            return this.ledger.getAppName();
-        });
     }
 
     /**
