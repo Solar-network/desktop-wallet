@@ -8,7 +8,6 @@ import { TransactionBuilderService } from "./crypto/transaction-builder.service"
 import { TransactionSigner } from "./crypto/transaction-signer";
 import BigNumber from "@/plugins/bignumber";
 import { camelToUpperSnake } from "@/utils";
-import semver from "semver";
 
 export default class ClientService {
     /**
@@ -340,14 +339,8 @@ export default class ClientService {
         let hadFailure = false;
 
         const search = (addressList) => {
-            if (this.satisfiesCoreVersion(">=3")) {
-                return this.client.api("transactions").all({
-                    address: addressList.join(",")
-                });
-            }
-
-            return this.client.api("transactions").search({
-                addresses: addressList
+            return this.client.api("transactions").all({
+                address: addressList.join(",")
             });
         };
 
@@ -485,14 +478,8 @@ export default class ClientService {
         const walletData = [];
 
         const search = (addressList) => {
-            if (this.satisfiesCoreVersion(">=3")) {
-                return this.client.api("wallets").all({
-                    address: addressList.join(",")
-                });
-            }
-
-            return this.client.api("wallets").search({
-                addresses: addressList
+            return this.client.api("wallets").all({
+                address: addressList.join(",")
             });
         };
 
@@ -569,25 +556,6 @@ export default class ClientService {
             port: port || (isHttps ? "443" : "80"),
             isHttps
         };
-    }
-
-    satisfiesCoreVersion (expectedVersion) {
-        const network = store.getters["session/network"];
-
-        if (!network) {
-            return false;
-        }
-
-        return semver.satisfies(semver.coerce(network.apiVersion), expectedVersion);
-    }
-
-    isSolar () {
-        const network = store.getters["session/network"];
-        if (!network) {
-            return false;
-        }
-
-        return network.id.startsWith("solar.");
     }
 
     async getNonceForAddress ({ address, networkId }) {
