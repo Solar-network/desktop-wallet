@@ -87,24 +87,6 @@
         </MenuOptionsItem>
 
         <MenuOptionsItem
-          :title="$t('APP_SIDEMENU.SETTINGS.BACKGROUND_UPDATE_LEDGER')"
-          @click="toggleSelect('ledger-background-switch')"
-        >
-          <div
-            slot="controls"
-            class="pointer-events-none"
-          >
-            <ButtonSwitch
-              ref="ledger-background-switch"
-              :is-active="backgroundUpdateLedger"
-              class="theme-dark"
-              background-color="var(--theme-settings-switch)"
-              @change="setBackgroundUpdateLedger"
-            />
-          </div>
-        </MenuOptionsItem>
-
-        <MenuOptionsItem
           :title="$t('APP_SIDEMENU.SETTINGS.BROADCAST_PEERS')"
           @click="toggleSelect('broadcast-peers')"
         >

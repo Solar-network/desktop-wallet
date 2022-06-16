@@ -9,28 +9,6 @@
       :is-settings="true"
     >
       <MenuOptionsItem
-        :tooltip="{
-          content: $t('PAGES.WALLET_ALL.LEDGER.CACHE_INFO'),
-          placement: 'bottom'
-        }"
-        :title="$t('PAGES.WALLET_ALL.LEDGER.CACHE')"
-        @click="toggleSelect('cache-ledgers')"
-      >
-        <div
-          slot="controls"
-          class="pointer-events-none"
-        >
-          <ButtonSwitch
-            ref="cache-ledgers"
-            :is-active="sessionLedgerCache"
-            class="theme-dark"
-            background-color="var(--theme-settings-switch)"
-            @change="setLedgerCache"
-          />
-        </div>
-      </MenuOptionsItem>
-
-      <MenuOptionsItem
         :title="$t('PAGES.WALLET_ALL.LEDGER.ADDITIONAL')"
         class="text-grey-light"
         @click="toggleAdditionalLedgersModal"
@@ -47,7 +25,6 @@
 <script>
 import ModalAdditionalLedgers from "@/components/Modal/ModalAdditionalLedgers";
 import { MenuOptions, MenuOptionsItem } from "@/components/Menu";
-import { ButtonSwitch } from "@/components/Button";
 
 export default {
     name: "AppSidemenuOptionsSettings",
@@ -55,8 +32,7 @@ export default {
     components: {
         MenuOptions,
         MenuOptionsItem,
-        ModalAdditionalLedgers,
-        ButtonSwitch
+        ModalAdditionalLedgers
     },
 
     props: {
