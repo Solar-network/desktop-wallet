@@ -1748,7 +1748,7 @@
     lodash.set "4.3.2"
     wif "2.0.6"
 
-"@solar-network/ledger-transport@^0.0.1":
+"@solar-network/ledger-transport@0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@solar-network/ledger-transport/-/ledger-transport-0.0.1.tgz#d1b7d085a02c9e76d1df70cc31d632ef54f9344f"
   integrity sha512-bCyh4T1C6QAkWekLclc4YBWpe4iV1H7ZJAXq7My/LvtVmsarIAoYnfk1ezrTKSSe1MMh2XqQeiDUTSU6Dddx8Q==
