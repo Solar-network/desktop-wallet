@@ -1,5 +1,5 @@
 import LedgerTransport from "@ledgerhq/hw-transport-node-hid-singleton";
-import { ARKTransport } from "@arkecosystem/ledger-transport";
+import { SolarTransport } from "@solar-network/ledger-transport";
 import queue from "async/queue";
 import logger from "electron-log";
 
@@ -20,6 +20,9 @@ class LedgerService {
                 if (error.statusText === "CONDITIONS_OF_USE_NOT_SATISFIED") {
                     resolve(false);
                 }
+
+                this.transport = null;
+                this.ledger = null;
                 resolve(null);
             }
             callback();
@@ -29,14 +32,19 @@ class LedgerService {
     }
 
     async listenForLedger () {
-        if (this.listeningForLedger) {
-            return;
-        }
+        try {
+            if (this.listeningForLedger) {
+                return;
+            }
 
-        this.listeningForLedger = true;
-        this.transport = await LedgerTransport.create();
-        this.ledger = new ARKTransport(this.transport);
-        this.listeningForLedger = false;
+            this.listeningForLedger = true;
+            this.transport = await LedgerTransport.create();
+            this.ledger = new SolarTransport(this.transport);
+        } catch (error) {
+            logger.debug(error);
+        } finally {
+            this.listeningForLedger = false;
+        }
     }
 
     /**
@@ -82,9 +90,9 @@ class LedgerService {
                 return false;
             }
 
-            // Make a request to the ledger device to determine if it's accessible
             const isConnected = await this.__performAction(async () => {
-                return this.ledger.getPublicKey("44'/1'/0'/0/0");
+                const randIdx = Math.floor(Math.random() * 2147483647);
+                return this.ledger.getPublicKey(`44'/3333'/${randIdx}'/0/0`);
             });
 
             return !!isConnected;
@@ -96,8 +104,18 @@ class LedgerService {
     }
 
     /**
-   * Get public key from ledger wallet.
-   * @param  {string} path Path for wallet location.
+   * Get the Solar app's version.
+   * @return {Promise<string>}
+   */
+    async getVersion () {
+        return this.__performAction(async () => {
+            return this.ledger.getAppVersion();
+        });
+    }
+
+    /**
+   * Get a publicKey from ledger wallet given a path.
+   * @param  {string} path derivation path.
    * @return {Promise<string>}
    */
     async getPublicKey (path) {
@@ -107,7 +125,18 @@ class LedgerService {
     }
 
     /**
-   * Sign transaction for ledger wallet using ecdsa signatures.
+     * Get an extended publicKey from ledger wallet given a path.
+   * @param  {string} path extended derivation path. (e.g., "44'/3333'/0'")
+     * @return {Promise<string>}
+     */
+    async getExtPublicKey (path) {
+        return this.__performAction(async () => {
+            return this.ledger.getExtPublicKey(path);
+        });
+    }
+
+    /**
+   * Sign a transaction using a ledger wallet.
    * @param  {string} path Path for wallet location.
    * @param  {Buffer} transactionBytes bytes of transaction.
    * @return {Promise<string>}
@@ -119,24 +148,7 @@ class LedgerService {
     }
 
     /**
-   * Sign transaction for ledger wallet using schnorr signatures.
-   * @param  {string} path Path for wallet location.
-   * @param  {Buffer} transactionBytes bytes of transaction.
-   * @return {Promise<string>}
-   */
-    async signTransactionWithSchnorr (path, transactionBytes) {
-        return this.__performAction(async () => {
-            try {
-                return await this.ledger.signTransactionWithSchnorr(path, transactionBytes);
-            } catch {
-                console.warn("Schnorr Signatures Unsupported; Trying Ecdsa..");
-                return this.ledger.signTransaction(path, transactionBytes);
-            }
-        });
-    }
-
-    /**
-   * Sign message for ledger wallet using ecdsa signatures.
+   * Sign a message using a ledger wallet.
    * @param  {string} path Path for wallet location.
    * @param  {Buffer} messageBytes bytes to sign.
    * @return {Promise<string>}
@@ -144,28 +156,6 @@ class LedgerService {
     async signMessage (path, messageBytes) {
         return this.__performAction(async () => {
             return this.ledger.signMessage(path, messageBytes);
-        });
-    }
-
-    /**
-   * Sign message for ledger wallet using schnorr signatures.
-   * @param  {string} path Path for wallet location.
-   * @param  {Buffer} messageBytes bytes to sign.
-   * @return {Promise<string>}
-   */
-    async signMessageWithSchnorr (path, messageBytes) {
-        return this.__performAction(async () => {
-            return this.ledger.signMessageWithSchnorr(path, messageBytes);
-        });
-    }
-
-    /**
-   * Get version of ledger wallet.
-   * @return {Promise<string>}
-   */
-    async getVersion () {
-        return this.__performAction(async () => {
-            return this.ledger.getVersion();
         });
     }
 

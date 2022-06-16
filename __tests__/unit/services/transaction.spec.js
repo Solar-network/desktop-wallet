@@ -842,11 +842,11 @@ describe("Services > Transaction", () => {
         });
     });
 
-    describe("ledgerSignWithSchnorr", () => {
+    describe("ledgerSign", () => {
         const vmMock = {
             $store: {
                 // eslint-disable-next-line @typescript-eslint/no-empty-function
-                dispatch () {}
+                dispatch () { }
             },
             $t (translationKey) {
                 return translationKey;
@@ -884,7 +884,7 @@ describe("Services > Transaction", () => {
             const signature = transactionObject.data.signature;
 
             spyDispatch.mockImplementation((key) => {
-                if (key === "ledger/signTransactionWithSchnorr") {
+                if (key === "ledger/signTransaction") {
                     return signature;
                 }
             });
@@ -910,7 +910,7 @@ describe("Services > Transaction", () => {
             const signature = transactionObject.data.signature;
 
             spyDispatch.mockImplementation((key) => {
-                if (key === "ledger/signTransactionWithSchnorr") {
+                if (key === "ledger/signTransaction") {
                     return signature;
                 }
             });
@@ -943,7 +943,7 @@ describe("Services > Transaction", () => {
             const signature = transactionObject.data.signature;
 
             spyDispatch.mockImplementation((key) => {
-                if (key === "ledger/signTransactionWithSchnorr") {
+                if (key === "ledger/signTransaction") {
                     return signature;
                 }
             });

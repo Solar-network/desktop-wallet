@@ -1,7 +1,7 @@
 import nock from "nock";
 import Vue from "vue";
 import Vuex from "vuex";
-import { Identities } from "@arkecosystem/crypto";
+import { Identities } from "@solar-network/crypto";
 import apiClient, { client as ClientService } from "@/plugins/api-client";
 import LedgerModule from "@/store/modules/ledger";
 import ledgerService from "@/services/ledger-service";
@@ -158,8 +158,8 @@ describe("ledger store module", () => {
             });
         });
 
-        it("should fail with invalid accountIndex", async () => {
-            await expect(store.dispatch("ledger/getWallet")).rejects.toThrow(/.*accountIndex must be a Number$/);
+        it("should fail with invalid addressIndex", async () => {
+            await expect(store.dispatch("ledger/getWallet")).rejects.toThrow(/.*addressIndex must be a Number$/);
         });
 
         it("should fail when not connected", async () => {
@@ -183,8 +183,8 @@ describe("ledger store module", () => {
             spy.mockRestore();
         });
 
-        it("should fail with invalid accountIndex", async () => {
-            await expect(store.dispatch("ledger/getAddress")).rejects.toThrow(/.*accountIndex must be a Number$/);
+        it("should fail with invalid addressIndex", async () => {
+            await expect(store.dispatch("ledger/getAddress")).rejects.toThrow(/.*addressIndex must be a Number$/);
         });
 
         it("should fail when not connected", async () => {
@@ -208,8 +208,8 @@ describe("ledger store module", () => {
             spy.mockRestore();
         });
 
-        it("should fail with invalid accountIndex", async () => {
-            await expect(store.dispatch("ledger/getPublicKey")).rejects.toThrow(/.*accountIndex must be a Number$/);
+        it("should fail with invalid addressIndex", async () => {
+            await expect(store.dispatch("ledger/getPublicKey")).rejects.toThrow(/.*addressIndex must be a Number$/);
         });
 
         it("should fail when not connected", async () => {
@@ -226,56 +226,25 @@ describe("ledger store module", () => {
             const spy = jest.spyOn(ledgerService, "signTransaction").mockReturnValue("SIGNATURE");
 
             const response = await store.dispatch("ledger/signTransaction", {
-                accountIndex: 1,
+                addressIndex: 1,
                 transactionBytes: Buffer.from([1, 2, 3, 4])
             });
 
             expect(response).toBe("SIGNATURE");
-            expect(spy).toHaveBeenNthCalledWith(1, "44'/1234'/1'/0/0", Buffer.from([1, 2, 3, 4]));
+            expect(spy).toHaveBeenNthCalledWith(1, "44'/1234'/0'/0/1", Buffer.from([1, 2, 3, 4]));
 
             spy.mockRestore();
         });
 
-        it("should fail with invalid accountIndex", async () => {
-            await expect(store.dispatch("ledger/signTransaction")).rejects.toThrow(/.*accountIndex must be a Number$/);
+        it("should fail with invalid addressIndex", async () => {
+            await expect(store.dispatch("ledger/signTransaction")).rejects.toThrow(/.*addressIndex must be a Number$/);
         });
 
         it("should fail when not connected", async () => {
             await disconnectLedger();
             await expect(store.dispatch("ledger/signTransaction", {
-                accountIndex: 1,
+                addressIndex: 1,
                 transactionBytes: Buffer.from("abc", "utf-8")
-            })).rejects.toThrow(/.*Ledger not connected$/);
-        });
-    });
-
-    describe("signTransactionWithSchnorr", () => {
-        it("should call ledger service", async () => {
-            await store.dispatch("ledger/connect");
-            await store.dispatch("ledger/setSlip44", 1234);
-
-            const spy = jest.spyOn(ledgerService, "signTransactionWithSchnorr").mockReturnValue("SIGNATURE");
-
-            const response = await store.dispatch("ledger/signTransactionWithSchnorr", {
-                accountIndex: 1,
-                transactionBytes: "abc"
-            });
-
-            expect(response).toBe("SIGNATURE");
-            expect(spy).toHaveBeenNthCalledWith(1, "44'/1234'/1'/0/0", "abc");
-
-            spy.mockRestore();
-        });
-
-        it("should fail with invalid accountIndex", async () => {
-            await expect(store.dispatch("ledger/signTransactionWithSchnorr")).rejects.toThrow(/.*accountIndex must be a Number$/);
-        });
-
-        it("should fail when not connected", async () => {
-            await disconnectLedger();
-            await expect(store.dispatch("ledger/signTransactionWithSchnorr", {
-                accountIndex: 1,
-                transactionBytes: "abc"
             })).rejects.toThrow(/.*Ledger not connected$/);
         });
     });
@@ -288,7 +257,7 @@ describe("ledger store module", () => {
             const spy = jest.spyOn(ledgerService, "signMessage").mockReturnValue("SIGNATURE");
 
             const response = await store.dispatch("ledger/signMessage", {
-                accountIndex: 1,
+                addressIndex: 1,
                 messageBytes: Buffer.from("abc", "utf-8")
             });
 
@@ -298,46 +267,15 @@ describe("ledger store module", () => {
             spy.mockRestore();
         });
 
-        it("should fail with invalid accountIndex", async () => {
-            await expect(store.dispatch("ledger/signMessage")).rejects.toThrow(/.*accountIndex must be a Number$/);
+        it("should fail with invalid addressIndex", async () => {
+            await expect(store.dispatch("ledger/signMessage")).rejects.toThrow(/.*addressIndex must be a Number$/);
         });
 
         it("should fail when not connected", async () => {
             await disconnectLedger();
             await expect(store.dispatch("ledger/signMessage", {
-                accountIndex: 1,
+                addressIndex: 1,
                 messageBytes: Buffer.from("abc", "utf-8")
-            })).rejects.toThrow(/.*Ledger not connected$/);
-        });
-    });
-
-    describe("signMessageWithSchnorr", () => {
-        it("should call ledger service", async () => {
-            await store.dispatch("ledger/connect");
-            await store.dispatch("ledger/setSlip44", 1234);
-
-            const spy = jest.spyOn(ledgerService, "signMessageWithSchnorr").mockReturnValue("SIGNATURE");
-
-            const response = await store.dispatch("ledger/signMessageWithSchnorr", {
-                accountIndex: 1,
-                messageBytes: "abc"
-            });
-
-            expect(response).toBe("SIGNATURE");
-            expect(spy).toHaveBeenNthCalledWith(1, "44'/1234'/1'/0/0", "abc");
-
-            spy.mockRestore();
-        });
-
-        it("should fail with invalid accountIndex", async () => {
-            await expect(store.dispatch("ledger/signMessageWithSchnorr")).rejects.toThrow(/.*accountIndex must be a Number$/);
-        });
-
-        it("should fail when not connected", async () => {
-            await disconnectLedger();
-            await expect(store.dispatch("ledger/signMessageWithSchnorr", {
-                accountIndex: 1,
-                messageBytes: "abc"
             })).rejects.toThrow(/.*Ledger not connected$/);
         });
     });
@@ -454,21 +392,21 @@ describe("ledger store module", () => {
         });
     });
 
-    describe("updateWallet", () => {
-        it("should update a single wallet", async () => {
-            store.commit("ledger/SET_WALLETS", {
-                A1: { address: "A1", balance: 0 }
-            });
-            await store.dispatch("ledger/updateWallet", { address: "A1", balance: 10 });
-            expect(store.getters["ledger/wallets"]).toEqual([
-                { address: "A1", balance: 10 }
-            ]);
-        });
+    // describe("updateWallet", () => {
+    //     it("should update a single wallet", async () => {
+    //         store.commit("ledger/SET_WALLETS", {
+    //             A1: { address: "A1", balance: 0 }
+    //         });
+    //         await store.dispatch("ledger/updateWallet", { address: "A1", balance: 10 });
+    //         expect(store.getters["ledger/wallets"]).toEqual([
+    //             { address: "A1", balance: 10 }
+    //         ]);
+    //     });
 
-        it("should throw an error if wallet does not exist", async () => {
-            expect(store.dispatch("ledger/updateWallet", { address: "nope" })).rejects.toThrow(/.*not found in ledger wallets$/);
-        });
-    });
+    //     it("should throw an error if wallet does not exist", async () => {
+    //         expect(store.dispatch("ledger/updateWallet", { address: "nope" })).rejects.toThrow(/.*not found in ledger wallets$/);
+    //     });
+    // });
 
     describe("cacheWallets", () => {
         it("should cache if enabled in session", async () => {

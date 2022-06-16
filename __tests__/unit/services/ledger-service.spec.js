@@ -36,12 +36,12 @@ describe("LedgerService", () => {
         expect(ledgerService.transport.close).toHaveBeenCalledTimes(1);
     });
 
-    describe("getPublicKey", () => {
+    describe("getAppName", () => {
         it("should run", async () => {
-            const response = await ledgerService.getPublicKey("44'/1'/0'/0/0");
+            const response = await ledgerService.getAppName();
 
-            expect(response).toBeTruthy();
-            expect(ledgerService.ledger.getPublicKey).toHaveBeenCalledTimes(1);
+            expect(response).toBe("Solar");
+            expect(ledgerService.ledger.getAppName).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -54,21 +54,30 @@ describe("LedgerService", () => {
         });
     });
 
+    describe("getPublicKey", () => {
+        it("should run", async () => {
+            const response = await ledgerService.getPublicKey("44'/3333'/0'/0/0");
+
+            expect(response).toBeTruthy();
+            expect(ledgerService.ledger.getPublicKey).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe("getExtPublicKey", () => {
+        it("should run", async () => {
+            const response = await ledgerService.getExtPublicKey("44'/3333'/0'");
+
+            expect(response).toBeTruthy();
+            expect(ledgerService.ledger.getExtPublicKey).toHaveBeenCalledTimes(1);
+        });
+    });
+
     describe("signTransaction", () => {
         it("should run", async () => {
             const response = await ledgerService.signTransaction("44'/1'/0'/0/0", Buffer.from([1, 2, 3, 4]));
 
             expect(response).toBeTruthy();
             expect(ledgerService.ledger.signTransaction).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    describe("signTransactionWithSchnorr", () => {
-        it("should run", async () => {
-            const response = await ledgerService.signTransactionWithSchnorr("44'/1'/0'/0/0", "1234");
-
-            expect(response).toBeTruthy();
-            expect(ledgerService.ledger.signTransactionWithSchnorr).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -80,17 +89,6 @@ describe("LedgerService", () => {
 
             expect(response).toBeTruthy();
             expect(ledgerService.ledger.signMessage).toHaveBeenCalledTimes(1);
-        });
-    });
-
-    describe("signMessageWithSchnorr", () => {
-        it("should run", async () => {
-            ledgerService.ledger.signMessageWithSchnorr.mockClear();
-
-            const response = await ledgerService.signMessageWithSchnorr("44'/1'/0'/0/0", Buffer.from("1234"));
-
-            expect(response).toBeTruthy();
-            expect(ledgerService.ledger.signMessageWithSchnorr).toHaveBeenCalledTimes(1);
         });
     });
 
