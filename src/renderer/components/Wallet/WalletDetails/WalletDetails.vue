@@ -73,15 +73,9 @@
           v-else-if="isAwaitingConfirmation"
           class="flex"
         >
-          <i18n
-            tag="span"
-            class="font-semibold"
-            path="WALLET_DELEGATES.AWAITING_VOTE_CONFIRMATION"
-          >
-            <strong place="type">
-              {{ $t(`TRANSACTION.TYPE.${unconfirmedVote.publicKey.charAt(0) === '+' ? 'VOTE' : 'UNVOTE'}`) }}
-            </strong>
-          </i18n>
+          <span class="font-semibold">
+            {{ $t('WALLET_DELEGATES.AWAITING_VOTE_CONFIRMATION') }}
+          </span>
         </div>
         <div
           v-else-if="votedDelegate"

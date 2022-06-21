@@ -110,8 +110,9 @@ export default {
         totalAmount () {
             const amount = this.currency_toBuilder(this.transaction.fee);
 
-            if (this.transaction.asset && this.transaction.asset.payments) {
-                for (const payment of this.transaction.asset.payments) {
+            if (this.transaction.asset && (this.transaction.asset.payments || this.transaction.asset.transfers)) {
+                const payments = this.transaction.asset.payments || this.transaction.asset.transfers;
+                for (const payment of payments) {
                     amount.add(payment.amount);
                 }
             } else if (this.transaction.amount) {

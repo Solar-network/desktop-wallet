@@ -21,12 +21,12 @@
             <SvgIcon
               v-show="isDashboard"
               v-tooltip="{
-                content: data.row.vendorField,
+                content: data.row.memo,
                 classes: 'max-w-xs break-words text-justify text-xs',
                 trigger: 'hover',
                 container: '.TransactionTable'
               }"
-              :name="data.formattedRow['vendorField'] ? 'vendorfield' : 'vendorfield-empty'"
+              :name="data.formattedRow['memo'] ? 'vendorfield' : 'vendorfield-empty'"
               view-box="0 0 18 18"
               class="mr-2"
             />
@@ -127,7 +127,7 @@
 
         <span
           v-else
-          :class="{ 'word-break-all': data.column.field === 'vendorField' }"
+          :class="{ 'word-break-all': data.column.field === 'memo' }"
         >
           {{ data.formattedRow[data.column.field] }}
         </span>
@@ -192,13 +192,13 @@ export default {
 
     computed: {
         columns () {
-            const vendorFieldClass = [
+            const memoClass = [
                 "hidden", "w-1/4"
             ];
             if (this.hasShortId && !this.isDashboard) {
-                vendorFieldClass.push("xxl:table-cell");
+                memoClass.push("xxl:table-cell");
             } else if (!this.isDashboard) {
-                vendorFieldClass.push("xl:table-cell");
+                memoClass.push("xl:table-cell");
             }
 
             const columns = [
@@ -243,10 +243,10 @@ export default {
                     },
                     {
                         label: this.$t("TRANSACTION.VENDOR_FIELD"),
-                        field: "vendorField",
+                        field: "memo",
                         formatFn: this.formatSmartbridge,
-                        tdClass: vendorFieldClass.join(" "),
-                        thClass: vendorFieldClass.join(" ")
+                        tdClass: memoClass.join(" "),
+                        thClass: memoClass.join(" ")
                     },
                     {
                         label: this.$t("TRANSACTION.AMOUNT"),

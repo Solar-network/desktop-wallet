@@ -45,7 +45,7 @@ export default new BaseModel({
             minimum: 0,
             default: 0
         },
-        vendorField: {
+        memo: {
             type: "string"
         },
         asset: {

@@ -112,7 +112,7 @@
         item-value-class="flex items-center"
       >
         <WalletAddress
-          :address="transaction.recipient"
+          :address="showRecipient"
           @click="emitClose"
         />
         <ButtonClipboard
@@ -207,22 +207,37 @@
       />
 
       <ListDividedItem
-        v-if="transaction.vendorField"
-        :value="transaction.vendorField"
+        v-if="transaction.memo"
+        :value="transaction.memo"
         :label="$t('TRANSACTION.VENDOR_FIELD')"
         item-label-class="mb-auto"
         item-value-class="max-w-xs break-words text-justify"
       />
 
       <ListDividedItem
-        v-if="isMultiPayment"
+        v-if="isVote && countVotes > 0"
+        class="TransactionShow__Recipients"
+        :label="$t('TRANSACTION.VOTES')"
+        item-value-class="items-center"
+      >
+        <TransactionVotesList
+          :title="null"
+          :items="getVotes"
+          :show-links="true"
+          readonly
+          @click="emitClose"
+        />
+      </ListDividedItem>
+
+      <ListDividedItem
+        v-if="isMultiPayment && ((transaction.asset.payments && transaction.asset.payments.length > 1) || (transaction.asset.transfers && transaction.asset.transfers.length > 1))"
         class="TransactionShow__Recipients"
         :label="$t('TRANSACTION.RECIPIENTS')"
         item-value-class="items-center"
       >
         <TransactionRecipientList
           :title="null"
-          :items="transaction.asset.payments"
+          :items="transaction.asset.payments || transaction.asset.transfers"
           :show-links="true"
           readonly
           @click="emitClose"
@@ -251,7 +266,7 @@ import { ListDivided, ListDividedItem } from "@/components/ListDivided";
 import { ModalWindow } from "@/components/Modal";
 import { ButtonClipboard, ButtonGeneric } from "@/components/Button";
 import SvgIcon from "@/components/SvgIcon";
-import { TransactionAmount, TransactionRecipientList, TransactionStatusIcon } from "@/components/Transaction";
+import { TransactionAmount, TransactionRecipientList, TransactionStatusIcon, TransactionVotesList } from "@/components/Transaction";
 import WalletAddress from "@/components/Wallet/WalletAddress";
 import WalletService from "@/services/wallet";
 import truncateMiddle from "@/filters/truncate-middle";
@@ -269,6 +284,7 @@ export default {
         TransactionAmount,
         TransactionRecipientList,
         TransactionStatusIcon,
+        TransactionVotesList,
         WalletAddress
     },
 
@@ -284,11 +300,27 @@ export default {
     }),
 
     computed: {
+        countVotes () {
+            if (!Array.isArray(this.transaction.asset.votes)) {
+                return Object.keys(this.transaction.asset.votes).length;
+            }
+            return this.transaction.asset.votes.filter(vote => vote.charAt(0) === "+").length;
+        },
+        getVotes () {
+            if (!Array.isArray(this.transaction.asset.votes)) {
+                return Object.entries(this.transaction.asset.votes).map(vote => ({ address: this.$store.getters["delegate/byUsername"](vote[0]).address, delegate: vote[0], percent: vote[1] }));
+            }
+            const delegate = this.transaction.asset.votes.filter(vote => vote.charAt(0) === "+")[0].slice(1);
+            return [{ address: this.$store.getters["delegate/byUsername"](delegate).address, delegate, percent: 100 }];
+        },
         isWellConfirmed () {
             return this.transaction.confirmations >= (this.numberOfActiveDelegates || 51);
         },
         isMultiPayment () {
-            return this.transaction.asset && this.transaction.asset.payments;
+            return this.transaction.asset && (this.transaction.asset.payments || this.transaction.asset.transfers);
+        },
+        isVote () {
+            return this.transaction.asset && this.transaction.asset.votes;
         },
         numberOfActiveDelegates () {
             return at(this, "session_network.constants.activeDelegates") || 51;
@@ -296,6 +328,10 @@ export default {
         votePublicKeyOrUsername () {
             const transaction = this.getTransaction();
             if (transaction && transaction.asset && transaction.asset.votes) {
+                if (!Array.isArray(transaction.asset.votes)) {
+                    return Object.keys(transaction.asset.votes)[0];
+                }
+
                 const vote = transaction.asset.votes[0];
                 return vote.substr(1);
             }
@@ -312,7 +348,14 @@ export default {
         },
 
         showRecipient () {
-            if (this.transaction.asset && this.transaction.asset.payments) {
+            if (this.transaction.asset && (this.transaction.asset.payments || this.transaction.asset.transfers)) {
+                if (this.transaction.asset.payments && this.transaction.asset.payments.length === 1) {
+                    return this.transaction.asset.payments[0].recipientId;
+                }
+
+                if (this.transaction.asset.transfers && this.transaction.asset.transfers.length === 1) {
+                    return this.transaction.asset.transfers[0].recipientId;
+                }
                 return false;
             }
 
@@ -330,7 +373,8 @@ export default {
             }
 
             const amount = this.currency_toBuilder(0);
-            for (const payment of this.transaction.asset.payments) {
+            const payments = this.transaction.asset.payments || this.transaction.asset.transfers;
+            for (const payment of payments) {
                 if (payment.recipientId !== walletAddress) {
                     continue;
                 }

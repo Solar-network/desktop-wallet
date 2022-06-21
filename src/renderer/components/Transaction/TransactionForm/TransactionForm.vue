@@ -11,7 +11,9 @@
 /* eslint-disable vue/no-unused-components */
 import { TRANSACTION_GROUPS } from "@config";
 import TransactionFormDelegateRegistration from "./TransactionFormDelegateRegistration";
-import TransactionFormDelegateResignation from "./TransactionFormDelegateResignation";
+import TransactionFormDelegateResignationTemporary from "./TransactionFormDelegateResignationTemporary";
+import TransactionFormDelegateResignationPermanent from "./TransactionFormDelegateResignationPermanent";
+import TransactionFormDelegateResignationRevoke from "./TransactionFormDelegateResignationRevoke";
 import TransactionFormIpfs from "./TransactionFormIpfs";
 import TransactionFormMultiSign from "./TransactionFormMultiSign";
 import TransactionFormMultiSignature from "./TransactionFormMultiSignature";
@@ -24,7 +26,9 @@ export default {
 
     components: {
         TransactionFormDelegateRegistration,
-        TransactionFormDelegateResignation,
+        TransactionFormDelegateResignationTemporary,
+        TransactionFormDelegateResignationPermanent,
+        TransactionFormDelegateResignationRevoke,
         TransactionFormIpfs,
         TransactionFormMultiSign,
         TransactionFormMultiSignature,
@@ -38,6 +42,12 @@ export default {
             type: Number,
             required: false,
             default: TRANSACTION_GROUPS.STANDARD
+        },
+
+        meta: {
+            type: Number,
+            required: false,
+            default: 0
         },
 
         type: {
@@ -58,7 +68,11 @@ export default {
                 return false;
             }
 
-            return component.transactionType === this.type;
+            if (group === TRANSACTION_GROUPS.STANDARD && component.transactionType === this.type && this.type === 7) {
+                return component.meta === this.meta;
+            } else {
+                return component.transactionType === this.type;
+            }
         });
 
         if (!component) {

@@ -66,6 +66,9 @@ export default new BaseModel({
         },
         vote: {
             type: ["string", "null"]
+        },
+        resigned: {
+            type: ["boolean", "string", "null"]
         }
     },
     required: ["address", "profileId"]

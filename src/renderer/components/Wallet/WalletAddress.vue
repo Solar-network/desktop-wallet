@@ -32,7 +32,7 @@
       v-else-if="transaction_isVote(type, group)"
     >
       <a
-        v-if="!hasMultipleVotes"
+        v-if="!isUnvote && countVotes === 1"
         v-tooltip="{
           content: votedDelegateAddress,
           container: tooltipContainer,
@@ -40,12 +40,12 @@
           show: showTooltip,
           trigger: 'manual'
         }"
-        :class="[isUnvote ? 'text-red' : 'text-green']"
+        class="text-green"
         @click.stop="onClick"
         @mouseover="onMouseOver"
         @mouseout="onMouseOut"
       >
-        {{ isUnvote ? $t("TRANSACTION.TYPE.UNVOTE") : $t("TRANSACTION.TYPE.VOTE") }}
+        {{ $t("TRANSACTION.TYPE.VOTE") }}
         <span
           v-if="votedDelegate"
           class="italic"
@@ -53,39 +53,50 @@
           ({{ votedDelegateUsername }})
         </span>
       </a>
-
-      <div
+      <span
+        v-else-if="!isUnvote"
+        class="text-green"
+      >
+        {{ $t("TRANSACTION.TYPE.VOTE") }} ({{ countVotes }} Delegates)
+      </span>
+      <span
         v-else
-        class="flex items-center truncate"
+        class="text-red"
+      >
+        {{ $t("TRANSACTION.TYPE.UNVOTE") }}
+      </span>
+    </div>
+    <div
+      v-else-if="transaction_isLegacyVote(type, group)"
+    >
+      <a
+        v-if="!isLegacyUnvote"
+        v-tooltip="{
+          content: votedDelegateAddress,
+          container: tooltipContainer,
+          delay: { show: 300, hide: 0 },
+          show: showTooltip,
+          trigger: 'manual'
+        }"
+        class="text-green"
         @click.stop="onClick"
         @mouseover="onMouseOver"
         @mouseout="onMouseOut"
       >
-        <a
-          v-tooltip="{
-            content: votedDelegateAddress,
-            container: tooltipContainer,
-            delay: { show: 300, hide: 0 },
-            show: showTooltip,
-            trigger: 'manual'
-          }"
-          class="text-green"
-          @click.stop="onClick"
-          @mouseover="onMouseOver"
-          @mouseout="onMouseOut"
+        {{ $t("TRANSACTION.TYPE.VOTE") }}
+        <span
+          v-if="votedDelegate"
+          class="italic"
         >
-          {{ $t("TRANSACTION.TYPE.VOTE") }}
-          <span
-            v-if="votedDelegate"
-            class="italic"
-          >
-            ({{ votedDelegateUsername }})
-          </span>
-        </a>
-        <span class="ml-1">
-          / {{ $t("TRANSACTION.TYPE.UNVOTE") }}
+          ({{ votedDelegateUsername }})
         </span>
-      </div>
+      </a>
+      <span
+        v-else
+        class="text-red"
+      >
+        {{ $t("TRANSACTION.TYPE.UNVOTE") }}
+      </span>
     </div>
     <span
       v-else-if="transaction_isMultiSignature(type, group)"
@@ -116,7 +127,7 @@
       {{ $t("TRANSACTION.TYPE.IPFS") }}
     </span>
     <span
-      v-else-if="transaction_isMultiPayment(type, group)"
+      v-else-if="transaction_isMultiPayment(type, group) && countTransfers > 1"
       v-tooltip="{
         content: $t('TRANSACTION.TYPE.MULTI_PAYMENT'),
         container: tooltipContainer,
@@ -127,12 +138,12 @@
       @mouseover="onMouseOver"
       @mouseout="onMouseOut"
     >
-      {{ $t("TRANSACTION.TYPE.MULTI_PAYMENT") }}
+      {{ transferRecipientText }}
     </span>
     <span
       v-else-if="transaction_isDelegateResignation(type, group)"
       v-tooltip="{
-        content: $t('TRANSACTION.TYPE.DELEGATE_RESIGNATION'),
+        content: resignationType,
         container: tooltipContainer,
         delay: { show: 300, hide: 0 },
         show: showTooltip,
@@ -141,7 +152,7 @@
       @mouseover="onMouseOver"
       @mouseout="onMouseOut"
     >
-      {{ $t("TRANSACTION.TYPE.DELEGATE_RESIGNATION") }}
+      {{ resignationType }}
     </span>
     <span
       v-else-if="transaction_isTimelock(type, group)"
@@ -184,6 +195,26 @@
       @mouseout="onMouseOut"
     >
       {{ $t("TRANSACTION.TYPE.HTLC_REFUND") }}
+    </span>
+    <span
+      v-else-if="transaction_isMultiPayment(type, group) && countTransfers === 1"
+      v-tooltip="{
+        content: transferRecipientText,
+        container: tooltipContainer,
+        delay: { show: 300, hide: 0 },
+        show: showTooltip,
+        trigger: 'manual'
+      }"
+    >
+      <a
+        @click.stop="onClick"
+        @mouseover="onMouseOver"
+        @mouseout="onMouseOut"
+      >
+        <slot>
+          {{ wallet_formatAddress(transferRecipientText, addressLength) }}
+        </slot>
+      </a>
     </span>
     <span
       v-else
@@ -264,18 +295,57 @@ export default {
     }),
 
     computed: {
+        countVotes () {
+            return Object.keys(this.asset.votes).length;
+        },
+
         hasMultipleVotes () {
             return this.asset && this.asset.votes && this.asset.votes.length > 1;
         },
 
+        countTransfers () {
+            return (this.asset.payments ? this.asset.payments : this.asset.transfers).length;
+        },
+
+        transferRecipientText () {
+            if (this.asset && ((this.asset.payments && this.asset.payments.length === 1) || (this.asset.transfers && this.asset.transfers.length === 1))) {
+                return this.asset.payments ? this.asset.payments[0].recipientId : this.asset.transfers[0].recipientId;
+            }
+
+            return this.$t("TRANSACTION.TYPE.MULTI_PAYMENT") + " (" + this.countTransfers + ")";
+        },
+
+        isLegacyUnvote () {
+            return this.asset && this.asset.votes && this.asset.votes[this.asset.votes.length - 1].charAt(0) === "-";
+        },
+
         isUnvote () {
-            return this.asset && this.asset.votes && this.asset.votes[0].charAt(0) === "-";
+            return this.asset && this.asset.votes && Object.keys(this.asset.votes).length === 0;
+        },
+
+        resignationType () {
+            if (this.asset && this.asset.resignationType) {
+                switch (this.asset.resignationType) {
+                case 1:
+                    return this.$t("TRANSACTION.DELEGATE_RESIGNATION.PERMANENT");
+                case 2:
+                    return this.$t("TRANSACTION.DELEGATE_RESIGNATION.REVOKE");
+                default:
+                    return this.$t("TRANSACTION.DELEGATE_RESIGNATION.TEMPORARY");
+                }
+            } else {
+                return this.$t("TRANSACTION.DELEGATE_RESIGNATION.TEMPORARY");
+            }
         },
 
         votePublicKeyOrUsername () {
             if (this.asset && this.asset.votes) {
-                const vote = this.hasMultipleVotes ? this.asset.votes.find(vote => vote.charAt(0) === "+") : this.asset.votes[0];
-                return vote.substr(1);
+                if (!Array.isArray(this.asset.votes)) {
+                    return Object.keys(this.asset.votes)[0];
+                } else {
+                    const vote = this.hasMultipleVotes ? this.asset.votes.find(vote => vote.charAt(0) === "+") : this.asset.votes[0];
+                    return vote.substr(1);
+                }
             }
             return "";
         },
@@ -334,7 +404,11 @@ export default {
             if (this.votePublicKeyOrUsername) {
                 this.$router.push({ name: "wallet-show", params: { address: this.votedDelegateAddress } });
             } else {
-                this.$router.push({ name: "wallet-show", params: { address: this.address } });
+                let address = this.address;
+                if (!address) {
+                    address = this.transferRecipientText;
+                }
+                this.$router.push({ name: "wallet-show", params: { address } });
             }
         }
     }

@@ -333,14 +333,34 @@ class Action {
             this.displayNewStandardTransaction(transaction, wallet);
             break;
         }
-        case TRANSACTION_GROUPS.MAGISTRATE: {
-            this.displayNewMagistrateTransaction(transaction, wallet);
+        case TRANSACTION_GROUPS.SOLAR: {
+            this.displayNewSolarTransaction(transaction, wallet);
             break;
         }
         }
     }
 
-    // TODO use the eventBus to display transactions
+    displayNewSolarTransaction (transaction, wallet) {
+        let message = {};
+        switch (transaction.type) {
+        case TRANSACTION_TYPES.GROUP_2.VOTE: {
+            const type = Object.keys(transaction.asset.votes).length > 0 ? "VOTE" : "UNVOTE";
+            const voteUnvote = this.$t(`SYNCHRONIZER.GROUP_1.${type}`);
+            message = {
+                translation: type === "VOTE" ? "SYNCHRONIZER.GROUP_1.NEW_VOTE" : "SYNCHRONIZER.GROUP_1.CANCELLED_VOTE",
+                options: {
+                    address: truncateMiddle(wallet.address),
+                    voteUnvote,
+                    publicKey: type === "VOTE" ? truncateMiddle(Object.keys(transaction.asset.votes)[0]) : undefined
+                }
+            };
+            break;
+        }
+        }
+
+        this.$success(this.$t(message.translation, message.options));
+    }
+
     displayNewStandardTransaction (transaction, wallet) {
         let message = {};
 
@@ -398,7 +418,8 @@ class Action {
         case TRANSACTION_TYPES.GROUP_1.MULTI_PAYMENT: {
             let amount = this.$scope.currency_toBuilder(0);
             let type = "SENT";
-            let recipient = transaction.asset.payments.filter(payment => payment.recipientId === wallet.address);
+            const payments = transaction.asset.payments || transaction.asset.transfers;
+            let recipient = payments.filter(payment => payment.recipientId === wallet.address);
             if (recipient.length) {
                 type = "RECEIVED";
                 for (const entry of recipient) {
@@ -407,7 +428,7 @@ class Action {
                 recipient = truncateMiddle(wallet.address);
             } else {
                 amount = TransactionService.getAmount(this.$scope, transaction, wallet);
-                recipient = transaction.asset.payments.length + " recipients";
+                recipient = payments.length + " recipients";
             }
 
             message = {
@@ -425,8 +446,7 @@ class Action {
             message = {
                 translation: "SYNCHRONIZER.GROUP_1.NEW_DELEGATE_RESIGNATION",
                 options: {
-                    address: truncateMiddle(wallet.address),
-                    username: transaction.asset.delegate.username
+                    address: truncateMiddle(wallet.address)
                 }
             };
             break;

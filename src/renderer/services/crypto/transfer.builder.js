@@ -11,7 +11,7 @@ export class TransferBuilder {
             amount,
             fee,
             recipientId,
-            vendorField,
+            memo,
             passphrase,
             secondPassphrase,
             wif,
@@ -37,7 +37,7 @@ export class TransferBuilder {
             .amount(amount || 0)
             .fee(fee)
             .recipientId(recipientId)
-            .vendorField(vendorField);
+            .memo(memo);
 
         passphrase = CryptoUtils.normalizePassphrase(passphrase);
         secondPassphrase = CryptoUtils.normalizePassphrase(secondPassphrase);

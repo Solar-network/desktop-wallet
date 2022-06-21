@@ -4,6 +4,7 @@ import store from "@/store";
 import TransactionService from "@/services/transaction";
 import WalletService from "@/services/wallet";
 import { CryptoUtils } from "./utils";
+import semver from "semver";
 
 export class TransactionSigner {
     static async sign ({
@@ -86,6 +87,7 @@ export class TransactionSigner {
         }
 
         if (returnObject) {
+            transaction.data = this.legacyTransaction(networkId, transaction.data);
             return transaction;
         }
 
@@ -103,11 +105,39 @@ export class TransactionSigner {
                 transactionJson.signatures = [];
             }
 
-            return transactionJson;
+            return this.legacyTransaction(networkId, transactionJson);
         }
 
         const response = transaction.build().toJson();
-        response.totalAmount = TransactionService.getTotalAmount(response);
+        const totalAmount = TransactionService.getTotalAmount(response);
+        response.totalAmount = !isNaN(totalAmount) ? totalAmount : 0;
+
+        return this.legacyTransaction(networkId, response);
+    }
+
+    static legacyTransaction (networkId, response) {
+        let network;
+        if (networkId) {
+            network = store.getters["network/byId"](networkId);
+        }
+        if (!network) {
+            network = store.getters["session/network"];
+        }
+
+        const legacy = semver.satisfies(semver.coerce(network.apiVersion), "<=3.3");
+        if (legacy) {
+            if (response.amount === undefined) {
+                response.amount = "0";
+            }
+
+            response.vendorField = response.memo;
+            delete response.memo;
+
+            if (response.asset && response.asset.transfers) {
+                response.asset.payments = response.asset.transfers;
+                delete response.asset.transfers;
+            }
+        }
 
         return response;
     }

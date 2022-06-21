@@ -164,8 +164,8 @@
       />
 
       <ListDividedItem
-        v-if="transaction.vendorField"
-        :value="transaction.vendorField"
+        v-if="transaction.memo"
+        :value="transaction.memo"
         :label="$t('TRANSACTION.VENDOR_FIELD')"
         item-label-class="mb-auto"
         item-value-class="max-w-xs break-words text-justify"
@@ -282,6 +282,10 @@ export default {
 
         votePublicKeyOrUsername () {
             if (this.transaction && this.transaction.asset && this.transaction.asset.votes) {
+                if (!Array.isArray(this.transaction.asset.votes)) {
+                    return Object.keys(this.transaction.asset.votes)[0];
+                }
+
                 const vote = this.transaction.asset.votes[0];
                 return vote.substr(1);
             }

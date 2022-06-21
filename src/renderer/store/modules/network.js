@@ -55,8 +55,8 @@ export default new BaseModule(NetworkModel, {
             if (!isEmpty(all)) {
                 // Update API server on existing networks
                 const servers = {
-                    "solar.testnet": "http://sxp.testnet.sh",
-                    "solar.mainnet": "http://sxp.mainnet.sh"
+                    "solar.testnet": "https://sxp.testnet.sh",
+                    "solar.mainnet": "https://sxp.mainnet.sh"
                 };
                 const sanitizedAll = all.map(network => {
                     const server = servers[network.id] || network.server;
@@ -127,6 +127,18 @@ export default new BaseModule(NetworkModel, {
                     ...network,
                     constants
                 });
+
+                if (crypto.milestones[0].legacyVote === undefined) {
+                    crypto.milestones[0].legacyVote = true;
+                }
+
+                if (crypto.milestones[0].legacyTransfer === undefined) {
+                    crypto.milestones[0].legacyTransfer = true;
+                }
+
+                if (crypto.milestones[0].transfer === undefined) {
+                    crypto.milestones[0].transfer = { minimum: 2, maximum: crypto.milestones[0].multiPaymentLimit };
+                }
 
                 Managers.configManager.setConfig(cloneDeep(crypto));
                 Managers.configManager.setHeight(constants.height);

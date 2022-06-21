@@ -592,7 +592,6 @@ export default {
                     this.form.epoch = network.constants.epoch;
                     if (network.constants.activeDelegates) {
                         this.form.activeDelegates = network.constants.activeDelegates.toString();
-                        this.form.vendorField = { maxLength: network.constants.vendorFieldLength };
                     }
                 });
             } catch (error) {

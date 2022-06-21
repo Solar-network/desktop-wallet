@@ -91,7 +91,7 @@
 
       <Portal to="transaction-footer">
         <footer class="ModalWindow__container__footer--warning">
-          {{ $t('TRANSACTION.FOOTER_TEXT.DELEGATE_RESIGNATION') }}
+          {{ $t('TRANSACTION.FOOTER_TEXT.DELEGATE_RESIGNATION_PERMANENT') }}
         </footer>
       </Portal>
     </template>
@@ -110,9 +110,10 @@ import { PassphraseInput } from "@/components/Passphrase";
 import mixin from "./mixin";
 
 export default {
-    name: "TransactionFormDelegateResignation",
+    name: "TransactionFormDelegateResignationPermanent",
 
     transactionType: TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION,
+    meta: 1,
 
     components: {
         InputFee,
@@ -157,6 +158,7 @@ export default {
         getTransactionData () {
             const transactionData = {
                 address: this.currentWallet.address,
+                resignationType: 1,
                 passphrase: this.form.passphrase,
                 fee: this.getFee(),
                 wif: this.form.wif,

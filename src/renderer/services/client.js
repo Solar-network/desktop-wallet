@@ -8,6 +8,7 @@ import { TransactionBuilderService } from "./crypto/transaction-builder.service"
 import { TransactionSigner } from "./crypto/transaction-signer";
 import BigNumber from "@/plugins/bignumber";
 import { camelToUpperSnake } from "@/utils";
+import semver from "semver";
 
 export default class ClientService {
     /**
@@ -25,7 +26,7 @@ export default class ClientService {
 
     /**
    * Fetch the network configuration according to the version.
-   * In case the `vendorField` length has changed, updates the network data.
+   * In case the `memo` length has changed, updates the network data.
    * Create a new client to isolate the main client.
    *
    * @param {String} server
@@ -37,23 +38,6 @@ export default class ClientService {
             .api("node")
             .configuration();
         const data = response.body.data;
-
-        const currentNetwork = store.getters["session/network"];
-        if (currentNetwork && currentNetwork.nethash === data.nethash) {
-            const newLength = data.constants.vendorFieldLength;
-
-            if (
-                newLength &&
-        (!currentNetwork.vendorField ||
-          newLength !== currentNetwork.vendorField.maxLength)
-            ) {
-                currentNetwork.vendorField = {
-                    maxLength: newLength
-                };
-
-                await store.dispatch("network/update", currentNetwork);
-            }
-        }
 
         return data;
     }
@@ -97,6 +81,9 @@ export default class ClientService {
             // Remove the groups that are not in the response
             const groupsIds = Object.values(TRANSACTION_GROUPS).filter(groupId => !!data[groupId]);
 
+            const network = store.getters["session/network"];
+            const legacy = semver.satisfies(semver.coerce(network.apiVersion), "<=3.3");
+
             const parsedFees = groupsIds.reduce((accumulator, groupId) => {
                 const retrivedTypeNames = Object.keys(data[groupId]);
 
@@ -110,7 +97,17 @@ export default class ClientService {
             @config is in UPPER_SNAKE_CASE. Eg: 'BUSSINES_UPDATE'
           */
                     const groupName = `GROUP_${groupId}`;
-                    const parsedTypeName = camelToUpperSnake(typeName);
+                    let parsedTypeName = camelToUpperSnake(typeName);
+
+                    if (!legacy) {
+                        if (typeName === "legacyTransfer") {
+                            parsedTypeName = "TRANSFER";
+                        } else if (typeName === "transfer") {
+                            parsedTypeName = "MULTI_PAYMENT";
+                        } else if (typeName === "legacyVote") {
+                            parsedTypeName = "VOTE";
+                        }
+                    }
 
                     const type = TRANSACTION_TYPES[groupName][parsedTypeName];
 
@@ -126,6 +123,14 @@ export default class ClientService {
 
                 return accumulator;
             }, {});
+
+            if (!parsedFees["1"].some(fee => fee.type === 0) && parsedFees["1"].some(fee => fee.type === 6)) {
+                parsedFees["1"].push({ ...parsedFees["1"].filter(fee => fee.type === 6)[0], type: 0 });
+            }
+
+            if (!parsedFees["1"].some(fee => fee.type === 3) && parsedFees["2"].some(fee => fee.type === 2)) {
+                parsedFees["1"].push({ ...parsedFees["2"].filter(fee => fee.type === 2)[0], type: 3 });
+            }
 
             return parsedFees;
         }
@@ -177,14 +182,29 @@ export default class ClientService {
         options.limit || (options.limit = network.constants.activeDelegates);
         options.orderBy || (options.orderBy = "rank:asc");
 
+        if (options.orderBy.startsWith("approval:") && !semver.satisfies(semver.coerce(network.apiVersion), "<=3.3")) {
+            options.orderBy = options.orderBy.replace("approval:", "votesReceived.percent:");
+        } else {
+            options.orderBy = options.orderBy.replace("approval:", "production.approval:");
+        }
+
         const { body } = await this.client.api("delegates").all({
             page: options.page,
             limit: options.limit,
             orderBy: options.orderBy
         });
 
+        const { data } = body;
+        if (data) {
+            for (const delegate of data) {
+                if (delegate.votesReceived) {
+                    delegate.production = { approval: delegate.votesReceived.percent };
+                }
+            }
+        }
+
         return {
-            delegates: body.data,
+            delegates: data,
             meta: body.meta
         };
     }
@@ -194,7 +214,7 @@ export default class ClientService {
    *
    * @return {Number}
    */
-    async fetchDelegateVoters (delegate, { page, limit } = {}) {
+    async fetchDelegateVoters (delegate) {
         const { body } = await this.client
             .api("delegates")
             .voters(delegate.username);
@@ -217,17 +237,18 @@ export default class ClientService {
     async fetchStaticFees () {
         return {
             1: {
-                transfer: "5000000",
+                legacyTransfer: "50000000",
                 secondSignature: "5000000",
                 delegateRegistration: "7500000000",
-                vote: "5000000",
+                legacyVote: "9000000",
                 multiSignature: "5000000",
                 ipfs: "5000000",
-                multiPayment: "50000000",
+                transfer: "50000000",
                 delegateResignation: "0"
             },
             2: {
-                burn: "0"
+                burn: "0",
+                vote: "9000000"
             }
         };
     }
@@ -383,8 +404,9 @@ export default class ClientService {
                     walletData[transaction.recipient][transaction.id] = transaction;
                 }
 
-                if (transaction.asset && transaction.asset.payments) {
-                    for (const payment of transaction.asset.payments) {
+                if (transaction.asset && (transaction.asset.payments || transaction.asset.transfers)) {
+                    const payments = transaction.asset.payments || transaction.asset.transfers;
+                    for (const payment of payments) {
                         if (addresses.includes(payment.recipientId)) {
                             if (!walletData[payment.recipientId]) {
                                 walletData[payment.recipientId] = {};
@@ -429,6 +451,7 @@ export default class ClientService {
                 if (data.attributes.delegate) {
                     data.isDelegate = true;
                     data.isResigned = data.attributes.delegate.resigned !== undefined;
+                    data.resigned = data.attributes.delegate.resigned;
                 }
 
                 if (data.attributes.secondPublicKey) {

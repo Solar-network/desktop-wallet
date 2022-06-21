@@ -22,7 +22,7 @@ exports.ANNOUNCEMENTS = {
 };
 
 exports.VENDOR_FIELD = {
-    defaultMaxLength: 64
+    defaultMaxLength: 255
 };
 
 exports.I18N = {
@@ -48,7 +48,7 @@ exports.BIP39 = {
 
 exports.TRANSACTION_GROUPS = {
     STANDARD: 1,
-    MAGISTRATE: 2
+    SOLAR: 2
 };
 
 exports.TRANSACTION_TYPES = {
@@ -68,7 +68,10 @@ exports.TRANSACTION_TYPES = {
         HTLC_REFUND: 10
     },
 
-    GROUP_2: {}
+    GROUP_2: {
+        BURN: 0,
+        VOTE: 2
+    }
 };
 
 exports.INTERVALS = {

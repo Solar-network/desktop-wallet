@@ -132,7 +132,8 @@ function createWindow () {
             contextIsolation: false,
             enableRemoteModule: true,
             nodeIntegration: true,
-            webviewTag: true
+            webviewTag: true,
+            webSecurity: false
         }
     });
     windows.main.isMain = true;

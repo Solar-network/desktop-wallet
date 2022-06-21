@@ -9,7 +9,7 @@ export class MultiPaymentBuilder {
         address,
         recipients,
         fee,
-        vendorField,
+        memo,
         passphrase,
         secondPassphrase,
         wif,
@@ -31,9 +31,8 @@ export class MultiPaymentBuilder {
         }
 
         const transaction = Transactions.BuilderFactory.multiPayment()
-            .recipientId(address)
             .fee(fee)
-            .vendorField(vendorField);
+            .memo(memo);
 
         for (const recipient of recipients) {
             transaction.addPayment(recipient.address, recipient.amount);

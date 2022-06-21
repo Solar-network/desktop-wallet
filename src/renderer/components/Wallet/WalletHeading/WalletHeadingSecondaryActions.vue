@@ -26,6 +26,7 @@
             v-if="isOpen"
             :type="item.type"
             :group="item.group || 1"
+            :meta="item.meta"
             @cancel="closeTransactionModal(toggle, isOpen)"
             @sent="closeTransactionModal(toggle, isOpen)"
           />
@@ -166,10 +167,26 @@ export default {
                 return types;
             }
 
-            if (!this.currentWallet.isLedger && WalletService.canResignDelegate(this.currentWallet)) {
+            if (!this.currentWallet.isLedger && WalletService.canResignDelegate(this.currentWallet, 0)) {
                 types.push({
-                    label: this.$t("WALLET_HEADING.ACTIONS.RESIGN_DELEGATE"),
+                    label: this.$t("WALLET_HEADING.ACTIONS.RESIGN_DELEGATE_TEMPORARY"),
                     type: TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION
+                });
+            }
+
+            if (!this.currentWallet.isLedger && WalletService.canResignDelegate(this.currentWallet, 1)) {
+                types.push({
+                    label: this.$t("WALLET_HEADING.ACTIONS.RESIGN_DELEGATE_PERMANENT"),
+                    type: TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION,
+                    meta: 1
+                });
+            }
+
+            if (!this.currentWallet.isLedger && WalletService.canResignDelegate(this.currentWallet, 2)) {
+                types.push({
+                    label: this.$t("WALLET_HEADING.ACTIONS.RESIGN_DELEGATE_REVOKE"),
+                    type: TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION,
+                    meta: 2
                 });
             }
 

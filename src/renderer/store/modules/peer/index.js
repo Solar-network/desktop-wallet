@@ -17,7 +17,7 @@ const getBaseUrl = (peer) => {
 const discoverPeers = async (peerDiscovery) => {
     peerDiscovery.withLatency(300).sortBy("latency");
 
-    const peers = await peerDiscovery.findPeersWithPlugin("core-api", {
+    const peers = await peerDiscovery.findPeersWithPlugin("api", {
         additional: [
             "height",
             "latency"
@@ -28,13 +28,14 @@ const discoverPeers = async (peerDiscovery) => {
         return peers;
     }
 
-    return peerDiscovery.findPeersWithPlugin("core-wallet-api", {
+    const legacyPeers = await peerDiscovery.findPeersWithPlugin("core-api", {
         additional: [
             "height",
-            "latency",
-            "version"
+            "latency"
         ]
     });
+
+    return legacyPeers;
 };
 
 export default {

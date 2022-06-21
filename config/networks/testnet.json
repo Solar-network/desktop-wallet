@@ -48,7 +48,7 @@
         "activeDelegates": 53,
         "epoch": "2022-03-16T18:00:00.000Z"
     },
-    "vendorField": {
+    "memo": {
         "maxLength": 255
     },
     "activeDelegates": 53,

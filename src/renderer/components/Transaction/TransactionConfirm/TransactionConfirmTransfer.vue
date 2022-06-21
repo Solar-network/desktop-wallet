@@ -43,12 +43,12 @@
     </ListDividedItem>
 
     <ListDividedItem
-      v-if="transaction.vendorField"
+      v-if="transaction.memo"
       class="TransactionConfirmTransfer__vendorfield"
       :label="$t('TRANSACTION.VENDOR_FIELD')"
       item-value-class="w-full break-words"
     >
-      {{ transaction.vendorField }}
+      {{ transaction.memo }}
     </ListDividedItem>
 
     <ListDividedItem

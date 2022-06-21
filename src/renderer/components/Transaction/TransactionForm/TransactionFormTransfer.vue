@@ -3,7 +3,7 @@
     class="TransactionFormTransfer flex flex-col"
     @submit.prevent
   >
-    <div v-if="isNotLedger">
+    <div>
       <div class="text-sm text-theme-page-text-light">
         Select a Single or Multiple Recipient Transaction
       </div>
@@ -117,13 +117,13 @@
     />
 
     <InputText
-      ref="vendorField"
-      v-model="$v.form.vendorField.$model"
-      :label="vendorFieldLabel"
+      ref="memo"
+      v-model="$v.form.memo.$model"
+      :label="memoLabel"
       :bip39-warning="true"
-      :helper-text="vendorFieldHelperText"
-      :maxlength="vendorFieldMaxLength"
-      name="vendorField"
+      :helper-text="memoHelperText"
+      :maxlength="memoMaxLength"
+      name="memo"
       class="TransactionFormTransfer__vendorfield mb-5"
     />
 
@@ -302,7 +302,7 @@ export default {
             fee: 0,
             passphrase: "",
             walletPassword: "",
-            vendorField: ""
+            memo: ""
         }
     }),
 
@@ -337,10 +337,6 @@ export default {
 
         isLedger () {
             return this.currentWallet && !!this.currentWallet.isLedger;
-        },
-
-        isNotLedger () {
-            return !this.isLedger;
         },
 
         hasMoreThanMaximumRecipients () {
@@ -461,30 +457,30 @@ export default {
             }
         },
 
-        vendorFieldLabel () {
-            return `${this.$t("TRANSACTION.VENDOR_FIELD")} - ${this.$t("VALIDATION.MAX_LENGTH_CHARACTERS", [this.vendorFieldMaxLength])}`;
+        memoLabel () {
+            return `${this.$t("TRANSACTION.VENDOR_FIELD")} ${this.$t("TRANSACTION.OPTIONAL")} - ${this.$t("VALIDATION.MAX_LENGTH_CHARACTERS", [this.memoMaxLength])}`;
         },
 
-        vendorFieldHelperText () {
-            const vendorFieldLength = this.form.vendorField.length;
+        memoHelperText () {
+            const memoLength = this.form.memo.length;
 
-            if (vendorFieldLength === this.vendorFieldMaxLength) {
-                return this.$t("VALIDATION.VENDOR_FIELD.LIMIT_REACHED", [this.vendorFieldMaxLength]);
-            } else if (vendorFieldLength) {
+            if (memoLength === this.memoMaxLength) {
+                return this.$t("VALIDATION.VENDOR_FIELD.LIMIT_REACHED", [this.memoMaxLength]);
+            } else if (memoLength) {
                 return this.$t("VALIDATION.VENDOR_FIELD.LIMIT_REMAINING", [
-                    this.vendorFieldMaxLength - vendorFieldLength,
-                    this.vendorFieldMaxLength
+                    this.memoMaxLength - memoLength,
+                    this.memoMaxLength
                 ]);
             }
 
             return null;
         },
 
-        vendorFieldMaxLength () {
-            const vendorField = this.walletNetwork.vendorField;
+        memoMaxLength () {
+            const memo = this.walletNetwork.memo;
 
-            if (vendorField) {
-                return vendorField.maxLength;
+            if (memo) {
+                return memo.maxLength;
             }
 
             return VENDOR_FIELD.defaultMaxLength;
@@ -503,15 +499,23 @@ export default {
         },
 
         maximumRecipients () {
-            if (!this.session_network.constants || !this.session_network.constants.multiPaymentLimit) {
-                return 500;
+            if (this.isLedger) {
+                return 40;
             }
 
-            return this.session_network.constants.multiPaymentLimit;
+            if (this.session_network.constants && this.session_network.constants.transfer && this.session_network.constants.transfer.maximum) {
+                return this.session_network.constants.transfer.maximum;
+            }
+
+            if (this.session_network.constants && this.session_network.constants.multiPaymentLimit) {
+                return this.session_network.constants.multiPaymentLimit;
+            }
+
+            return 0;
         },
 
         isMultiPayment () {
-            return this.isNotLedger && this.sendType === "Multiple";
+            return this.sendType === "Multiple";
         },
 
         recipientFieldLabel () {
@@ -546,13 +550,16 @@ export default {
             this.$set(this, "wallet", this.currentWallet);
             this.$v.wallet.$touch();
         }
+
+        this.onSendTypeChange("Multiple");
+        this.onSendTypeChange("Single");
     },
 
     methods: {
         getTransactionData () {
             const transactionData = {
                 address: this.currentWallet.address,
-                vendorField: this.form.vendorField,
+                memo: this.form.memo,
                 passphrase: this.form.passphrase,
                 fee: this.getFee(),
                 wif: this.form.wif,
@@ -607,7 +614,7 @@ export default {
             try {
                 if (WalletService.validateAddress(this.schema.address, this.session_network.version)) {
                     this.$set(this, "recipientId", this.schema.address || "");
-                    this.$set(this.form, "vendorField", this.schema.vendorField || "");
+                    this.$set(this.form, "memo", this.schema.memo || "");
 
                     if (this.schema.amount) {
                         this.$set(this, "amount", this.schema.amount || "");
@@ -776,12 +783,13 @@ export default {
                             throw new Error(this.$t("VALIDATION.INVALID_TYPE"));
                         }
 
-                        if (this.isMultiPayment && Object.prototype.hasOwnProperty.call(transaction, "asset") && Object.prototype.hasOwnProperty.call(transaction.asset, "payments")) {
+                        if (this.isMultiPayment && Object.prototype.hasOwnProperty.call(transaction, "asset") && (Object.prototype.hasOwnProperty.call(transaction.asset, "payments") || Object.prototype.hasOwnProperty.call(transaction.asset, "transfers"))) {
                             this.$refs.recipient.reset();
                             this.$refs.amount.reset();
                             this.$v.form.recipients.$model = [];
 
-                            transaction.asset.payments.forEach(payment => {
+                            const payments = transaction.asset.payments || transaction.asset.transfers;
+                            payments.forEach(payment => {
                                 if (payment.recipientId && payment.amount) {
                                     if (WalletService.validateAddress(payment.recipientId, this.session_network.version)) {
                                         const amount = this.currency_unitToSub(this.currency_subToUnit(payment.amount, this.session_network), this.session_network);
@@ -815,8 +823,8 @@ export default {
                             this.$refs.fee.$refs.input.model = this.currency_subToUnit(transaction.fee, this.session_network);
                         }
 
-                        if (transaction.vendorField) {
-                            this.$refs.vendorField.model = transaction.vendorField;
+                        if (transaction.memo) {
+                            this.$refs.memo.model = transaction.memo;
                         }
 
                         this.$success(this.$t("TRANSACTION.SUCCESS.LOAD_FROM_FILE"));
@@ -880,7 +888,7 @@ export default {
             fee: mixin.validators.fee,
             passphrase: mixin.validators.passphrase,
             secondPassphrase: mixin.validators.secondPassphrase,
-            vendorField: {},
+            memo: {},
             walletPassword: mixin.validators.walletPassword
         }
     }

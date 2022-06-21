@@ -7,6 +7,7 @@ import { TransactionSigner } from "./transaction-signer";
 export class DelegateResignationBuilder {
     static async build ({
         address,
+        resignationType,
         fee,
         passphrase,
         secondPassphrase,
@@ -28,9 +29,9 @@ export class DelegateResignationBuilder {
             );
         }
 
-        const transaction = Transactions.BuilderFactory.delegateResignation().fee(
-            fee
-        );
+        const transaction = Transactions.BuilderFactory.delegateResignation()
+            .resignationTypeAsset(resignationType)
+            .fee(fee);
 
         passphrase = CryptoUtils.normalizePassphrase(passphrase);
         secondPassphrase = CryptoUtils.normalizePassphrase(secondPassphrase);

@@ -4,6 +4,7 @@ import TransactionModal from "./TransactionModal";
 import TransactionPeerList from "./TransactionPeerList";
 import TransactionRecipientList from "./TransactionRecipientList";
 import TransactionStatusIcon from "./TransactionStatusIcon";
+import TransactionVotesList from "./TransactionVotesList";
 
 export * from "./TransactionForm";
 
@@ -13,7 +14,8 @@ export {
     TransactionModal,
     TransactionPeerList,
     TransactionRecipientList,
-    TransactionStatusIcon
+    TransactionStatusIcon,
+    TransactionVotesList
 };
 
 export * from "./TransactionShow";

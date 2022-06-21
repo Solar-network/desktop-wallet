@@ -112,8 +112,9 @@ export default {
                 if (this.transaction.asset.votes[0].substring(0, 1) === "-") {
                     return "UNVOTE";
                 }
+            } else if (key === "VOTE" && Object.keys(this.transaction.asset.votes).length === 0) {
+                return "UNVOTE";
             }
-
             return key;
         },
         typeClass () {
@@ -127,6 +128,19 @@ export default {
             return `TransactionModal${upperFirst(camelCase(type))}`;
         },
         typeName () {
+            if (this.type === TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION) {
+                switch (this.$attrs.meta) {
+                case 1: {
+                    return this.$t("WALLET_HEADING.ACTIONS.RESIGN_DELEGATE_PERMANENT");
+                }
+                case 2: {
+                    return this.$t("WALLET_HEADING.ACTIONS.RESIGN_DELEGATE_REVOKE");
+                }
+                default: {
+                    return this.$t("WALLET_HEADING.ACTIONS.RESIGN_DELEGATE_TEMPORARY");
+                }
+                }
+            }
             return this.$t(`TRANSACTION.TYPE.${this.transactionKey}`);
         },
         walletNetwork () {
@@ -316,7 +330,7 @@ export default {
         },
 
         storeTransaction (transaction) {
-            const { type, typeGroup, amount, fee, senderPublicKey, vendorField, asset } = transaction;
+            const { type, typeGroup, amount, fee, senderPublicKey, memo, asset } = transaction;
 
             let id = transaction.id;
             if (transaction.signatures) {
@@ -345,7 +359,7 @@ export default {
                 asset,
                 sender: WalletService.getAddressFromPublicKey(senderPublicKey, this.walletNetwork.version),
                 timestamp,
-                vendorField,
+                memo,
                 confirmations: 0,
                 recipient: transaction.recipientId || transaction.sender,
                 profileId: this.walletOverride ? this.walletOverride.profileId : this.session_profile.id,

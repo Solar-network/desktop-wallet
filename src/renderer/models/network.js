@@ -49,7 +49,7 @@ export default new BaseModel({
         constants: {
             type: "object"
         },
-        vendorField: {
+        memo: {
             type: "object",
             properties: {
                 maxLength: {

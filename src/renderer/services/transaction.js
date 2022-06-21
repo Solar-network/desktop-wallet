@@ -18,7 +18,7 @@ export default class TransactionService {
    * @return {Buffer}
    */
     static getBytes (transaction) {
-        return Transactions.Serializer.getBytes(transaction, {
+        return Transactions.Serialiser.getBytes(transaction, {
             disableVersionCheck: true,
             excludeSignature: true,
             excludeSecondSignature: true
@@ -34,8 +34,9 @@ export default class TransactionService {
     static getAmount (vm, transaction, wallet, includeFee = false) {
         const amount = vm.currency_toBuilder(0);
         const walletAddress = transaction.walletAddress || (wallet ? wallet.address : null);
-        if (transaction.asset && transaction.asset.payments) {
-            for (const payment of transaction.asset.payments) {
+        if (transaction.asset && (transaction.asset.payments || transaction.asset.transfers)) {
+            const payments = transaction.asset.payments || transaction.asset.transfers;
+            for (const payment of payments) {
                 if (walletAddress) {
                     if (walletAddress === transaction.sender && walletAddress === payment.recipientId) {
                         continue;

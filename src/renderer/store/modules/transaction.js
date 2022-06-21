@@ -199,7 +199,7 @@ export default {
                 return;
             }
 
-            const votes = transactions.filter(tx => tx.type === TRANSACTION_TYPES.GROUP_1.VOTE);
+            const votes = transactions.filter(tx => (tx.typeGroup === 1 && tx.type === TRANSACTION_TYPES.GROUP_1.VOTE) || (tx.typeGroup === 2 && tx.type === TRANSACTION_TYPES.GROUP_2.VOTE));
             if (!votes.length) {
                 return;
             }

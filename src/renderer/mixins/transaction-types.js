@@ -4,6 +4,9 @@ const isStandardTypeGroup = typeGroup => {
     return typeGroup === TRANSACTION_GROUPS.STANDARD;
 };
 
+const isSolarTypeGroup = typeGroup => {
+    return typeGroup === TRANSACTION_GROUPS.SOLAR;
+};
 export default {
     methods: {
         transaction_isTransfer (type, typeGroup) {
@@ -23,8 +26,12 @@ export default {
             );
         },
 
-        transaction_isVote (type, typeGroup) {
+        transaction_isLegacyVote (type, typeGroup) {
             return isStandardTypeGroup(typeGroup) && type === TRANSACTION_TYPES.GROUP_1.VOTE;
+        },
+
+        transaction_isVote (type, typeGroup) {
+            return isSolarTypeGroup(typeGroup) && type === TRANSACTION_TYPES.GROUP_2.VOTE;
         },
 
         transaction_isMultiSignature (type, typeGroup) {

@@ -23,7 +23,7 @@ export default class URIHandler {
             amount: null,
             label: null,
             nethash: null,
-            vendorField: null,
+            memo: null,
             wallet: null
         };
 
@@ -35,7 +35,7 @@ export default class URIHandler {
         scheme.amount = scheme.amount ? Number(scheme.amount) : null;
         scheme.label = scheme.label ? this.__fullyDecode(scheme.label) : null;
         scheme.nethash = scheme.nethash ? this.__fullyDecode(scheme.nethash) : null;
-        scheme.vendorField = scheme.vendorField ? this.__fullyDecode(scheme.vendorField) : null;
+        scheme.memo = scheme.memo ? this.__fullyDecode(scheme.memo) : null;
         scheme.wallet = scheme.wallet ? this.__fullyDecode(scheme.wallet) : null;
 
         return scheme;
