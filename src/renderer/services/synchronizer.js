@@ -33,7 +33,7 @@ export default class Synchronizer {
     }
 
     get config () {
-        const { loop, shortest, shorter, medium, longer, longest } = this.intervals;
+        const { loop, shortest, shorter, medium, longer, longest, block } = this.intervals;
 
         const config = {
             announcements: {
@@ -49,8 +49,8 @@ export default class Synchronizer {
                 focus: { interval: shorter }
             },
             ledgerWallets: {
-                default: { interval: shorter },
-                focus: { interval: shortest }
+                default: { interval: shortest },
+                focus: { interval: block }
             },
             market: {
                 default: { interval: medium },
@@ -61,8 +61,8 @@ export default class Synchronizer {
                 focus: { interval: shorter }
             },
             wallets: {
-                default: { interval: shorter },
-                focus: { interval: shortest }
+                default: { interval: shortest },
+                focus: { interval: block }
             }
         };
         config.contacts = config.wallets;
