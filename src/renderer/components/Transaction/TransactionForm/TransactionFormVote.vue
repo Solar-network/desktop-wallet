@@ -19,45 +19,20 @@
             {{ currentWallet.address }}
           </span>
         </ListDividedItem>
-      </ListDivided>
-
-      <ListDivided>
-        <ListDividedItem :label="$t('INPUT_ADDRESS.LABEL')">
-          <WalletAddress
-            :address="delegate.address"
-            @click="emitCancel"
+        <ListDividedItem
+          v-if="Object.keys(votedDelegates).length"
+          class="TransactionShow__Recipients"
+          :label="$t('TRANSACTION.VOTES')"
+          item-value-class="items-center"
+        >
+          <TransactionVotesList
+            :title="null"
+            :items="getVotes"
+            :show-links="true"
+            readonly
+            @click="() => {}"
           />
         </ListDividedItem>
-        <ListDividedItem :label="$t('WALLET_DELEGATES.STATUS.TITLE')">
-          <span :class="delegateStatus.class">
-            {{ delegateStatus.text }}
-          </span>
-        </ListDividedItem>
-        <ListDividedItem
-          :label="$t('WALLET_DELEGATES.RANK')"
-          :value="rankLabel"
-        />
-        <ListDividedItem
-          :label="$t('WALLET_DELEGATES.APPROVAL')"
-          :value="formatter_percentage(delegate.production.approval)"
-        />
-        <ListDividedItem
-          :label="$t('WALLET_DELEGATES.FORGED')"
-          :value="forged"
-        />
-        <ListDividedItem
-          :label="$t('WALLET_DELEGATES.BLOCKS')"
-          :value="blocksProduced"
-        />
-        <ListDividedItem
-          v-if="delegate.votes"
-          :label="$t('WALLET_DELEGATES.VOTES')"
-          :value="formatter_votes(delegate.votes)"
-        />
-        <ListDividedItem
-          :label="$t('WALLET_DELEGATES.VOTERS')"
-          :value="voters"
-        />
       </ListDivided>
 
       <button
@@ -66,25 +41,8 @@
         class="blue-button mt-5"
         @click="toggleStep"
       >
-        {{ isVoter ? $t('WALLET_DELEGATES.UNVOTE') : $t('WALLET_DELEGATES.VOTE') }}
+        {{ Object.keys(votedDelegates).length === 0 ? $t('WALLET_DELEGATES.UNVOTE') : $t('WALLET_DELEGATES.VOTE') }}
       </button>
-
-      <div
-        v-if="showCurrentlyVoting"
-        class="mt-4 border-theme-button-text border-l-4 pl-2"
-      >
-        <span class="text-theme-button-text font-bold">
-          {{ $t('WALLET_DELEGATES.VOTE_INFO') }}
-        </span>
-        <i18n
-          tag="span"
-          path="WALLET_DELEGATES.CURRENTLY_VOTED"
-        >
-          <strong place="delegate">
-            {{ votedDelegate.username }}
-          </strong>
-        </i18n>
-      </div>
     </Collapse>
 
     <Collapse :is-open="isPassphraseStep">
@@ -163,9 +121,9 @@ import { TRANSACTION_TYPES } from "@config";
 import { Collapse } from "@/components/Collapse";
 import { InputFee, InputPassword } from "@/components/Input";
 import { ListDivided, ListDividedItem } from "@/components/ListDivided";
+import TransactionVotesList from "@/components/Transaction/TransactionVotesList";
 import { ModalLoader } from "@/components/Modal";
 import { PassphraseInput } from "@/components/Passphrase";
-import WalletAddress from "@/components/Wallet/WalletAddress";
 import mixin from "./mixin";
 
 export default {
@@ -181,22 +139,13 @@ export default {
         ListDividedItem,
         ModalLoader,
         PassphraseInput,
-        WalletAddress
+        TransactionVotesList
     },
 
     mixins: [mixin],
 
     props: {
-        delegate: {
-            type: Object,
-            required: true
-        },
-        isVoter: {
-            type: Boolean,
-            required: false,
-            default: false
-        },
-        votedDelegate: {
+        votedDelegates: {
             type: Object,
             required: false,
             default: null
@@ -209,50 +158,12 @@ export default {
             fee: 0,
             passphrase: "",
             walletPassword: ""
-        },
-        forged: 0,
-        voters: "0"
+        }
     }),
 
     computed: {
-        delegateStatus () {
-            const activeThreshold = this.session_network.constants.activeDelegates;
-            if (this.delegate.isResigned) {
-                return {
-                    text: this.$t("WALLET_DELEGATES.STATUS.RESIGNED"),
-                    class: "text-red"
-                };
-            }
-            if (this.delegate.rank && this.delegate.rank <= activeThreshold) {
-                return {
-                    text: this.$t("WALLET_DELEGATES.STATUS.ACTIVE"),
-                    class: "text-green"
-                };
-            }
-            return {
-                text: this.$t("WALLET_DELEGATES.STATUS.STANDBY"),
-                class: "text-orange"
-            };
-        },
-
-        rankLabel () {
-            if (this.delegate.rank === undefined && this.delegate.isResigned) {
-                return this.$t("WALLET_DELEGATES.RANK_NOT_APPLICABLE");
-            }
-
-            if (this.delegate.rank === undefined) {
-                return this.$t("WALLET_DELEGATES.RANK_NOT_AVAILABLE");
-            }
-
-            return this.delegate.rank;
-        },
-
-        blocksProduced () {
-            if (!this.delegate.blocks || !this.delegate.blocks.produced) {
-                return 0;
-            }
-
-            return this.delegate.blocks.produced;
+        getVotes () {
+            return Object.entries(this.votedDelegates).map(vote => ({ address: this.$store.getters["delegate/byUsername"](vote[0]).address, delegate: vote[0], percent: vote[1] / 100 }));
         },
 
         showVoteUnvoteButton () {
@@ -260,15 +171,7 @@ export default {
                 return false;
             }
 
-            if (this.isVoter === false && this.delegate.isResigned) {
-                return false;
-            }
-
             return true;
-        },
-
-        showCurrentlyVoting () {
-            return !!this.votedDelegate && !this.isVoter;
         }
     },
 
@@ -288,20 +191,16 @@ export default {
         }
     },
 
-    mounted () {
-        this.fetchForged();
-        this.fetchVoters();
-    },
-
     methods: {
         getTransactionData () {
-            const voteAsset = this.delegate.username;
+            const votes = {};
+            for (const delegate in this.votedDelegates) {
+                votes[delegate] = this.votedDelegates[delegate] / 100;
+            }
             const transactionData = {
                 address: this.currentWallet.address,
                 passphrase: this.form.passphrase,
-                votes: [
-                    `${this.isVoter ? "-" : "+"}${voteAsset}`
-                ],
+                votes,
                 fee: this.getFee(),
                 wif: this.form.wif,
                 networkWif: this.walletNetwork.wif,
@@ -310,11 +209,6 @@ export default {
 
             if (this.currentWallet.secondPublicKey) {
                 transactionData.secondPassphrase = this.form.secondPassphrase;
-            }
-
-            if (this.isVoter === false && !!this.votedDelegate) {
-                const votedDelegateAsset = this.votedDelegate.username;
-                transactionData.votes.unshift(`-${votedDelegateAsset}`);
             }
 
             return transactionData;
@@ -334,15 +228,6 @@ export default {
 
         toggleStep () {
             this.isPassphraseStep = !this.isPassphraseStep;
-        },
-
-        fetchForged () {
-            const forged = this.$client.fetchDelegateForged(this.delegate);
-            this.forged = this.currency_format(this.currency_subToUnit(forged), { currencyFrom: "network" });
-        },
-
-        async fetchVoters () {
-            this.voters = await this.$client.fetchDelegateVoters(this.delegate) || "0";
         },
 
         reset () {

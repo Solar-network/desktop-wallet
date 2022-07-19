@@ -914,7 +914,9 @@ export default {
         WALLET_SHOW: {
             NO_VOTE: "Wallet hasn't voted",
             ADD_CONTACT: "Add to contacts",
-            VOTING_FOR: "Voting for {delegate}"
+            VOTING_FOR_ONE: "Voting for {n}",
+            VOTING_FOR_MULTIPLE: "Voting for {n} Delegates",
+            VOTING_FOR_SHORT: "{n} Delegates"
         }
     },
 
@@ -1270,13 +1272,14 @@ export default {
         VOTE_DELEGATE: "Vote for {delegate}",
         UNVOTE_DELEGATE: "Cancel Vote",
         CURRENTLY_VOTED: "You are currently voting for {delegate}",
-        VOTED_FOR: "You voted for delegate {delegate}",
+        VOTED_FOR: "Total voted: {delegate}%",
         WALLET_VOTED_FOR: "This wallet voted for delegate {delegate}",
         VOTE_INFO: "Info:",
         NO_VOTE: "This wallet is not voting. To view more information and vote, use the search or click on any delegate",
         AWAITING_VOTE_CONFIRMATION: "Your transaction is awaiting confirmation",
         LOADING_VOTE: "Loading vote details...",
-        SEARCH_DELEGATE: "Search delegate"
+        SEARCH_DELEGATE: "Search delegate",
+        TOTAL_REMAINING: "Remaining: {percentage}%"
     },
 
     WALLET_IPFS: {

@@ -65,7 +65,7 @@ export default new BaseModel({
             default: false
         },
         vote: {
-            type: ["string", "null"]
+            type: ["object", "null"]
         },
         resigned: {
             type: ["boolean", "string", "null"]

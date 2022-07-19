@@ -458,25 +458,12 @@ export default class ClientService {
                     data.secondPublicKey = data.attributes.secondPublicKey;
                 }
 
-                if (data.attributes.vote) {
-                    data.vote = data.attributes.vote;
-                }
-
                 if (data.attributes.multiSignature) {
                     data.multiSignature = data.attributes.multiSignature;
                 }
             }
 
-            if (data.votingFor) {
-                const voteKeys = Object.keys(data.votingFor);
-                if (voteKeys.length > 0) {
-                    data.vote = voteKeys[0];
-                }
-            }
-
-            if (!data.vote) {
-                data.vote = null;
-            }
+            data.vote = data.votingFor;
         }
 
         return data;
@@ -536,15 +523,8 @@ export default class ClientService {
             }
         }
 
-        if (walletData && walletData.attributes && walletData.attributes.vote) {
-            return walletData.attributes.vote;
-        }
-
         if (walletData && walletData.votingFor) {
-            const voteKeys = Object.keys(walletData.votingFor);
-            if (voteKeys.length > 0) {
-                return voteKeys[0];
-            }
+            return walletData.votingFor;
         }
 
         return null;

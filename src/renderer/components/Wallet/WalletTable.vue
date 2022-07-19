@@ -76,18 +76,7 @@
           v-else-if="data.column.field === 'vote'"
         >
           <span class="flex items-center">
-            {{ getDelegateProperty(data.row.vote, 'username') }}
-            <span
-              v-if="getDelegate(data.row.vote) && !isActiveDelegate(data.row.vote)"
-              v-tooltip="{
-                content: $t('PAGES.WALLET_ALL.DELEGATE_NOT_ACTIVE', {
-                  delegate: getDelegateProperty(data.row.vote, 'username'),
-                  rank: getDelegateProperty(data.row.vote, 'rank')
-                }),
-                trigger: 'hover'
-              }"
-              class="bg-theme-button-special-choice cursor-pointer rounded-full w-2 h-2 ml-2"
-            />
+            {{ Object.keys(data.row.vote).length > 1 ? $t('PAGES.WALLET_SHOW.VOTING_FOR_SHORT', { n: Object.keys(data.row.vote).length }) : getDelegateProperty(Object.keys(data.row.vote)[0], 'username') }}
           </span>
         </div>
 

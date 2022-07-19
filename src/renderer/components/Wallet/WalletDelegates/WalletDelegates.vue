@@ -1,7 +1,7 @@
 <template>
   <div class="WalletDelegates">
     <div
-      v-if="!walletVote.username && isExplanationDisplayed"
+      v-if="!Object.keys(currentVotes).length && isExplanationDisplayed"
       class="WalletDelegates__explanation relative rounded-lg mt-2 mb-6 bg-theme-explanation-background text-theme-explanation-text flex flex-row items-center justify-between"
     >
       <div class="WalletDelegates__explanation__text flex text-left text-inherit py-4 pl-6">
@@ -27,23 +27,16 @@
 
     <TableWrapper
       :columns="columns"
-      :has-pagination="true"
       :is-loading="isLoading"
       :is-remote="true"
-      :rows="delegates"
+      :rows="shownDelegates"
       :sort-query="{
         field: queryParams.sort.field,
         type: queryParams.sort.type
       }"
       :total-rows="totalCount"
       :no-data-message="$t('TABLE.NO_DELEGATES')"
-      :current-page="currentPage"
-      :per-page="queryParams.limit"
-      :per-page-dropdown="perPageOptions"
       class="WalletDelegates__table"
-      @on-row-click="onRowClick"
-      @on-per-page-change="onPerPageChange"
-      @on-page-change="onPageChange"
       @on-sort-change="onSortChange"
     >
       <template
@@ -53,15 +46,24 @@
           v-if="data.column.field === 'username'"
         >
           <div class="flex items-center">
-            <span>{{ data.formattedRow['username'] }}</span>
+            <div style="width: 250px">{{ data.formattedRow['username'] }}</div>
             <span
-              v-if="data.row.username === walletVote.username"
+              v-if="Object.keys(currentVotes).includes(data.row.username)"
               class="vote-badge"
             >
-              {{ $t('WALLET_DELEGATES.VOTE') }}
+              {{ `${$t('WALLET_DELEGATES.VOTE')} ${formatPercentage(data.row.votePercent)}%` }}
             </span>
           </div>
         </div>
+
+        <span
+          v-else-if="data.column.field === 'newVotePercent'"
+        >
+          <InputPercentage
+            :value="data.row.newVotePercent"
+            @percent-input="(value) => emitNewPercentage(value, data.formattedRow['username'])"
+          />
+        </span>
 
         <span v-else>
           {{ data.formattedRow[data.column.field] }}
@@ -75,54 +77,45 @@
 import { isEqual } from "lodash";
 import { ButtonClose } from "@/components/Button";
 import TableWrapper from "@/components/utils/TableWrapper";
+import InputPercentage from "@/components/Input/InputPercentage.vue";
 
 export default {
     name: "WalletDelegates",
 
-    inject: ["walletVote"],
+    inject: ["walletVotes", "newVotes", "delegateSearch"],
 
     components: {
         ButtonClose,
-        TableWrapper
+        TableWrapper,
+        InputPercentage
     },
 
-    data: () => ({
-        currentPage: 1,
-        delegates: [],
-        isExplanationTruncated: true,
-        isLoading: false,
-        totalCount: 0,
-        queryParams: {
-            page: 1,
-            limit: 51,
-            sort: {
-                field: "rank",
-                type: "asc"
-            }
-        }
-    }),
-
-    computed: {
-        perPageOptions () {
-            if (this.activeDelegates < 25) {
-                return [this.activeDelegates];
-            }
-
-            const options = [];
-
-            for (let i = 25; i <= this.activeDelegates && i <= 100; i = i + 25) {
-                options.push(i);
-            }
-
-            if (this.activeDelegates < 100) {
-                if (this.activeDelegates - options[options.length - 1] > 10) {
-                    options.push(this.activeDelegates);
-                } else {
-                    options[options.length - 1] = this.activeDelegates;
+    data () {
+        return {
+            currentPage: 1,
+            delegates: [],
+            shownDelegates: [],
+            isExplanationTruncated: true,
+            isLoading: false,
+            totalCount: 0,
+            queryParams: {
+                sort: {
+                    field: "rank",
+                    type: "asc"
                 }
             }
+        };
+    },
 
-            return options;
+    computed: {
+        currentVotes () {
+            return this.walletVotes();
+        },
+        newVotesProp () {
+            return this.newVotes();
+        },
+        filterSearch () {
+            return this.delegateSearch();
         },
 
         activeDelegates () {
@@ -141,13 +134,13 @@ export default {
                 {
                     label: this.$t("WALLET_DELEGATES.USERNAME"),
                     field: "username",
-                    tdClass: "w-2/3"
+                    tdClass: "w-7/8"
                 },
                 {
                     label: this.$t("WALLET_DELEGATES.APPROVAL"),
-                    field: "production.approval",
+                    field: "newVotePercent",
                     type: "percentage",
-                    formatFn: this.formatPercentage
+                    tdClass: "w-8"
                 }
             ];
         },
@@ -161,14 +154,33 @@ export default {
         }
     },
 
+    watch: {
+        currentVotes () {
+            this.fetchDelegates();
+        },
+        filterSearch () {
+            this.filter();
+        },
+        newVotesProp () {
+            this.delegates = this.delegates.map(delegate => {
+                delegate.newVotePercent = this.newVotesProp[delegate.username] || 0;
+                return delegate;
+            });
+            this.filter();
+        }
+    },
+
     mounted () {
-        this.queryParams.limit = Math.min(100, this.activeDelegates);
         this.fetchDelegates();
     },
 
     methods: {
         dismissExplanation () {
             this.$store.dispatch("app/setVotingExplanation", false);
+        },
+
+        emitNewPercentage (value, delegate) {
+            this.$emit("on-delegate-percentage-change", value, delegate);
         },
 
         async fetchDelegates () {
@@ -179,15 +191,26 @@ export default {
             try {
                 this.isLoading = true;
 
-                const { limit, page, sort } = this.queryParams;
-                const { delegates, meta } = await this.$client.fetchDelegates({
-                    page,
-                    limit,
-                    orderBy: `${sort.field.replace("production.", "")}:${sort.type}`
-                });
+                const walletVotes = this.currentVotes;
 
-                this.delegates = delegates;
-                this.totalCount = meta.totalCount;
+                const allDelegates = [];
+                let page = 1;
+                let apiDelegates;
+                while ((apiDelegates = (await this.$client.fetchDelegates({
+                    page,
+                    limit: 100
+                })).delegates).length > 0) {
+                    for (const delegate of apiDelegates) {
+                        allDelegates.push(delegate);
+                    }
+                    page++;
+                }
+                this.delegates = allDelegates.map(delegate => {
+                    delegate.votePercent = walletVotes[delegate.username] || 0;
+                    delegate.newVotePercent = this.newVotesProp[delegate.username] || 0;
+                    return delegate;
+                }).filter((del) => del.rank !== undefined);
+                this.filter();
             } catch (error) {
                 this.$logger.error(error);
                 this.$error(this.$t("COMMON.FAILED_FETCH", {
@@ -195,28 +218,14 @@ export default {
                     msg: error.message
                 }));
                 this.delegates = [];
+                this.filter();
             } finally {
                 this.isLoading = false;
             }
         },
 
         formatPercentage (value) {
-            return this.formatter_percentage(value);
-        },
-
-        onRowClick ({ row }) {
-            this.$emit("on-row-click-delegate", row);
-        },
-
-        onPageChange ({ currentPage }) {
-            this.currentPage = currentPage;
-            this.__updateParams({ page: currentPage });
-            this.fetchDelegates();
-        },
-
-        onPerPageChange ({ currentPerPage }) {
-            this.__updateParams({ limit: currentPerPage, page: 1 });
-            this.fetchDelegates();
+            return value / 100;
         },
 
         onSortChange (sortOptions) {
@@ -224,11 +233,22 @@ export default {
 
             if (!isEqual(params, this.queryParams.sort)) {
                 this.__updateParams({
-                    sort: params,
-                    page: 1
+                    sort: params
                 });
-                this.fetchDelegates();
+                this.delegates = this.delegates.slice().sort((a, b) => {
+                    const asc = this.queryParams.sort.type === "asc";
+                    const field = this.queryParams.sort.field;
+                    if (a[field] < b[field]) return -1 * (asc ? 1 : -1);
+                    else if (a[field] > b[field]) return 1 * (asc ? 1 : -1);
+                    return 0;
+                });
+                this.filter();
             }
+        },
+
+        filter () {
+            this.shownDelegates = this.delegates.filter((del) => !this.filterSearch || del.username.includes(this.filterSearch));
+            this.totalCount = this.shownDelegates.length;
         },
 
         reset () {
@@ -251,6 +271,7 @@ export default {
   margin-bottom: auto;
   margin-top: 5px;
 }
+
 </style>
 
 <style>

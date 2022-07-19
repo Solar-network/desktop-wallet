@@ -173,19 +173,6 @@ export default {
             return null;
         },
 
-        getVote (vote) {
-            const delegate = this.$store.getters["delegate/byPublicKey"](vote);
-
-            if (delegate) {
-                return {
-                    username: delegate.username,
-                    publicKey: delegate.publicKey
-                };
-            }
-
-            return null;
-        },
-
         getBalances (balance) {
             const network = this.session_network;
 
@@ -212,7 +199,6 @@ export default {
                     username: this.getUsername(wallet.address),
                     address: wallet.address,
                     publicKey: wallet.publicKey,
-                    vote: this.getVote(wallet.vote),
                     balance: this.getBalances(wallet.balance)
                 }, isNull);
             });

@@ -13,7 +13,7 @@
 
     <button
       v-tooltip="{
-        content: isVoting ? $t('PAGES.WALLET_SHOW.VOTING_FOR', { delegate: walletVote.username }) : $t('PAGES.WALLET_SHOW.NO_VOTE'),
+        content: isVoting ? $t(`PAGES.WALLET_SHOW.VOTING_FOR_${Object.keys(walletVotes()).length === 1 ? 'ONE' : 'MULTIPLE'}`, { n: Object.keys(walletVotes()).length === 1 ? Object.keys(walletVotes())[0] : Object.keys(walletVotes()).length }) : $t('PAGES.WALLET_SHOW.NO_VOTE'),
         trigger: 'hover'
       }"
       :class="isVoting ? 'bg-theme-button-special-choice' : 'bg-transparent'"
@@ -91,7 +91,7 @@ import SvgIcon from "@/components/SvgIcon";
 export default {
     name: "WalletHeadingPrimaryActions",
 
-    inject: ["switchToTab", "walletVote"],
+    inject: ["switchToTab", "walletVotes"],
 
     components: {
         ButtonModal,
@@ -120,7 +120,7 @@ export default {
         },
 
         isVoting () {
-            return !!this.walletVote.username;
+            return !!Object.keys(this.walletVotes()).length;
         }
     },
 

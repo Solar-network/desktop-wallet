@@ -346,12 +346,15 @@ class Action {
         case TRANSACTION_TYPES.GROUP_2.VOTE: {
             const type = Object.keys(transaction.asset.votes).length > 0 ? "VOTE" : "UNVOTE";
             const voteUnvote = this.$t(`SYNCHRONIZER.GROUP_1.${type}`);
+            const numberOfVotes = Object.keys(transaction.asset.votes).length;
             message = {
                 translation: type === "VOTE" ? "SYNCHRONIZER.GROUP_1.NEW_VOTE" : "SYNCHRONIZER.GROUP_1.CANCELLED_VOTE",
                 options: {
                     address: truncateMiddle(wallet.address),
                     voteUnvote,
-                    publicKey: type === "VOTE" ? truncateMiddle(Object.keys(transaction.asset.votes)[0]) : undefined
+                    publicKey: type === "VOTE"
+                        ? (numberOfVotes > 1 ? `${numberOfVotes} delegates` : Object.keys(transaction.asset.votes)[0])
+                        : undefined
                 }
             };
             break;

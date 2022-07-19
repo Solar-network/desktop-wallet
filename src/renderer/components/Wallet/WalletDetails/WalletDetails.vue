@@ -38,7 +38,7 @@
           :is="tab.component"
           slot-scope="{ isActive }"
           :is-active="isActive"
-          @on-row-click-delegate="onRowClickDelegate"
+          @on-delegate-percentage-change="changeVotePercentage"
         />
       </MenuTabItem>
     </MenuTab>
@@ -46,20 +46,25 @@
       v-if="isDelegatesTab && isOwned"
       class="bg-theme-feature px-5 flex flex-row rounded-b-lg lg:rounded-br-none"
     >
-      <div
-        class="WalletDetails__button rounded-l"
-        @click="openSelectDelegate"
+      <span
+        class="WalletDetails__button rounded-l search-input-container"
+        @click="$refs.search.focus()"
       >
         <SvgIcon
           name="search"
           view-box="0 0 17 16"
           class="mr-2"
         />
-        {{ $t('WALLET_DELEGATES.SEARCH_DELEGATE') }}
-      </div>
+        <input
+          ref="search"
+          v-model="search"
+          class="WalletDetails__button rounded-l"
+          :placeholder="$t('WALLET_DELEGATES.SEARCH_DELEGATE')"
+        >
+      </span>
       <div
         class="mt-4 mb-4 py-4 px-6 text-theme-voting-banner-text bg-theme-voting-banner-background w-full flex"
-        :class="{ 'rounded-r': isOwned && !votedDelegate }"
+        :class="{ 'rounded-r': isOwned }"
       >
         <div
           v-if="!isAwaitingConfirmation && isLoadingVote"
@@ -78,74 +83,51 @@
           </span>
         </div>
         <div
-          v-else-if="votedDelegate"
+          v-else-if="true"
           class="flex"
         >
           <i18n
             tag="span"
-            :class="{
-              'border-r border-theme-line-separator' : votedDelegate.rank
-            }"
-            class="font-semibold pr-6"
-            :path="isOwned ? 'WALLET_DELEGATES.VOTED_FOR' : 'WALLET_DELEGATES.WALLET_VOTED_FOR'"
+            class="font-semibold pr-6 border-r border-theme-line-separator"
+            :class="[0, 10000].includes(totalRemaining) ? 'success' : (totalRemaining < 0 ? 'error' : 'warn')"
+            path="WALLET_DELEGATES.VOTED_FOR"
           >
             <strong place="delegate">
-              {{ votedDelegate.username }}
+              {{ formatPercentage(totalVotes) }}
             </strong>
           </i18n>
-          <template v-if="votedDelegate.rank">
-            <i18n
-              tag="span"
-              class="font-semibold px-6"
-              path="WALLET_DELEGATES.RANK_BANNER"
-            >
-              <strong place="rank">
-                {{ votedDelegate.rank }}
-              </strong>
-            </i18n>
-          </template>
-        </div>
-        <div
-          v-else-if="isOwned && !votedDelegate"
-          class="flex"
-        >
-          <span class="font-semibold">
-            {{ $t('WALLET_DELEGATES.NO_VOTE') }}
-          </span>
+          <i18n
+            tag="span"
+            class="font-semibold px-6"
+            :class="[0, 10000].includes(totalRemaining) ? 'success' : (totalRemaining < 0 ? 'error' : 'warn')"
+            path="WALLET_DELEGATES.TOTAL_REMAINING"
+          >
+            <strong place="percentage">
+              {{ formatPercentage(totalRemaining) }}
+            </strong>
+          </i18n>
         </div>
       </div>
-      <div
-        v-if="votedDelegate && !isAwaitingConfirmation && !isLoadingVote"
-        class="WalletDetails__button rounded-r"
-        @click="openUnvote"
+      <button
+        v-if="!isAwaitingConfirmation && !isLoadingVote"
+        :disabled="!areVotesUpdated || !(totalRemaining === 0 || totalRemaining === 10000)"
+        class="WalletDetails__button blue-button vote-button"
+        type="button"
+        @click="openVote"
       >
-        {{ $t('WALLET_DELEGATES.UNVOTE') }}
-      </div>
+        {{ $t( Object.keys(newVotes).length > 0 || Object.keys(walletVotes).length === 0 ? 'WALLET_DELEGATES.VOTE' : 'WALLET_DELEGATES.UNVOTE') }}
+      </button>
 
       <!-- Vote/unvote modal -->
       <TransactionModal
-        v-if="isUnvoting || selectedDelegate"
+        v-if="isVoting"
         :title="getVoteTitle()"
         :type="3"
-        :delegate="selectedDelegate"
-        :is-voter="isUnvoting"
-        :voted-delegate="votedDelegate"
+        :voted-delegates="newVotes"
         @cancel="onCancel"
         @close="onCancel"
         @sent="onSent"
       />
-
-      <!-- Select delegate modal -->
-      <Portal
-        v-if="isSelecting"
-        to="modal"
-      >
-        <WalletSelectDelegate
-          @cancel="onCancelSelect"
-          @close="onCancelSelect"
-          @confirm="onConfirmSelect"
-        />
-      </Portal>
     </div>
   </main>
 </template>
@@ -189,22 +171,20 @@ export default {
     provide () {
         return {
             switchToTab: this.switchToTab,
-            walletVote: this.walletVote
+            walletVotes: () => this.walletVotes,
+            newVotes: () => this.newVotes,
+            delegateSearch: () => this.search
         };
     },
 
     data () {
         return {
             currentTab: "",
-            walletVote: {
-                username: null
-            },
+            walletVotes: {},
+            newVotes: {},
             isVoting: false,
-            isUnvoting: false,
-            isSelecting: false,
             isLoadingVote: true,
-            votedDelegate: null,
-            selectedDelegate: null
+            search: ""
         };
     },
 
@@ -296,6 +276,27 @@ export default {
             });
         },
 
+        totalVotes () {
+            const total = Object.keys(this.newVotes).reduce((a, o) => a + this.newVotes[o], 0);
+            return total;
+        },
+
+        totalRemaining () {
+            return 10000 - this.totalVotes;
+        },
+
+        areVotesUpdated () {
+            const currentLength = Object.keys(this.walletVotes).length;
+            const newLength = Object.keys(this.newVotes).length;
+
+            if (currentLength === newLength) {
+                return ![...Object.keys(this.walletVotes), ...Object.keys(this.newVotes)].every(
+                    key => key in this.newVotes && key in this.walletVotes &&
+                        this.walletVotes[key] === this.newVotes[key]);
+            }
+            return true;
+        },
+
         unconfirmedVotes: {
             get () {
                 return this.$store.getters["session/unconfirmedVotes"];
@@ -330,7 +331,7 @@ export default {
             }
         },
         async currentWallet (newValue, prevValue) {
-            await this.fetchWalletVote();
+            await this.fetchWalletVotes();
             if (!newValue || !prevValue || newValue.address !== prevValue.address) {
                 this.currentTab = "WalletTransactions";
             }
@@ -342,32 +343,19 @@ export default {
         },
         async isAwaitingConfirmation (newValue, oldValue) {
             if (!newValue && oldValue) {
-                await this.fetchWalletVote();
-            }
-        },
-        selectedDelegate (delegate) {
-            if (delegate) {
-                this.isSelecting = false;
-
-                if (this.votedDelegate) {
-                    if (delegate.publicKey === this.votedDelegate.publicKey) {
-                        this.isUnvoting = true;
-                    }
-                } else {
-                    this.isVoting = true;
-                }
+                await this.fetchWalletVotes();
             }
         }
     },
 
     async created () {
         await this.$synchronizer.call("wallets");
-        await this.fetchWalletVote();
-        this.$eventBus.on("wallet:reload", this.fetchWalletVote);
+        await this.fetchWalletVotes();
+        this.$eventBus.on("wallet:reload", this.fetchWalletVotes);
     },
 
     beforeDestroy () {
-        this.$eventBus.off("wallet:reload", this.fetchWalletVote);
+        this.$eventBus.off("wallet:reload", this.fetchWalletVotes);
     },
 
     mounted () {
@@ -375,6 +363,12 @@ export default {
     },
 
     methods: {
+        changeVotePercentage (value, delegate) {
+            this.$delete(this.newVotes, delegate);
+            if (value !== 0) {
+                this.$set(this.newVotes, delegate, value);
+            }
+        },
         historyBack () {
             const webContents = remote.getCurrentWindow().webContents;
 
@@ -400,34 +394,46 @@ export default {
         },
 
         getVoteTitle () {
-            if (this.isUnvoting && this.votedDelegate) {
-                return this.$t("WALLET_DELEGATES.UNVOTE_DELEGATE", { delegate: this.votedDelegate.username });
-            } else if (this.isVoting && this.selectedDelegate && !this.selectedDelegate.isResigned) {
-                return this.$t("WALLET_DELEGATES.VOTE_DELEGATE", { delegate: this.selectedDelegate.username });
+            if (Object.keys(this.newVotes).length === 0) {
+                return this.$t("WALLET_DELEGATES.UNVOTE_DELEGATE");
             } else {
-                return `${this.$t("COMMON.DELEGATE")} ${this.selectedDelegate.username}`;
+                return this.$t("WALLET_DELEGATES.VOTE");
             }
         },
 
-        async fetchWalletVote () {
+        async fetchWalletVotes () {
             if (!this.currentWallet) {
                 return;
             }
 
+            let currentDelegates = Object.keys(this.walletVotes);
             try {
                 this.isLoadingVote = true;
-                const walletVote = await this.$client.fetchWalletVote(this.currentWallet.address);
-
-                if (walletVote) {
-                    this.votedDelegate = this.$store.getters["delegate/byPublicKey"](walletVote) || this.$store.getters["delegate/byUsername"](walletVote);
-                    this.walletVote.username = this.votedDelegate.username;
+                const walletVotes = await this.$client.fetchWalletVote(this.currentWallet.address);
+                if (walletVotes) {
+                    for (const delegate in walletVotes) {
+                        const delegateInfo = this.$store.getters["delegate/byUsername"](delegate);
+                        const percentage = Math.round(walletVotes[delegate].percent * 100);
+                        if (percentage !== this.walletVotes[delegate]) {
+                            this.$delete(this.walletVotes, delegate);
+                            this.$delete(this.newVotes, delegate);
+                            this.$set(this.walletVotes, delegate, percentage);
+                            if (delegateInfo.rank !== undefined) this.$set(this.newVotes, delegate, percentage);
+                        }
+                        currentDelegates = currentDelegates.filter(curr => curr !== delegate);
+                    }
+                    for (const delegate of currentDelegates) {
+                        this.$delete(this.walletVotes, delegate);
+                    }
                 } else {
-                    this.votedDelegate = null;
-                    this.walletVote.username = null;
+                    for (const delegate in this.walletVotes) {
+                        this.$delete(this.walletVotes, delegate);
+                    }
                 }
             } catch (error) {
-                this.votedDelegate = null;
-                this.walletVote.username = null;
+                for (const delegate in this.walletVotes) {
+                    this.$delete(this.walletVotes, delegate);
+                }
 
                 const messages = at(error, "response.body.message");
                 if (messages[0] !== "Wallet not found") {
@@ -442,33 +448,18 @@ export default {
             }
         },
 
-        openUnvote () {
-            this.selectedDelegate = this.votedDelegate;
-            this.isUnvoting = true;
-        },
-
-        openSelectDelegate () {
-            this.isSelecting = true;
+        openVote () {
+            this.isVoting = true;
         },
 
         onCancel (reason) {
-            this.isUnvoting = false;
             this.isVoting = false;
-            this.selectedDelegate = null;
 
             // To navigate to the transaction tab instead of the delegate tab when the
             // user clicks on a link of the transaction show modal
             if (reason && reason === "navigateToTransactions") {
                 this.switchToTab("WalletTransactions");
             }
-        },
-
-        onCancelSelect () {
-            this.isSelecting = false;
-        },
-
-        onConfirmSelect (value) {
-            this.selectedDelegate = this.$store.getters["delegate/search"](value);
         },
 
         onSent (success, transaction) {
@@ -486,13 +477,19 @@ export default {
                 this.unconfirmedVotes = votes;
             }
 
-            this.selectedDelegate = null;
-            this.isUnvoting = false;
             this.isVoting = false;
         },
 
-        onRowClickDelegate (delegate) {
-            this.selectedDelegate = delegate;
+        formatPercentage (percentage) {
+            let stringa = percentage.toString();
+            const isNegative = stringa[0] === "-";
+            if (isNegative) stringa = stringa.slice(1);
+            let integer = stringa.slice(0, -2);
+            if (integer === "") integer = "0";
+            let decimal = stringa.slice(-2);
+            if (decimal.length === 1) decimal = "0" + decimal;
+            else if (decimal.length === 0) decimal = "00";
+            return (isNegative ? "-" : "") + integer + "." + decimal;
         }
     }
 };
@@ -502,7 +499,8 @@ export default {
 .WalletDetails__button {
   transition: 0.5s;
   cursor: pointer;
-  @apply .flex .items-center .text-theme-voting-banner-button-text .bg-theme-voting-banner-button .whitespace-no-wrap .mt-4 .mb-4 .p-4 .font-semibold .w-auto .text-center
+  @apply .flex .items-center .text-theme-voting-banner-button-text .bg-theme-voting-banner-button .whitespace-no-wrap .mt-4 .mb-4 .p-4 .font-semibold .w-auto .text-center;
+  padding: 0;
 }
 .WalletDetails__button:hover {
   transition: 0.5s;
@@ -510,5 +508,25 @@ export default {
 }
 .WalletDetails__back-button > svg {
   transform: rotate(-135deg)
+}
+
+.search-input-container {
+  padding-left: 1rem;
+}
+
+.vote-button {
+    padding: 1rem;
+}
+
+.error {
+  color: var(--theme-error);
+}
+
+.success {
+  color: var(--theme-success);
+}
+
+.warn {
+  color: var(--theme-warn);
 }
 </style>

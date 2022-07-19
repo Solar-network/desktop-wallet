@@ -416,7 +416,8 @@ export default {
                             name: ledgerName || `Ledger ${wallet.ledgerIndex + 1}`,
                             passphrase: null,
                             profileId,
-                            id: wallet.address
+                            id: wallet.address,
+                            vote: {}
                         });
                     }
 
