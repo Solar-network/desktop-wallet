@@ -412,7 +412,7 @@ export default {
         },
 
         openAddress (address) {
-            this.network_openExplorer("address", address);
+            this.network_openExplorer("wallets", address);
         },
 
         openBlock () {
