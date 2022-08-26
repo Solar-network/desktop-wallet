@@ -38,6 +38,7 @@
       :no-data-message="$t('TABLE.NO_DELEGATES')"
       class="WalletDelegates__table"
       @on-sort-change="onSortChange"
+      @on-row-click="onRowClick"
     >
       <template
         slot-scope="data"
@@ -60,6 +61,7 @@
           v-else-if="data.column.field === 'newVotePercent'"
         >
           <InputPercentage
+            :ref="'percentageInput-' + data.row.username"
             :value="data.row.newVotePercent"
             @percent-input="(value) => emitNewPercentage(value, data.formattedRow['username'])"
           />
@@ -244,6 +246,10 @@ export default {
                 });
                 this.filter();
             }
+        },
+
+        onRowClick ({ row }) {
+            this.$refs["percentageInput-" + row.username].focus();
         },
 
         filter () {
