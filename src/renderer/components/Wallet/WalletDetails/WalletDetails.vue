@@ -331,10 +331,16 @@ export default {
             }
         },
         async currentWallet (newValue, prevValue) {
-            await this.fetchWalletVotes();
             if (!newValue || !prevValue || newValue.address !== prevValue.address) {
                 this.currentTab = "WalletTransactions";
+                for (const wallet in this.walletVotes) {
+                    this.$delete(this.walletVotes, wallet);
+                }
+                for (const wallet in this.newVotes) {
+                    this.$delete(this.newVotes, wallet);
+                }
             }
+            await this.fetchWalletVotes();
         },
         tabs () {
             this.$nextTick(() => {
