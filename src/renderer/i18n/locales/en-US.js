@@ -1279,7 +1279,8 @@ export default {
         AWAITING_VOTE_CONFIRMATION: "Your transaction is awaiting confirmation",
         LOADING_VOTE: "Loading vote details...",
         SEARCH_DELEGATE: "Search delegate",
-        TOTAL_REMAINING: "Remaining: {percentage}%"
+        TOTAL_REMAINING: "Remaining: {percentage}%",
+        NUMBER_OF_DELEGATES_VOTED: "Votes: {n}"
     },
 
     WALLET_IPFS: {

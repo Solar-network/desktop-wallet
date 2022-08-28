@@ -21,9 +21,9 @@
         </ListDividedItem>
         <ListDividedItem
           v-if="Object.keys(votedDelegates).length"
-          class="TransactionShow__Recipients"
+          class="TransactionConfirmMultiPayment__recipients"
           :label="$t('TRANSACTION.VOTES')"
-          item-value-class="items-center"
+          item-value-class="items-center w-full"
         >
           <TransactionVotesList
             :title="null"

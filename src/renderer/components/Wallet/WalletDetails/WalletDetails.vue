@@ -88,34 +88,38 @@
         >
           <i18n
             tag="span"
-            class="font-semibold pr-6 border-r border-theme-line-separator"
+            class="font-semibold pr-3 border-r border-theme-line-separator"
             :class="[0, 10000].includes(totalRemaining) ? 'success' : (totalRemaining < 0 ? 'error' : 'warn')"
             path="WALLET_DELEGATES.VOTED_FOR"
           >
-            <strong place="delegate">
-              {{ formatPercentage(totalVotes) }}
-            </strong>
+            <strong place="delegate">{{ (totalVotes / 100).toFixed(2) }}</strong>
           </i18n>
           <i18n
             tag="span"
-            class="font-semibold px-6"
+            class="font-semibold px-3 border-r border-theme-line-separator"
             :class="[0, 10000].includes(totalRemaining) ? 'success' : (totalRemaining < 0 ? 'error' : 'warn')"
             path="WALLET_DELEGATES.TOTAL_REMAINING"
           >
-            <strong place="percentage">
-              {{ formatPercentage(totalRemaining) }}
-            </strong>
+            <strong place="percentage">{{ (totalRemaining / 100).toFixed(2) }}</strong>
+          </i18n>
+          <i18n
+            tag="span"
+            class="font-semibold px-3"
+            :class="totalNewVotes <= activeDelegates ? 'success' : 'error'"
+            path="WALLET_DELEGATES.NUMBER_OF_DELEGATES_VOTED"
+          >
+            <strong place="n">{{ totalNewVotes }}/{{ activeDelegates }}</strong>
           </i18n>
         </div>
       </div>
       <button
         v-if="!isAwaitingConfirmation && !isLoadingVote"
-        :disabled="!areVotesUpdated || !(totalRemaining === 0 || totalRemaining === 10000)"
+        :disabled="!areVotesUpdated || !(totalRemaining === 0 || totalRemaining === 10000) || totalNewVotes > activeDelegates"
         class="WalletDetails__button blue-button vote-button"
         type="button"
         @click="openVote"
       >
-        {{ $t( Object.keys(newVotes).length > 0 || Object.keys(walletVotes).length === 0 ? 'WALLET_DELEGATES.VOTE' : 'WALLET_DELEGATES.UNVOTE') }}
+        {{ $t( totalNewVotes > 0 || totalOldVotes === 0 ? 'WALLET_DELEGATES.VOTE' : 'WALLET_DELEGATES.UNVOTE') }}
       </button>
 
       <!-- Vote/unvote modal -->
@@ -189,6 +193,10 @@ export default {
     },
 
     computed: {
+        activeDelegates () {
+            return this.session_network.constants.activeDelegates || 53;
+        },
+
         pluginTabs () {
             return this.$store.getters["plugin/walletTabs"];
         },
@@ -283,6 +291,14 @@ export default {
 
         totalRemaining () {
             return 10000 - this.totalVotes;
+        },
+
+        totalNewVotes () {
+            return Object.keys(this.newVotes).length;
+        },
+
+        totalOldVotes () {
+            return Object.keys(this.walletVotes).length;
         },
 
         areVotesUpdated () {
@@ -484,18 +500,6 @@ export default {
             }
 
             this.isVoting = false;
-        },
-
-        formatPercentage (percentage) {
-            let stringa = percentage.toString();
-            const isNegative = stringa[0] === "-";
-            if (isNegative) stringa = stringa.slice(1);
-            let integer = stringa.slice(0, -2);
-            if (integer === "") integer = "0";
-            let decimal = stringa.slice(-2);
-            if (decimal.length === 1) decimal = "0" + decimal;
-            else if (decimal.length === 0) decimal = "00";
-            return (isNegative ? "-" : "") + integer + "." + decimal;
         }
     }
 };

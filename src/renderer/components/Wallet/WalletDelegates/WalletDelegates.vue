@@ -121,7 +121,7 @@ export default {
         },
 
         activeDelegates () {
-            return this.session_network.constants.activeDelegates || 51;
+            return this.session_network.constants.activeDelegates || 53;
         },
 
         columns () {
