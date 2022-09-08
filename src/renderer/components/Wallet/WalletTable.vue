@@ -76,7 +76,7 @@
           v-else-if="data.column.field === 'vote'"
         >
           <span class="flex items-center">
-            {{ Object.keys(data.row.vote).length > 1 ? $t('PAGES.WALLET_SHOW.VOTING_FOR_SHORT', { n: Object.keys(data.row.vote).length }) : getDelegateProperty(Object.keys(data.row.vote)[0], 'username') }}
+            {{ data.row.vote && Object.keys(data.row.vote).length > 1 ? $t('PAGES.WALLET_SHOW.VOTING_FOR_SHORT', { n: Object.keys(data.row.vote).length }) : getDelegateProperty(Object.keys(data.row.vote || {})[0], 'username') }}
           </span>
         </div>
 
