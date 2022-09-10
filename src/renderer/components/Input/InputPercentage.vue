@@ -1,12 +1,11 @@
 <template>
   <InputField
-    :helper-text="error"
-    :is-dirty="$v.model.$dirty"
+    :helper-text="helperText"
     :is-disabled="isDisabled"
     :is-focused="isFocused"
     :is-invalid="isInvalid"
     class="InputPercentage"
-    :class="{'green_border': !error && inputValue > 0}"
+    :class="{'green_border': inputValue > 1}"
   >
     <div
       slot-scope="{ inputClass }"
@@ -57,6 +56,11 @@ export default {
         value: {
             type: [Number, String],
             required: true
+        },
+        helperText: {
+            type: [Number, String],
+            required: false,
+            default: ""
         }
     },
 
@@ -68,20 +72,9 @@ export default {
     },
 
     computed: {
-        error () {
-            if (!this.isDisabled && this.$v.model.$dirty) {
-                if (!this.$v.model.isLessThanMaximum) {
-                    return this.$t("INPUT_CURRENCY.ERROR.NOT_ENOUGH_AMOUNT", { amount: 100 });
-                } else if (!this.$v.model.isMoreThanMinimum) {
-                    return this.$t("INPUT_CURRENCY.ERROR.LESS_THAN_MINIMUM", { amount: 0 });
-                }
-            }
-
-            return null;
-        },
 
         isInvalid () {
-            return this.$v.model.$dirty && !!this.error;
+            return this.inputValue < 0 || this.inputValue > 10000;
         },
 
         model: {
@@ -130,24 +123,11 @@ export default {
         },
         onFocus () {
             this.isFocused = true;
-            this.$v.model.$touch();
             this.$emit("focus");
         },
 
         reset () {
             this.model = 0;
-            this.$v.model.$reset();
-        }
-    },
-
-    validations: {
-        model: {
-            isMoreThanMinimum () {
-                return this.inputValue >= 0;
-            },
-            isLessThanMaximum () {
-                return this.inputValue <= 10000;
-            }
         }
     }
 };
@@ -186,5 +166,9 @@ export default {
 
 .InputPercentage .break-words {
     white-space: nowrap;
+}
+
+.InputPercentage .InputField__helper {
+    font-size: 100%;
 }
 </style>

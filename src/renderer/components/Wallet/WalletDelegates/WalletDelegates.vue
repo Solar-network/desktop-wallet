@@ -63,6 +63,7 @@
           <InputPercentage
             :ref="'percentageInput-' + data.row.username"
             :value="data.row.newVotePercent"
+            :helper-text="formatter_networkCurrency(data.row.voteBalance)"
             @percent-input="(value) => emitNewPercentage(value, data.formattedRow['username'])"
           />
         </span>
@@ -147,6 +148,10 @@ export default {
             ];
         },
 
+        currentWallet () {
+            return this.wallet_fromRoute;
+        },
+
         isExplanationDisplayed () {
             return this.$store.getters["app/showVotingExplanation"];
         },
@@ -166,6 +171,7 @@ export default {
         newVotesProp () {
             this.delegates = this.delegates.map(delegate => {
                 delegate.newVotePercent = this.newVotesProp[delegate.username] || 0;
+                delegate.voteBalance = Math.trunc((this.currentWallet.balance * delegate.newVotePercent) / 10000);
                 return delegate;
             });
             this.filter();
@@ -210,6 +216,7 @@ export default {
                 this.delegates = allDelegates.map(delegate => {
                     delegate.votePercent = walletVotes[delegate.username] || 0;
                     delegate.newVotePercent = this.newVotesProp[delegate.username] || 0;
+                    delegate.voteBalance = Math.trunc((this.currentWallet.balance * delegate.newVotePercent) / 10000);
                     return delegate;
                 }).filter((del) => del.rank !== undefined);
                 this.filter();
