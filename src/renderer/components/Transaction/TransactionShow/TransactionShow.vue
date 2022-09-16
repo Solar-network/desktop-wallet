@@ -117,7 +117,7 @@
         />
         <ButtonClipboard
           class="text-theme-page-text-light mx-2"
-          :value="votedDelegate ? votedDelegate.address : transaction.recipient"
+          :value="showRecipient"
         />
         <button
           v-tooltip="{
@@ -125,7 +125,7 @@
             trigger: 'hover'
           }"
           class="flex items-center"
-          @click="openAddress(votedDelegate ? votedDelegate.address : transaction.recipient)"
+          @click="openAddress(showRecipient)"
         >
           <SvgIcon
             name="open-external"
