@@ -169,12 +169,7 @@ export default {
             this.filter();
         },
         newVotesProp () {
-            this.delegates = this.delegates.map(delegate => {
-                delegate.newVotePercent = this.newVotesProp[delegate.username] || 0;
-                delegate.voteBalance = Math.trunc((this.currentWallet.balance * delegate.newVotePercent) / 10000);
-                return delegate;
-            });
-            this.filter();
+            this.updateVotes();
         }
     },
 
@@ -183,6 +178,25 @@ export default {
     },
 
     methods: {
+        calculateVoteAmount (delegates) {
+            let remainder = this.currentWallet.balance;
+            const votes = {};
+            for (const [delegate, percent] of Object.entries(delegates)) {
+                const balance = Math.trunc((this.currentWallet.balance * percent) / 10000);
+                votes[delegate] = balance;
+                remainder -= balance;
+            }
+            const keys = Object.keys(votes);
+
+            if (remainder <= this.activeDelegates) {
+                for (let i = 0; i < remainder; i++) {
+                    votes[keys[i]]++;
+                }
+            }
+
+            return votes;
+        },
+
         dismissExplanation () {
             this.$store.dispatch("app/setVotingExplanation", false);
         },
@@ -213,12 +227,15 @@ export default {
                     }
                     page++;
                 }
+
                 this.delegates = allDelegates.map(delegate => {
                     delegate.votePercent = walletVotes[delegate.username] || 0;
                     delegate.newVotePercent = this.newVotesProp[delegate.username] || 0;
-                    delegate.voteBalance = Math.trunc((this.currentWallet.balance * delegate.newVotePercent) / 10000);
                     return delegate;
                 }).filter((del) => del.rank !== undefined);
+
+                this.updateVotes();
+
                 this.filter();
             } catch (error) {
                 this.$logger.error(error);
@@ -269,6 +286,38 @@ export default {
             this.queryParams.page = 1;
             this.totalCount = 0;
             this.delegates = [];
+        },
+
+        sortVotes (votes) {
+            return Object.fromEntries(Object.entries(votes).sort((a, b) => {
+                if (b[1] > a[1]) {
+                    return 1;
+                } else if (b[1] < a[1]) {
+                    return -1;
+                } else {
+                    return a[0].localeCompare(b[0], "en", { numeric: true });
+                }
+            }));
+        },
+
+        updateVotes () {
+            const delegates = {};
+            this.delegates = this.delegates.map(delegate => {
+                delegate.newVotePercent = this.newVotesProp[delegate.username] || 0;
+                if (delegate.newVotePercent > 0) {
+                    delegates[delegate.username] = delegate.newVotePercent;
+                }
+                return delegate;
+            });
+
+            const votes = this.calculateVoteAmount(this.sortVotes(delegates));
+
+            this.delegates = this.delegates.map(delegate => {
+                delegate.voteBalance = votes[delegate.username] ?? 0;
+                return delegate;
+            });
+
+            this.filter();
         },
 
         __updateParams (newProps) {
