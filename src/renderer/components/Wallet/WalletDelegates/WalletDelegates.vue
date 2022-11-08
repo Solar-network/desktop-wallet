@@ -179,21 +179,24 @@ export default {
 
     methods: {
         calculateVoteAmount (delegates) {
-            let remainder = this.currentWallet.balance;
             const votes = {};
-            for (const [delegate, percent] of Object.entries(delegates)) {
-                const balance = Math.trunc((this.currentWallet.balance * percent) / 10000);
-                votes[delegate] = balance;
-                remainder -= balance;
-            }
-            const keys = Object.keys(votes);
-
-            if (remainder <= this.activeDelegates) {
-                for (let i = 0; i < remainder; i++) {
-                    votes[keys[i]]++;
+            try {
+                let remainder = this.currentWallet.balance;
+                for (const [delegate, percent] of Object.entries(delegates)) {
+                    const balance = Math.trunc((this.currentWallet.balance * percent) / 10000);
+                    votes[delegate] = balance;
+                    remainder -= balance;
                 }
-            }
+                const keys = Object.keys(votes);
 
+                if (remainder <= this.activeDelegates) {
+                    for (let i = 0; i < remainder; i++) {
+                        votes[keys[i]]++;
+                    }
+                }
+            } catch {
+                //
+            }
             return votes;
         },
 
