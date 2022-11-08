@@ -1,5 +1,5 @@
 import * as bip39 from "bip39";
-import { Crypto, Identities, Managers } from "@solar-network/crypto";
+import { Crypto, Identities } from "@solar-network/crypto";
 import { version as mainnetVersion } from "@config/networks/mainnet";
 import store from "@/store";
 import { CryptoUtils } from "./crypto/utils";
@@ -119,10 +119,6 @@ export default class WalletService {
    * @returns {Boolean}
    */
     static canResignDelegate (wallet, type) {
-        if (type !== 0 && !Managers.configManager.getMilestone().delegateResignationTypeAsset) {
-            return false;
-        }
-
         if (!wallet.isDelegate || wallet.resigned === "permanent") {
             return false;
         }
