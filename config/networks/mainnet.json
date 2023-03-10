@@ -4,7 +4,7 @@
     "title": "Solar Mainnet",
     "server": "https://sxp.mainnet.sh",
     "description": "The Solar Mainnet should be chosen in most cases.",
-    "imagePath": "networks/ark.png",
+    "imagePath": "networks/sxp.mainnet.svg",
     "apiVersion": 2,
     "slip44": "3333",
     "market": {

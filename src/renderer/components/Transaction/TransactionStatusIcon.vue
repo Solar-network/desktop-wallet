@@ -110,11 +110,11 @@ export default {
         },
 
         isWellConfirmed () {
-            return this.confirmations >= this.numberOfActiveDelegates;
+            return this.confirmations >= this.numberOfActiveBlockProducers;
         },
 
-        numberOfActiveDelegates () {
-            return at(this, "session_network.constants.activeDelegates") || 51;
+        numberOfActiveBlockProducers () {
+            return at(this, "session_network.constants.activeDelegates") || 53;
         }
     }
 };

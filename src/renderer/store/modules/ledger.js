@@ -151,7 +151,7 @@ export default {
         },
 
         /**
-         * Initialise ledger service with ark-ledger library.
+         * Initialise ledger service with sxp ledger library.
          * @param {Number} slip44
          */
 
@@ -414,7 +414,7 @@ export default {
                             isLedger: true,
                             isSendingEnabled: true,
                             name: ledgerName || `Ledger ${wallet.ledgerIndex + 1}`,
-                            passphrase: null,
+                            mnemonic: null,
                             profileId,
                             id: wallet.address,
                             vote: {}

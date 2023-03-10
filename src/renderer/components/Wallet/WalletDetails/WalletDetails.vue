@@ -5,7 +5,7 @@
     <MenuTab
       ref="menutab"
       v-model="currentTab"
-      :class="{ 'rounded-b-lg lg:rounded-br-none' : !isDelegatesTab || !isOwned }"
+      :class="{ 'rounded-b-lg lg:rounded-br-none' : !isBlockProducersTab || !isOwned }"
       class="flex-1 overflow-y-auto"
     >
       <MenuTabItem
@@ -38,12 +38,12 @@
           :is="tab.component"
           slot-scope="{ isActive }"
           :is-active="isActive"
-          @on-delegate-percentage-change="changeVotePercentage"
+          @on-block-producer-percentage-change="changeVotePercentage"
         />
       </MenuTabItem>
     </MenuTab>
     <div
-      v-if="isDelegatesTab && isOwned"
+      v-if="isBlockProducersTab && isOwned"
       class="bg-theme-feature px-5 flex flex-row rounded-b-lg lg:rounded-br-none"
     >
       <span
@@ -59,7 +59,7 @@
           ref="search"
           v-model="search"
           class="WalletDetails__button rounded-l"
-          :placeholder="$t('WALLET_DELEGATES.SEARCH_DELEGATE')"
+          :placeholder="$t('WALLET_BLOCK_PRODUCERS.SEARCH_BLOCK_PRODUCER')"
         >
       </span>
       <div
@@ -71,7 +71,7 @@
           class="flex"
         >
           <span class="font-semibold">
-            {{ $t('WALLET_DELEGATES.LOADING_VOTE') }}
+            {{ $t('WALLET_BLOCK_PRODUCERS.LOADING_VOTE') }}
           </span>
         </div>
         <div
@@ -79,7 +79,7 @@
           class="flex"
         >
           <span class="font-semibold">
-            {{ $t('WALLET_DELEGATES.AWAITING_VOTE_CONFIRMATION') }}
+            {{ $t('WALLET_BLOCK_PRODUCERS.AWAITING_VOTE_CONFIRMATION') }}
           </span>
         </div>
         <div
@@ -90,36 +90,36 @@
             tag="span"
             class="font-semibold pr-3 border-r border-theme-line-separator"
             :class="[0, 10000].includes(totalRemaining) ? 'success' : (totalRemaining < 0 ? 'error' : 'warn')"
-            path="WALLET_DELEGATES.VOTED_FOR"
+            path="WALLET_BLOCK_PRODUCERS.VOTED_FOR"
           >
-            <strong place="delegate">{{ (totalVotes / 100).toFixed(2) }}</strong>
+            <strong place="blockProducer">{{ (totalVotes / 100).toFixed(2) }}</strong>
           </i18n>
           <i18n
             tag="span"
             class="font-semibold px-3 border-r border-theme-line-separator"
             :class="[0, 10000].includes(totalRemaining) ? 'success' : (totalRemaining < 0 ? 'error' : 'warn')"
-            path="WALLET_DELEGATES.TOTAL_REMAINING"
+            path="WALLET_BLOCK_PRODUCERS.TOTAL_REMAINING"
           >
             <strong place="percentage">{{ (totalRemaining / 100).toFixed(2) }}</strong>
           </i18n>
           <i18n
             tag="span"
             class="font-semibold px-3"
-            :class="totalNewVotes <= activeDelegates ? 'success' : 'error'"
-            path="WALLET_DELEGATES.NUMBER_OF_DELEGATES_VOTED"
+            :class="totalNewVotes <= activeBlockProducers ? 'success' : 'error'"
+            path="WALLET_BLOCK_PRODUCERS.NUMBER_OF_BLOCK_PRODUCERS_VOTED"
           >
-            <strong place="n">{{ totalNewVotes }}/{{ activeDelegates }}</strong>
+            <strong place="n">{{ totalNewVotes }}/{{ activeBlockProducers }}</strong>
           </i18n>
         </div>
       </div>
       <button
         v-if="!isAwaitingConfirmation && !isLoadingVote"
-        :disabled="!areVotesUpdated || !(totalRemaining === 0 || totalRemaining === 10000) || totalNewVotes > activeDelegates"
+        :disabled="!areVotesUpdated || !(totalRemaining === 0 || totalRemaining === 10000) || totalNewVotes > activeBlockProducers"
         class="WalletDetails__button blue-button vote-button"
         type="button"
         @click="openVote"
       >
-        {{ $t( totalNewVotes > 0 || totalOldVotes === 0 ? 'WALLET_DELEGATES.VOTE' : 'WALLET_DELEGATES.UNVOTE') }}
+        {{ $t( totalNewVotes > 0 || totalOldVotes === 0 ? 'WALLET_BLOCK_PRODUCERS.VOTE' : 'WALLET_BLOCK_PRODUCERS.CANCEL_VOTE') }}
       </button>
 
       <!-- Vote/unvote modal -->
@@ -127,7 +127,7 @@
         v-if="isVoting"
         :title="getVoteTitle()"
         :type="3"
-        :voted-delegates="newVotes"
+        :voted-block-producers="newVotes"
         @cancel="onCancel"
         @close="onCancel"
         @sent="onSent"
@@ -143,11 +143,11 @@ import { at } from "lodash";
 import { ButtonGeneric } from "@/components/Button";
 import { TransactionModal } from "@/components/Transaction";
 import {
-    WalletDelegates,
+    WalletBlockProducers,
     WalletHeading,
     WalletIpfs,
     WalletMultiSignature,
-    WalletSelectDelegate,
+    WalletSelectBlockProducer,
     WalletSignVerify,
     WalletStatistics,
     WalletTransactions
@@ -161,11 +161,11 @@ export default {
         MenuTab,
         MenuTabItem,
         TransactionModal,
-        WalletDelegates,
+        WalletBlockProducers,
         WalletHeading,
         WalletIpfs,
         WalletMultiSignature,
-        WalletSelectDelegate,
+        WalletSelectBlockProducer,
         WalletSignVerify,
         WalletStatistics,
         WalletTransactions,
@@ -177,7 +177,7 @@ export default {
             switchToTab: this.switchToTab,
             walletVotes: () => this.walletVotes,
             newVotes: () => this.newVotes,
-            delegateSearch: () => this.search
+            blockProducerSearch: () => this.search
         };
     },
 
@@ -193,7 +193,7 @@ export default {
     },
 
     computed: {
-        activeDelegates () {
+        activeBlockProducers () {
             return this.session_network.constants.activeDelegates || 53;
         },
 
@@ -212,9 +212,9 @@ export default {
 
             if (this.currentWallet && this.isOwned) {
                 tabs.push({
-                    component: "WalletDelegates",
-                    componentName: "WalletDelegates",
-                    text: this.$t("PAGES.WALLET.DELEGATES")
+                    component: "WalletBlockProducers",
+                    componentName: "WalletBlockProducers",
+                    text: this.$t("PAGES.WALLET.BLOCK_PRODUCERS")
                 });
 
                 tabs.push({
@@ -267,8 +267,8 @@ export default {
             return this.wallet_fromRoute;
         },
 
-        isDelegatesTab () {
-            return this.currentTab === "WalletDelegates";
+        isBlockProducersTab () {
+            return this.currentTab === "WalletBlockProducers";
         },
 
         isOwned () {
@@ -338,8 +338,8 @@ export default {
             case "WalletTransactions":
                 this.$synchronizer.focus("wallets", "contacts");
                 break;
-            case "WalletDelegates":
-                this.$synchronizer.focus("wallets", "contacts", "delegates");
+            case "WalletBlockProducers":
+                this.$synchronizer.focus("wallets", "contacts", "blockProducers");
                 break;
             case "WalletSignVerify":
                 // TODO
@@ -385,10 +385,10 @@ export default {
     },
 
     methods: {
-        changeVotePercentage (value, delegate) {
-            this.$delete(this.newVotes, delegate);
+        changeVotePercentage (value, blockProducer) {
+            this.$delete(this.newVotes, blockProducer);
             if (value !== 0) {
-                this.$set(this.newVotes, delegate, value);
+                this.$set(this.newVotes, blockProducer, value);
             }
         },
         historyBack () {
@@ -417,9 +417,9 @@ export default {
 
         getVoteTitle () {
             if (Object.keys(this.newVotes).length === 0) {
-                return this.$t("WALLET_DELEGATES.UNVOTE_DELEGATE");
+                return this.$t("WALLET_BLOCK_PRODUCERS.CANCEL_VOTE");
             } else {
-                return this.$t("WALLET_DELEGATES.VOTE");
+                return this.$t("WALLET_BLOCK_PRODUCERS.VOTE");
             }
         },
 
@@ -428,33 +428,33 @@ export default {
                 return;
             }
 
-            let currentDelegates = Object.keys(this.walletVotes);
+            let currentBlockProducers = Object.keys(this.walletVotes);
             try {
                 this.isLoadingVote = true;
                 const walletVotes = await this.$client.fetchWalletVote(this.currentWallet.address);
                 if (walletVotes) {
-                    for (const delegate in walletVotes) {
-                        const delegateInfo = this.$store.getters["delegate/byUsername"](delegate);
-                        const percentage = Math.round(walletVotes[delegate].percent * 100);
-                        if (percentage !== this.walletVotes[delegate]) {
-                            this.$delete(this.walletVotes, delegate);
-                            this.$delete(this.newVotes, delegate);
-                            this.$set(this.walletVotes, delegate, percentage);
-                            if (delegateInfo.rank !== undefined) this.$set(this.newVotes, delegate, percentage);
+                    for (const blockProducer in walletVotes) {
+                        const blockProducerInfo = this.$store.getters["blockProducer/byUsername"](blockProducer);
+                        const percentage = Math.round(walletVotes[blockProducer].percent * 100);
+                        if (percentage !== this.walletVotes[blockProducer]) {
+                            this.$delete(this.walletVotes, blockProducer);
+                            this.$delete(this.newVotes, blockProducer);
+                            this.$set(this.walletVotes, blockProducer, percentage);
+                            if (blockProducerInfo.rank !== undefined) this.$set(this.newVotes, blockProducer, percentage);
                         }
-                        currentDelegates = currentDelegates.filter(curr => curr !== delegate);
+                        currentBlockProducers = currentBlockProducers.filter(curr => curr !== blockProducer);
                     }
-                    for (const delegate of currentDelegates) {
-                        this.$delete(this.walletVotes, delegate);
+                    for (const blockProducer of currentBlockProducers) {
+                        this.$delete(this.walletVotes, blockProducer);
                     }
                 } else {
-                    for (const delegate in this.walletVotes) {
-                        this.$delete(this.walletVotes, delegate);
+                    for (const blockProducer in this.walletVotes) {
+                        this.$delete(this.walletVotes, blockProducer);
                     }
                 }
             } catch (error) {
-                for (const delegate in this.walletVotes) {
-                    this.$delete(this.walletVotes, delegate);
+                for (const blockProducer in this.walletVotes) {
+                    this.$delete(this.walletVotes, blockProducer);
                 }
 
                 const messages = at(error, "response.body.message");
@@ -477,7 +477,7 @@ export default {
         onCancel (reason) {
             this.isVoting = false;
 
-            // To navigate to the transaction tab instead of the delegate tab when the
+            // To navigate to the transaction tab instead of the block producer tab when the
             // user clicks on a link of the transaction show modal
             if (reason && reason === "navigateToTransactions") {
                 this.switchToTab("WalletTransactions");

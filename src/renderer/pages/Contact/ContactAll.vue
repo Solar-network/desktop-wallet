@@ -65,7 +65,7 @@
           :has-pagination="false"
           :is-loading="false"
           :is-contacts-table="true"
-          :show-voted-delegates="showVotedDelegates"
+          :show-voted-block-producers="showVotedBlockProducers"
           :rows="contacts"
           :total-rows="contacts.length"
           :sort-query="{
@@ -160,7 +160,7 @@ export default {
             }
         },
 
-        showVotedDelegates () {
+        showVotedBlockProducers () {
             return this.contacts.some(contact => Object.prototype.hasOwnProperty.call(contact, "vote"));
         }
     },

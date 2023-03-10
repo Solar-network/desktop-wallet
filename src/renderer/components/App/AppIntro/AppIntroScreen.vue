@@ -6,7 +6,7 @@
         class="AppIntroScreen__container__left__logo"
       >
         <img
-          :src="assets_loadImage('ark-logo.png')"
+          :src="assets_loadImage('sxp-logo.png')"
           class="h-full"
         >
       </div>

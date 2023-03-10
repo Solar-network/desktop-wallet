@@ -38,7 +38,7 @@ export default new BaseModel({
             minLength: 0,
             maxLength: 120
         },
-        passphrase: {
+        mnemonic: {
             type: ["string", "null"]
         },
         profileId: {},
@@ -52,7 +52,7 @@ export default new BaseModel({
             type: ["boolean"],
             default: false
         },
-        isDelegate: {
+        isBlockProducer: {
             type: "boolean",
             default: false
         },

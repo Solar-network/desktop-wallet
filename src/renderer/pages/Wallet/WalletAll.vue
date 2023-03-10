@@ -112,7 +112,7 @@
               :has-pagination="false"
               :is-loading="false"
               :rows="selectableWallets"
-              :show-voted-delegates="showVotedDelegates"
+              :show-voted-block-producers="showVotedBlockProducers"
               :total-rows="selectableWallets.length"
               :sort-query="{
                 field: sortParams.field,
@@ -262,7 +262,7 @@ export default {
             }
         },
 
-        showVotedDelegates () {
+        showVotedBlockProducers () {
             return this.selectableWallets.some(wallet => Object.prototype.hasOwnProperty.call(wallet, "vote"));
         }
     },

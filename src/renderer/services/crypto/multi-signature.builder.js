@@ -10,8 +10,8 @@ export class MultiSignatureBuilder {
         publicKeys,
         minKeys,
         fee,
-        passphrase,
-        secondPassphrase,
+        mnemonic,
+        extraMnemonic,
         wif,
         networkWif,
         nonce
@@ -36,14 +36,14 @@ export class MultiSignatureBuilder {
             })
             .fee(fee);
 
-        passphrase = CryptoUtils.normalizePassphrase(passphrase);
-        secondPassphrase = CryptoUtils.normalizePassphrase(secondPassphrase);
+        mnemonic = CryptoUtils.normalizeMnemonic(mnemonic);
+        extraMnemonic = CryptoUtils.normalizeMnemonic(extraMnemonic);
 
         const transactionObject = await TransactionSigner.sign({
             address,
             transaction,
-            passphrase,
-            secondPassphrase,
+            mnemonic,
+            extraMnemonic,
             wif,
             networkWif,
             multiSignature: transaction.data.asset.multiSignature,

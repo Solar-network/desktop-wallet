@@ -1,5 +1,5 @@
 import announcements from "./announcements";
-import delegates from "./delegates";
+import blockProducers from "./block-producers";
 import fees from "./fees";
 import ledger from "./ledger";
 import market from "./market";
@@ -8,7 +8,7 @@ import wallets from "./wallets";
 
 export {
     announcements,
-    delegates,
+    blockProducers,
     fees,
     ledger,
     market,

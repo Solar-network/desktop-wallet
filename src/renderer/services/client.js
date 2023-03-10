@@ -168,7 +168,7 @@ export default class ClientService {
         return (await this.client.api("node").syncing()).body.data;
     }
 
-    /** Request the delegates according to the current network version
+    /** Request the block producers according to the current network version
    *
    * @param {Object} [query]
    * @param {Number} [query.page=1]
@@ -176,7 +176,7 @@ export default class ClientService {
    * @param {String} [query.orderBy='rank:asc']
    * @return {Object[]}
    */
-    async fetchDelegates (options = {}) {
+    async fetchBlockProducers (options = {}) {
         const network = store.getters["session/network"];
         options.page || (options.page = 1);
         options.limit || (options.limit = network.constants.activeDelegates);
@@ -196,35 +196,35 @@ export default class ClientService {
 
         const { data } = body;
         if (data) {
-            for (const delegate of data) {
-                if (delegate.votesReceived) {
-                    delegate.production = { approval: delegate.votesReceived.percent };
+            for (const blockProducer of data) {
+                if (blockProducer.votesReceived) {
+                    blockProducer.production = { approval: blockProducer.votesReceived.percent };
                 }
             }
         }
 
         return {
-            delegates: data,
+            blockProducers: data,
             meta: body.meta
         };
     }
 
     /**
-   * Fetches the voters of the given delegates and returns the number of total voters
+   * Fetches the voters of the given block producer and returns the number of total voters
    *
    * @return {Number}
    */
-    async fetchDelegateVoters (delegate) {
+    async fetchVoters (blockProducer) {
         const { body } = await this.client
             .api("delegates")
-            .voters(delegate.username);
+            .voters(blockProducer.username);
 
         return body.meta.totalCount;
     }
 
-    fetchDelegateForged (delegate) {
-        if (delegate.forged) {
-            return delegate.forged.total;
+    fetchBlockProducerProduced (blockProducer) {
+        if (blockProducer.produced) {
+            return blockProducer.produced.total;
         }
 
         return "0";
@@ -239,12 +239,12 @@ export default class ClientService {
             1: {
                 legacyTransfer: "50000000",
                 secondSignature: "5000000",
-                delegateRegistration: "7500000000",
+                registration: "7500000000",
                 legacyVote: "9000000",
                 multiSignature: "5000000",
                 ipfs: "5000000",
                 transfer: "50000000",
-                delegateResignation: "0"
+                resignation: "0"
             },
             2: {
                 burn: "0",
@@ -449,7 +449,7 @@ export default class ClientService {
         if (data) {
             if (data.attributes) {
                 if (data.attributes.delegate) {
-                    data.isDelegate = true;
+                    data.isBlockProducer = true;
                     data.isResigned = data.attributes.delegate.resigned !== undefined;
                     data.resigned = data.attributes.delegate.resigned;
                 }
@@ -504,7 +504,7 @@ export default class ClientService {
 
     /**
    * Request the vote of a wallet.
-   * Returns the delegate's public key if this wallet has voted, null otherwise.
+   * Returns the block producers's public key if this wallet has voted, null otherwise.
    * @param {String} address
    * @returns {String|null}
    */
@@ -588,21 +588,21 @@ export default class ClientService {
     }
 
     // todo: move this out
-    async buildSecondSignatureRegistration (
+    async buildExtraSignatureRegistration (
         data,
         isAdvancedFee = false,
         returnObject = false
     ) {
-        return this.__buildTransaction("buildSecondSignatureRegistration", data, isAdvancedFee, returnObject);
+        return this.__buildTransaction("buildExtraSignatureRegistration", data, isAdvancedFee, returnObject);
     }
 
     // todo: move this out
-    async buildDelegateRegistration (
+    async buildRegistration (
         data,
         isAdvancedFee = false,
         returnObject = false
     ) {
-        return this.__buildTransaction("buildDelegateRegistration", data, isAdvancedFee, returnObject);
+        return this.__buildTransaction("buildRegistration", data, isAdvancedFee, returnObject);
     }
 
     // todo: move this out
@@ -626,12 +626,12 @@ export default class ClientService {
     }
 
     // todo: move this out
-    async buildDelegateResignation (
+    async buildResignation (
         data,
         isAdvancedFee = false,
         returnObject = false
     ) {
-        return this.__buildTransaction("buildDelegateResignation", data, isAdvancedFee, returnObject);
+        return this.__buildTransaction("buildResignation", data, isAdvancedFee, returnObject);
     }
 
     // todo: move this out

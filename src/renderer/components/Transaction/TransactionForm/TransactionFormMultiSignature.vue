@@ -121,7 +121,7 @@
       </div>
 
       <InputPassword
-        v-else-if="currentWallet.passphrase"
+        v-else-if="currentWallet.mnemonic"
         ref="password"
         v-model="$v.form.walletPassword.$model"
         :label="$t('TRANSACTION.PASSWORD')"
@@ -129,24 +129,24 @@
         class="TransactionFormMultiSignature__password mt-4"
       />
 
-      <PassphraseInput
+      <MnemonicInput
         v-else
-        ref="passphrase"
-        v-model="$v.form.passphrase.$model"
+        ref="mnemonic"
+        v-model="$v.form.mnemonic.$model"
         :address="currentWallet.address"
         :pub-key-hash="walletNetwork.version"
         :is-disabled="!currentWallet"
-        class="TransactionFormMultiSignature__passphrase mt-4"
+        class="TransactionFormMultiSignature__mnemonic mt-4"
       />
 
-      <PassphraseInput
+      <MnemonicInput
         v-if="currentWallet.secondPublicKey"
-        ref="secondPassphrase"
-        v-model="$v.form.secondPassphrase.$model"
-        :label="$t('TRANSACTION.SECOND_PASSPHRASE')"
+        ref="extraMnemonic"
+        v-model="$v.form.extraMnemonic.$model"
+        :label="$t('TRANSACTION.EXTRA_MNEMONIC')"
         :pub-key-hash="walletNetwork.version"
         :public-key="currentWallet.secondPublicKey"
-        class="TransactionFormMultiSignature__second-passphrase mt-5"
+        class="TransactionFormMultiSignature__extra-mnemonic mt-5"
       />
     </div>
 
@@ -189,7 +189,7 @@ import { InputAddress, InputFee, InputPublicKey, InputPassword, InputText } from
 import { ListDivided, ListDividedItem } from "@/components/ListDivided";
 import { MenuTab, MenuTabItem } from "@/components/Menu";
 import { ModalLoader } from "@/components/Modal";
-import { PassphraseInput } from "@/components/Passphrase";
+import { MnemonicInput } from "@/components/Mnemonic";
 import TransactionMultiSignatureList from "@/components/Transaction/TransactionMultiSignatureList";
 import mixin from "./mixin";
 
@@ -210,7 +210,7 @@ export default {
         MenuTab,
         MenuTabItem,
         ModalLoader,
-        PassphraseInput,
+        MnemonicInput,
         TransactionMultiSignatureList
     },
 
@@ -225,7 +225,7 @@ export default {
             publicKeys: [],
             minKeys: null,
             fee: 0,
-            passphrase: "",
+            mnemonic: "",
             walletPassword: ""
         }
     }),
@@ -335,14 +335,14 @@ export default {
                 address: this.currentWallet.address,
                 publicKeys: this.form.publicKeys.map(key => key.publicKey),
                 minKeys: this.form.minKeys,
-                passphrase: this.form.passphrase,
+                mnemonic: this.form.mnemonic,
                 fee: this.getFee(),
                 wif: this.form.wif,
                 networkWif: this.walletNetwork.wif
             };
 
             if (this.currentWallet.secondPublicKey) {
-                transactionData.secondPassphrase = this.form.secondPassphrase;
+                transactionData.extraMnemonic = this.form.extraMnemonic;
             }
 
             return transactionData;
@@ -486,8 +486,8 @@ export default {
             },
 
             fee: mixin.validators.fee,
-            passphrase: mixin.validators.passphrase,
-            secondPassphrase: mixin.validators.secondPassphrase,
+            mnemonic: mixin.validators.mnemonic,
+            extraMnemonic: mixin.validators.extraMnemonic,
             walletPassword: mixin.validators.walletPassword
         }
     }

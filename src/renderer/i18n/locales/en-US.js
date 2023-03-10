@@ -6,16 +6,15 @@ export default {
         APP_NAME: "Solar Desktop Wallet",
         APP_NAME_SHORT: "Solar Desktop",
         APPEARANCE: "Appearance",
-        ARK: "Solar",
         AVATAR: "Avatar",
         BACK: "Back",
         BACKGROUND: "Background",
-        BIP39_LANGUAGE: "Passphrase Language (BIP39)",
+        BIP39_LANGUAGE: "Mnemonic Language (BIP39)",
         CATEGORY: "Category",
         CONFIRM: "Confirm",
         CURRENCY: "Currency",
         DATE: "Date",
-        DELEGATE: "Delegate",
+        BLOCK_PRODUCER: "Block Producer",
         DESKTOP_WALLET: "Desktop Wallet",
         DONE: "Done",
         ENABLE_ADVANCED_MODE: "Enable Advanced Mode to use this feature",
@@ -49,6 +48,7 @@ export default {
         SAVE: "Save",
         SIZE: "Size",
         SKIP: "Skip",
+        SOLAR: "Solar",
         START: "Start",
         THEME: "Theme",
         THEMES: {
@@ -83,7 +83,7 @@ export default {
             TITLE: "Your Power",
             FINANCE: "The most important thing for users to know about cryptocurrencies is that they completely reverse the commonly-accepted model of how finance works.",
             BANKS: "In traditional finance, you give up direct control of your money to a bank. Because banks have control over your money, they can take actions on your behalf, such as refunding transactions and resetting your login info.",
-            CRYPTO: "Cryptocurrencies take that power and give it to you directly. Using nothing more than your passphrase, you can control exactly when, where and how your money is kept and spent.",
+            CRYPTO: "Cryptocurrencies take that power and give it to you directly. Using nothing more than your mnemonic, you can control exactly when, where and how your money is kept and spent.",
             RESPONSIBILITY: "However, in the words of Uncle Ben Parker, with great power comes great responsibility."
         },
         DUTY: {
@@ -92,38 +92,38 @@ export default {
             OWNER: "This also brings greater responsibility for you, the account owner.",
             WARNING: {
                 ACCOUNT: "Unlike your traditional bank account, {CANNOT_RESTORE}.",
-                CANNOT_RESTORE: "lost passwords, passphrases or stolen funds cannot be restored by the delegates, Solar team, or anyone else"
+                CANNOT_RESTORE: "lost passwords, mnemonics or stolen funds cannot be restored by the block producers, Solar team, or anyone else"
             },
             SECURITY: "The security of your account is solely up to you."
         },
         RESPONSIBILITY: {
             TITLE: "Your Responsibility",
             STORAGE: {
-                EXPLANATION: "The {PASSPHRASE} of each wallet address is able to sign transactions and move funds. This means if your computer dies but you have your passphrase, you can still access your funds. The Solar Desktop Wallet has an additional feature that lets you set an {ENCRYPTED} as well, for easier management. If your computer dies, you cannot use the encrypted password to access your funds from a different machine. {NEED}.",
-                PASSPHRASE: "passphrase",
+                EXPLANATION: "The {MNEMONIC} of each wallet address is able to sign transactions and move funds. This means if your computer dies but you have your mnemonic, you can still access your funds. The Solar Desktop Wallet has an additional feature that lets you set an {ENCRYPTED} as well, for easier management. If your computer dies, you cannot use the encrypted password to access your funds from a different machine. {NEED}.",
+                MNEMONIC: "mnemonic",
                 ENCRYPTED: "encrypted password",
-                NEED: "You will need the passphrase"
+                NEED: "You will need the mnemonic"
             },
             BACKUP: {
-                ALWAYS: "Always backup your passphrase and keep it in a safe place.",
-                OPTIONS: "You can write it down on thick paper and store multiple copies in secure locations. You can also store it on an encrypted flash drive. Alternatively, you can use a Ledger Nano S, Nano S Plus or Nano X USB hardware device, available at Ledger.com, to store and access your funds and the Solar Desktop Wallet. You can plug your Ledger Nano S or Nano X into your computer and access the Solar blockchain without needing to enter your passphrase."
+                ALWAYS: "Always backup your mnemonic and keep it in a safe place.",
+                OPTIONS: "You can write it down on thick paper and store multiple copies in secure locations. You can also store it on an encrypted flash drive. Alternatively, you can use a Ledger Nano S, Nano S Plus or Nano X USB hardware device, available at Ledger.com, to store and access your funds and the Solar Desktop Wallet. You can plug your Ledger Nano S or Nano X into your computer and access the Solar blockchain without needing to enter your mnemonic."
             },
-            REMEMBER: "Remember, anyone who has your passphrase can access your funds. Never share your account with anyone and avoid storing it in locations that are susceptible to hacks, such as the cloud."
+            REMEMBER: "Remember, anyone who has your mnemonic can access your funds. Never share your account with anyone and avoid storing it in locations that are susceptible to hacks, such as the cloud."
         },
         TURN: {
             TITLE: "Your Turn",
-            KNOWLEDGE: "Now, armed with the knowledge of how important it is to keep your passphrases safe, you are ready to claim your financial autonomy with the Solar Desktop Wallet.",
+            KNOWLEDGE: "Now, armed with the knowledge of how important it is to keep your mnemonics safe, you are ready to claim your financial autonomy with the Solar Desktop Wallet.",
             SUPPORT: "Solar is an open-source network and if you need assistance, the Solar community and team are here to help.",
             CONCLUSION: "Everyone here on the Solar.org team hopes you enjoy using the Solar Desktop Wallet to participate in the blockchain revolution!"
         }
     },
 
     SEARCH: {
-        DEFAULT_PLACEHOLDER: "Find transaction, address or delegate",
+        DEFAULT_PLACEHOLDER: "Find transaction, address or block producer",
         FILTER: "Filter",
         SEARCH_BY: "Search by",
         SELECT_OPTION: "Select an option",
-        DELEGATE: "Delegate",
+        BLOCK_PRODUCER: "Block Producer",
         WALLETS: "Wallets",
         PERIOD: "Period"
     },
@@ -135,8 +135,8 @@ export default {
     ENCRYPTION: {
         DECRYPTING: "Decrypting wallet with password...",
         ENCRYPTING: "Encrypting wallet with password...",
-        FAILED_DECRYPT: "Failed to decrypt passphrase",
-        FAILED_ENCRYPT: "Failed to encrypt passphrase"
+        FAILED_DECRYPT: "Failed to decrypt mnemonic",
+        FAILED_ENCRYPT: "Failed to encrypt mnemonic"
     },
 
     LEDGER: {
@@ -206,7 +206,7 @@ export default {
             NO_GITHUB: "Only URLs containing 'github.com' are allowed",
             NO_GITHUB_REPOSITORY: "This URL does not point to a GitHub repository"
         },
-        VENDOR_FIELD: {
+        MEMO: {
             LIMIT_REACHED: "You can enter a maximum of {0} characters only",
             LIMIT_REMAINING: "{0}/{1} Remaining"
         },
@@ -214,8 +214,8 @@ export default {
         REQUIRED: "The '{0}' is required",
         SEND_NOT_ENABLED: "Sending is not enabled for the selected wallet",
         WALLET_NOT_ACTIVE: "Select a wallet and open the URI again",
-        WARNING_BIP39: "The '{0}' contains a BIP39 Passphrase",
-        WARNING_NOT_BIP39: "The '{0}' is not a BIP39 Passphrase"
+        WARNING_BIP39: "The '{0}' contains a BIP39 Mnemonic",
+        WARNING_NOT_BIP39: "The '{0}' is not a BIP39 Mnemonic"
     },
 
     LANGUAGES: {
@@ -253,7 +253,7 @@ export default {
         ROWS_PER_PAGE: "Rows per page",
         NO_TRANSACTIONS: "No transactions have been found. The latest transactions will be displayed here.",
         NO_CONTACTS: "No contacts to be shown.",
-        NO_DELEGATES: "No delegates to be shown.",
+        NO_BLOCK_PRODUCERS: "No block producers to be shown.",
         NO_WALLETS: "No wallets to be shown."
     },
 
@@ -373,12 +373,12 @@ export default {
         LABEL: "Amount"
     },
 
-    INPUT_DELEGATE: {
+    INPUT_BLOCK_PRODUCER: {
         ERROR: {
-            REQUIRED: "The delegate name, address or public key is required",
-            USERNAME_NOT_FOUND: "The delegate '{0}' could not be found",
-            ADDRESS_NOT_FOUND: "The delegate with the address '{0}' could not be found",
-            PUBLIC_KEY_NOT_FOUND: "The delegate with the public key '{0}' could not be found"
+            REQUIRED: "The block producer name, address or public key is required",
+            USERNAME_NOT_FOUND: "The block producer '{0}' could not be found",
+            ADDRESS_NOT_FOUND: "The block producer with the address '{0}' could not be found",
+            PUBLIC_KEY_NOT_FOUND: "The block producer with the public key '{0}' could not be found"
         },
         SEARCH_HINT: "You can search by username, address or public key"
     },
@@ -441,7 +441,7 @@ export default {
             EXPORT_WALLETS: "Failed to export your wallets"
         },
         EXPORT: "Export 0 Wallets | Export 1 Wallet | Export {count} Wallets",
-        INSTRUCTIONS: "<b>Important:</b> Your exported wallets will not contain your passphrases, only the addresses and respective names will be saved!",
+        INSTRUCTIONS: "<b>Important:</b> Your exported wallets will not contain your mnemonics, only the addresses and respective names will be saved!",
         OPTIONS: {
             ADD_NETWORK: "Add information about the network",
             EXCLUDE_EMPTY: "Exclude empty wallets",
@@ -503,7 +503,7 @@ export default {
         EPOCH: "Epoch",
         WIF: "WIF",
         SLIP44: "Slip44",
-        ACTIVE_DELEGATES: "Active Delegates",
+        ACTIVE_BLOCK_PRODUCERS: "Active block producers",
         ADDRESS_VERSION_MISSING: "Address Version was missing - please check your wallets",
         MARKET_TICKER: "Market Ticker (Optional)",
         FAILED_FETCH: "Failed to fetch network information",
@@ -595,11 +595,11 @@ export default {
         DISCLAIMER: "<b>Disclaimer:</b> Please make sure to check the documentation of the plugin before installing it. By installing it on your wallet, you assume every responsibility."
     },
 
-    PASSPHRASE_INPUT: {
-        HIDE: "Hide the passphrase",
-        LABEL: "Passphrase",
+    MNEMONIC_INPUT: {
+        HIDE: "Hide the mnemonic",
+        LABEL: "Mnemonic",
         QR: "Scan the QR code",
-        SHOW: "Show the passphrase"
+        SHOW: "Show the mnemonic"
     },
 
     PASSWORD_INPUT: {
@@ -608,7 +608,7 @@ export default {
         SHOW: "Show the password"
     },
 
-    PASSPHRASE_VERIFICATION: {
+    MNEMONIC_VERIFICATION: {
         WORD_LABEL_1: "The 1st word",
         WORD_LABEL_2: "The 2nd word",
         WORD_LABEL_3: "The 3rd word",
@@ -799,7 +799,7 @@ export default {
 
         WALLET: {
             TRANSACTIONS: "Transactions",
-            DELEGATES: "Delegates",
+            BLOCK_PRODUCERS: "Block producers",
             IPFS: "IPFS",
             MULTI_SIGNATURE: "Multisignature",
             MULTI_SIGNATURE_WALLET: "Multisignature wallet",
@@ -826,7 +826,7 @@ export default {
             ADDRESS: "Address",
             NAME: "Name",
             VOTING_FOR: "Voting for",
-            DELEGATE_NOT_ACTIVE: "{delegate} ({rank}) is not an active delegate",
+            BLOCK_PRODUCER_NOT_ACTIVE: "{blockProducer} ({rank}) is not an active block producer",
             BALANCE: "Balance",
             DELETE: "Delete"
         },
@@ -835,21 +835,21 @@ export default {
             STEP1: {
                 INSTRUCTIONS: {
                     HEADER: "Import Wallet",
-                    TEXT: "Fill in the passphrase of your wallet. You can fill in the address first, to ensure that it matches the given passphrase."
+                    TEXT: "Fill in the mnemonic of your wallet. You can fill in the address first, to ensure that it matches the given mnemonic."
                 },
                 TITLE: "1. Import Wallet",
                 ONLY_ADDRESS: "Use the address only",
-                ONLY_PASSPHRASE: "Use the passphrase only"
+                ONLY_MNEMONIC: "Use the mnemonic only"
             },
             STEP2: {
                 INSTRUCTIONS: {
                     HEADER: "Wallet encryption",
-                    TEXT: "Enter a password you would like to use in order to encrypt your passphrase."
+                    TEXT: "Enter a password you would like to use in order to encrypt your mnemonic."
                 },
                 TITLE: "2. Encryption",
                 PASSWORD: "Wallet password (optional)",
                 PASSWORD_CONFIRM: "Confirm password",
-                PASSWORD_WARNING: "Storing your passphrase can bring risks."
+                PASSWORD_WARNING: "Storing your mnemonic can bring risks."
             },
             STEP3: {
                 INSTRUCTIONS: {
@@ -875,30 +875,30 @@ export default {
             STEP2: {
                 INSTRUCTIONS: {
                     HEADER: "Your personal key",
-                    TEXT: "Be sure to save your passphrase securely. Do not show this passphrase to anyone."
+                    TEXT: "Be sure to save your mnemonic securely. Do not show this mnemonic to anyone."
                 },
                 TITLE: "2. Backup"
             },
             STEP3: {
                 INSTRUCTIONS: {
-                    HEADER: "Passphrase confirmation",
-                    TEXT: "Type {words} from your passphrase to verify the new account.",
+                    HEADER: "Mnemonic confirmation",
+                    TEXT: "Type {words} from your mnemonic to verify the new account.",
                     ALL_WORDS: "all the words",
                     WORDS: "the words {words}"
                 },
                 TITLE: "3. Verification",
-                CHECK_ENTIRE_PASSPHRASE: "Check the entire passphrase",
-                VERIFY_ALL_WORDS: "Verify each passphrase word"
+                CHECK_ENTIRE_MNEMONIC: "Check the entire mnemonic",
+                VERIFY_ALL_WORDS: "Verify each mnemonic word"
             },
             STEP4: {
                 INSTRUCTIONS: {
                     HEADER: "Wallet encryption",
-                    TEXT: "Enter a password you would like to use in order to encrypt your passphrase."
+                    TEXT: "Enter a password you would like to use in order to encrypt your mnemonic."
                 },
                 TITLE: "4. Encryption",
                 PASSWORD: "Wallet password (optional)",
                 PASSWORD_CONFIRM: "Confirm password",
-                PASSWORD_WARNING: "Storing your passphrase can bring risks."
+                PASSWORD_WARNING: "Storing your mnemonic can bring risks."
             },
             STEP5: {
                 INSTRUCTIONS: {
@@ -915,8 +915,8 @@ export default {
             NO_VOTE: "Wallet hasn't voted",
             ADD_CONTACT: "Add to contacts",
             VOTING_FOR_ONE: "Voting for {n}",
-            VOTING_FOR_MULTIPLE: "Voting for {n} Delegates",
-            VOTING_FOR_SHORT: "{n} Delegates"
+            VOTING_FOR_MULTIPLE: "Voting for {n} block producers",
+            VOTING_FOR_SHORT: "{n} block producers"
         }
     },
 
@@ -942,7 +942,7 @@ export default {
     },
 
     PROFILE_REMOVAL_CONFIRMATION: {
-        NOTE: "Although it would remove your wallets, it does not delete any data on the blockchain. You could recover the wallets as long as you have their passphrases",
+        NOTE: "Although it would remove your wallets, it does not delete any data on the blockchain. You could recover the wallets as long as you have their mnemonics",
         QUESTION: "Are you sure you want to remove this profile?"
     },
 
@@ -966,15 +966,15 @@ export default {
     TRANSACTION: {
         TYPE: {
             TRANSFER: "Transfer",
-            SECOND_SIGNATURE: "Second Signature",
-            DELEGATE_REGISTRATION: "Delegate Registration",
+            EXTRA_SIGNATURE: "Extra Signature",
+            REGISTRATION: "Registration",
             VOTE: "Vote",
-            UNVOTE: "Cancel Vote",
+            CANCEL_VOTE: "Cancel Vote",
             MULTI_SIGN: "Multisignature Transaction",
             MULTI_SIGNATURE: "Multisignature",
             IPFS: "IPFS",
             MULTI_PAYMENT: "Transfer",
-            DELEGATE_RESIGNATION: "Delegate Resignation",
+            RESIGNATION: "Resignation",
             HTLC_LOCK: "Timelock",
             HTLC_CLAIM: "Timelock Claim",
             HTLC_REFUND: "Timelock Refund"
@@ -982,20 +982,20 @@ export default {
         ERROR: {
             VALIDATION: {
                 TRANSFER: "Transfer transaction could not be created",
-                SECOND_SIGNATURE: "Second Signature transaction could not be created",
-                DELEGATE_REGISTRATION: "Delegate Registration transaction could not be created",
+                EXTRA_SIGNATURE: "Extra Signature transaction could not be created",
+                REGISTRATION: "Registration transaction could not be created",
                 VOTE: "Vote transaction could not be created",
                 MULTI_SIGN: "Could not multisign transaction",
                 MULTI_SIGNATURE: "Multisignature transaction could not be created",
                 MULTI_PAYMENT: "Transfer transaction could not be created",
                 IPFS: "IPFS transaction could not be created",
-                DELEGATE_RESIGNATION: "Delegate Resignation transaction could not be created"
+                RESIGNATION: "Resignation transaction could not be created"
             },
             TRANSFER: "Your transaction could not be sent",
-            SECOND_SIGNATURE: "Second signature could not be registered",
-            DELEGATE_REGISTRATION: "Could not register as delegate",
+            EXTRA_SIGNATURE: "Extra signature could not be registered",
+            REGISTRATION: "Could not register as block producer",
             VOTE: "Vote could not be registered",
-            UNVOTE: "Vote could not be registered",
+            CANCEL_VOTE: "Vote could not be canceled",
             IPFS: "IPFS could not be created",
             MULTI_SIGN: "Could not sign transaction",
             MULTI_SIGNATURE: "Multisignature could not be created",
@@ -1004,7 +1004,7 @@ export default {
             HTLC_REFUND: "Timelock Refund could not be created",
             MULTI_PAYMENT: "Your transaction could not be sent",
             MULTI_PAYMENT_TO_SELF: "Excluding {amount} sent to itself",
-            DELEGATE_RESIGNATION: "Delegate resignation was unsuccessful",
+            RESIGNATION: "Resignation was unsuccessful",
             SAVE_OFFLINE: "Failed to save transaction file: {error}",
             LOAD_FROM_FILE: "Failed to load transaction file",
             LOAD_FROM_URI: "Failed to load transaction URI",
@@ -1017,10 +1017,10 @@ export default {
             WALLET_NOT_IMPORTED: "Wallet not imported"
         },
         FOOTER_TEXT: {
-            DELEGATE_REGISTRATION: "Keep in mind that you cannot change the name of your delegate after the registration has been registered on the blockchain.",
-            DELEGATE_RESIGNATION_TEMPORARY: "Keep in mind that this resignation can be revoked in the future.",
-            DELEGATE_RESIGNATION_PERMANENT: "Keep in mind that you cannot restore your delegate after the resignation has been registered on the blockchain.",
-            DELEGATE_RESIGNATION_REVOKE: "Keep in mind that this will restore your delegate's ranking from the next round."
+            REGISTRATION: "Keep in mind that you cannot change the name of your block producer after the registration has been registered on the blockchain.",
+            RESIGNATION_TEMPORARY: "Keep in mind that this resignation can be revoked in the future.",
+            RESIGNATION_PERMANENT: "Keep in mind that you cannot restore your block producer after the resignation has been registered on the blockchain.",
+            RESIGNATION_REVOKE: "Keep in mind that this will restore your block producer's ranking from the next round."
         },
         INFO: {
             BROADCASTING: "Your transaction is being broadcast to the network",
@@ -1028,10 +1028,10 @@ export default {
         },
         SUCCESS: {
             TRANSFER: "Your transaction was sent successfully",
-            SECOND_SIGNATURE: "Second signature successfully registered",
-            DELEGATE_REGISTRATION: "Successfully registered as delegate",
+            EXTRA_SIGNATURE: "Extra signature successfully registered",
+            REGISTRATION: "Successfully registered as block producer",
             VOTE: "Voted successfully",
-            UNVOTE: "Cancelled vote successfully",
+            CANCEL_VOTE: "Vote cancelled successfully",
             MULTI_SIGN: "Transaction has been signed successfully",
             MULTI_SIGNATURE: "Multisignature created successfully",
             IPFS: "IPFS created successfully",
@@ -1039,18 +1039,18 @@ export default {
             HTLC_CLAIM: "Timelock Claim created successfully",
             HTLC_REFUND: "Timelock Refund created successfully",
             MULTI_PAYMENT: "Your transaction was sent successfully",
-            DELEGATE_RESIGNATION: "Delegate resignation was successful",
+            RESIGNATION: "Resignation was successful",
             SAVE_OFFLINE: "The transaction file was saved successfully in: {path}",
             LOAD_FROM_FILE: "The transaction file was loaded successfully"
         },
-        DELEGATE_RESIGNATION: {
+        RESIGNATION: {
             TEMPORARY: "Temporary Resignation",
             REVOKE: "Revoke Resignation",
             PERMANENT: "Permanent Resignation"
         },
         VOTE: {
-            VOTE_DELEGATE: "Vote for delegate {delegate}",
-            UNVOTE_DELEGATE: "Cancel vote for delegate {delegate}"
+            VOTE: "Vote for block producers {blockProducer}",
+            CANCEL_VOTE: "Cancel vote for block producers {blockProducer}"
         },
         MULTI_PAYMENT: {
             TOTAL_AMOUNT: "Total amount",
@@ -1119,7 +1119,7 @@ export default {
         NO_RECIPIENTS: "There are no recipients",
         OPEN_IN_EXPLORER: "Open in Explorer",
         OPTIONAL: "(optional)",
-        PASSPHRASE: "Passphrase",
+        MNEMONIC: "mnemonic",
         PASSWORD: "Encryption Password",
         RECIPIENT: "Recipient",
         RECIPIENTS: "Recipients",
@@ -1127,7 +1127,7 @@ export default {
         RESEND: "Resend",
         RESENT_NOTICE: "Transaction {transactionId} has been resent",
         SAVE_OFFLINE: "Save transaction offline",
-        SECOND_PASSPHRASE: "Second Passphrase",
+        EXTRA_MNEMONIC: "Extra mnemonic",
         SEND: "Send",
         SEND_ALL: "Send All",
         SENDER: "Sender",
@@ -1137,7 +1137,7 @@ export default {
         TIMESTAMP: "Timestamp",
         TRANSACTION: "Transaction",
         USERNAME: "Username",
-        VENDOR_FIELD: "Memo",
+        MEMO: "Memo",
         VOTES: "Votes",
         WELL_CONFIRMED: "Well Confirmed",
         WELL_CONFIRMED_COUNT: "Well Confirmed ({confirmations} confirmations)"
@@ -1170,15 +1170,15 @@ export default {
         GROUP_1: {
             CANCELLED_VOTE: "Cancelled vote: {address} stopped voting",
             VOTE: "voted for",
-            UNVOTE: "cancelled vote for",
-            NEW_SECOND_SIGNATURE: "New second signature: {address}",
-            NEW_DELEGATE_REGISTRATION: "New delegate: {address} registered as {username}",
-            NEW_VOTE: "New vote: {address} {voteUnvote} {publicKey}",
+            CANCEL_VOTE: "vote cancelled for",
+            NEW_EXTRA_SIGNATURE: "New extra signature: {address}",
+            NEW_REGISTRATION: "New block producer: {address} registered as {username}",
+            NEW_VOTE: "New vote: {address} {vote} {publicKey}",
             NEW_MULTI_SIGNATURE: "New multisignature registration: {address}",
             NEW_IPFS: "New IPFS hash: {address}",
             NEW_MULTI_PAYMENT_SENT: "New transfer: {amount} sent from {sender} to {recipient}",
             NEW_MULTI_PAYMENT_RECEIVED: "New transfer: {amount} received from {sender} to {recipient}",
-            NEW_DELEGATE_RESIGNATION: "New delegate resignation: {address}",
+            NEW_RESIGNATION: "New resignation: {address}",
             NEW_TRANSFER_SENT: "New transfer: {amount} sent from {sender} to {recipient}",
             NEW_TRANSFER_RECEIVED: "New transfer: {amount} received from {sender} to {recipient}"
         }
@@ -1198,25 +1198,25 @@ export default {
         ACTIONS: {
             WALLET_NAME: "Wallet Name",
             CONTACT_NAME: "Contact Name",
-            REGISTER_MULTISIGNATURE: "Register Multisignature",
-            REGISTER_DELEGATE: "Register Delegate",
-            RESIGN_DELEGATE_REVOKE: "Revoke Temporary Delegate Resignation",
-            RESIGN_DELEGATE_TEMPORARY: "Temporarily Resign Delegate",
-            RESIGN_DELEGATE_PERMANENT: "Permanently Resign Delegate",
-            SECOND_PASSPHRASE: "Second Passphrase",
+            REGISTER_MULTISIGNATURE: "Register multisignature",
+            REGISTER: "Block Producer",
+            RESIGN_REVOKE: "Revoke Temporary Resignation",
+            RESIGN_TEMPORARY: "Temporary Resignation",
+            RESIGN_PERMANENT: "Permanent Resignation",
+            EXTRA_MNEMONIC: "Extra Mnemonic",
             DELETE_CONTACT: "Delete Contact",
             DELETE_WALLET: "Delete Wallet",
             SHOW_PUBLIC_KEY: "Show Public Key",
             SHOW_ADDRESS: "Show Address"
         },
         PENDING_BALANCE: "{amount} including 1 unconfirmed transaction | {amount} including {n} unconfirmed transactions",
-        SECOND_PASSPHRASE_ENABLED: "Second Signature Enabled"
+        EXTRA_MNEMONIC_ENABLED: "Extra Signature Enabled"
     },
 
-    WALLET_SECOND_SIGNATURE: {
-        NEW: "Generate new second passphrase",
-        ALREADY_REGISTERED: "There is already a second passphrase registered for this address",
-        INSTRUCTIONS: "You will need both 12 word passphrases to interact with the network. Keep them safe!"
+    WALLET_EXTRA_SIGNATURE: {
+        NEW: "Generate new extra mnemonic",
+        ALREADY_REGISTERED: "There is already an extra mnemonic registered for this address",
+        INSTRUCTIONS: "You will need both 12 word mnemonics to interact with the network. Keep them safe!"
     },
 
     WALLET_SIDEBAR: {
@@ -1242,7 +1242,7 @@ export default {
         }
     },
 
-    WALLET_DELEGATES: {
+    WALLET_BLOCK_PRODUCERS: {
         STATUS: {
             TITLE: "Status",
             ACTIVE: "Active",
@@ -1255,32 +1255,31 @@ export default {
         RANK_NOT_APPLICABLE: "Not applicable",
         RANK_NOT_AVAILABLE: "Not yet available",
         APPROVAL: "Vote %",
-        FORGED: "Forged",
+        PRODUCED: "Produced",
         BLOCKS: "Blocks",
         VOTERS: "Voters",
-        UNVOTE: "Cancel Vote",
+        CANCEL_VOTE: "Cancel Vote",
         VOTES: "Votes",
         VOTE: "Vote",
         USERNAME_EMPTY_ERROR: "The username must have at least 1 character",
         USERNAME_ERROR: "No special characters or uppercase allowed",
-        USERNAME_EXISTS: "A delegate with this username already exists",
+        USERNAME_EXISTS: "This username already exists",
         USERNAME_MAX_LENGTH_ERROR: "The username must be less than or equal to 20 characters long",
-        ALREADY_REGISTERED: "This wallet is already registered as a delegate",
-        NOT_REGISTERED: "This wallet is not registered as a delegate",
+        ALREADY_REGISTERED: "This wallet is already registered as a block producer",
+        NOT_REGISTERED: "This wallet is not registered as a block producer",
         BLOG: "Voting Guide",
-        EXPLANATION: "Voting is an optional, but important mechanism that keeps the Solar network secure. The {delegates} delegates with the most votes from the network are responsible for verifying and forging transactions into new blocks. This page can be used to cast your vote for a delegate that you support. Learn more about voting for a delegate by clicking on the following link:",
-        VOTE_DELEGATE: "Vote for {delegate}",
-        UNVOTE_DELEGATE: "Cancel Vote",
-        CURRENTLY_VOTED: "You are currently voting for {delegate}",
-        VOTED_FOR: "Total voted: {delegate}%",
-        WALLET_VOTED_FOR: "This wallet voted for delegate {delegate}",
+        EXPLANATION: "Voting is an optional, but important mechanism that keeps the Solar network secure. The {blockProducers} block producers with the most votes from the network are responsible for verifying and forging transactions into new blocks. This page can be used to cast your vote for one or many block producers that you support. Learn more about voting for a block producer by clicking on the following link:",
+        VOTE_BLOCK_PRODUCER: "Vote for {blockProducer}",
+        CURRENTLY_VOTED: "You are currently voting for {blockProducer}",
+        VOTED_FOR: "Total voted: {blockProducer}%",
+        WALLET_VOTED_FOR: "This wallet voted for block producer {blockProducer}",
         VOTE_INFO: "Info:",
-        NO_VOTE: "This wallet is not voting. To view more information and vote, use the search or click on any delegate",
+        NO_VOTE: "This wallet is not voting. To view more information and vote, use the search or click on any block producer",
         AWAITING_VOTE_CONFIRMATION: "Your transaction is awaiting confirmation",
         LOADING_VOTE: "Loading vote details...",
-        SEARCH_DELEGATE: "Search delegate",
+        SEARCH_BLOCK_PRODUCER: "Search block producers",
         TOTAL_REMAINING: "Remaining: {percentage}%",
-        NUMBER_OF_DELEGATES_VOTED: "Votes: {n}"
+        NUMBER_OF_BLOCK_PRODUCERS_VOTED: "Votes: {n}"
     },
 
     WALLET_IPFS: {
@@ -1323,7 +1322,7 @@ export default {
     },
 
     WALLET_REMOVAL_CONFIRMATION: {
-        NOTE: "It does not delete any data on the blockchain. You could recover the wallet as long as you have the passphrase",
+        NOTE: "It does not delete any data on the blockchain. You could recover the wallet as long as you have the mnemonic",
         QUESTION: "Are you sure you want to remove this wallet?",
         CONTACT_QUESTION: "Are you sure you want to remove this contact?"
     },

@@ -4,13 +4,13 @@ import store from "@/store";
 import { CryptoUtils } from "./utils";
 import { TransactionSigner } from "./transaction-signer";
 
-export class DelegateRegistrationBuilder {
+export class ResignationBuilder {
     static async build ({
         address,
-        username,
+        resignationType,
         fee,
-        passphrase,
-        secondPassphrase,
+        mnemonic,
+        extraMnemonic,
         wif,
         networkWif,
         multiSignature,
@@ -20,27 +20,27 @@ export class DelegateRegistrationBuilder {
     returnObject = false
     ) {
         const staticFee = store.getters["transaction/staticFee"](
-            TRANSACTION_TYPES.GROUP_1.DELEGATE_REGISTRATION,
+            TRANSACTION_TYPES.GROUP_1.RESIGNATION,
             1
         );
         if (!isAdvancedFee && fee.gt(staticFee)) {
             throw new Error(
-                `Delegate registration fee should be smaller than ${staticFee}`
+                `Resignation fee should be smaller than ${staticFee}`
             );
         }
 
-        const transaction = Transactions.BuilderFactory.delegateRegistration()
-            .usernameAsset(username)
+        const transaction = Transactions.BuilderFactory.delegateResignation()
+            .resignationTypeAsset(resignationType)
             .fee(fee);
 
-        passphrase = CryptoUtils.normalizePassphrase(passphrase);
-        secondPassphrase = CryptoUtils.normalizePassphrase(secondPassphrase);
+        mnemonic = CryptoUtils.normalizeMnemonic(mnemonic);
+        extraMnemonic = CryptoUtils.normalizeMnemonic(extraMnemonic);
 
         return TransactionSigner.sign({
             address,
             transaction,
-            passphrase,
-            secondPassphrase,
+            mnemonic,
+            extraMnemonic,
             wif,
             networkWif,
             multiSignature,

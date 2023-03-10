@@ -1,9 +1,9 @@
 <template>
   <span class="WalletAddress flex items-center">
     <span
-      v-if="transaction_isSecondSignature(type, group)"
+      v-if="transaction_isExtraSignature(type, group)"
       v-tooltip="{
-        content: $t('TRANSACTION.TYPE.SECOND_SIGNATURE'),
+        content: $t('TRANSACTION.TYPE.EXTRA_SIGNATURE'),
         container: tooltipContainer,
         delay: { show: 300, hide: 0 },
         show: showTooltip,
@@ -12,12 +12,12 @@
       @mouseover="onMouseOver"
       @mouseout="onMouseOut"
     >
-      {{ $t("TRANSACTION.TYPE.SECOND_SIGNATURE") }}
+      {{ $t("TRANSACTION.TYPE.EXTRA_SIGNATURE") }}
     </span>
     <span
-      v-else-if="transaction_isDelegateRegistration(type, group)"
+      v-else-if="transaction_isRegistration(type, group)"
       v-tooltip="{
-        content: $t('TRANSACTION.TYPE.DELEGATE_REGISTRATION'),
+        content: $t('TRANSACTION.TYPE.REGISTRATION'),
         container: tooltipContainer,
         delay: { show: 300, hide: 0 },
         show: showTooltip,
@@ -26,7 +26,7 @@
       @mouseover="onMouseOver"
       @mouseout="onMouseOut"
     >
-      {{ $t("TRANSACTION.TYPE.DELEGATE_REGISTRATION") }}
+      {{ $t("TRANSACTION.TYPE.REGISTRATION") }}
     </span>
     <div
       v-else-if="transaction_isVote(type, group)"
@@ -34,7 +34,7 @@
       <a
         v-if="!isUnvote && countVotes === 1"
         v-tooltip="{
-          content: votedDelegateAddress,
+          content: votedBlockProducerAddress,
           container: tooltipContainer,
           delay: { show: 300, hide: 0 },
           show: showTooltip,
@@ -47,23 +47,23 @@
       >
         {{ $t("TRANSACTION.TYPE.VOTE") }}
         <span
-          v-if="votedDelegate"
+          v-if="votedBlockProducer"
           class="italic"
         >
-          ({{ votedDelegateUsername }})
+          ({{ votedBlockProducerUsername }})
         </span>
       </a>
       <span
         v-else-if="!isUnvote"
         class="text-green"
       >
-        {{ $t("TRANSACTION.TYPE.VOTE") }} ({{ countVotes }} Delegates)
+        {{ $t("TRANSACTION.TYPE.VOTE") }} ({{ countVotes }} BlockProducers)
       </span>
       <span
         v-else
         class="text-red"
       >
-        {{ $t("TRANSACTION.TYPE.UNVOTE") }}
+        {{ $t("TRANSACTION.TYPE.CANCEL_VOTE") }}
       </span>
     </div>
     <div
@@ -72,7 +72,7 @@
       <a
         v-if="!isLegacyUnvote"
         v-tooltip="{
-          content: votedDelegateAddress,
+          content: votedBlockProducerAddress,
           container: tooltipContainer,
           delay: { show: 300, hide: 0 },
           show: showTooltip,
@@ -85,17 +85,17 @@
       >
         {{ $t("TRANSACTION.TYPE.VOTE") }}
         <span
-          v-if="votedDelegate"
+          v-if="votedBlockProducer"
           class="italic"
         >
-          ({{ votedDelegateUsername }})
+          ({{ votedBlockProducerUsername }})
         </span>
       </a>
       <span
         v-else
         class="text-red"
       >
-        {{ $t("TRANSACTION.TYPE.UNVOTE") }}
+        {{ $t("TRANSACTION.TYPE.CANCEL_VOTE") }}
       </span>
     </div>
     <span
@@ -141,7 +141,7 @@
       {{ transferRecipientText }}
     </span>
     <span
-      v-else-if="transaction_isDelegateResignation(type, group)"
+      v-else-if="transaction_isResignation(type, group)"
       v-tooltip="{
         content: resignationType,
         container: tooltipContainer,
@@ -327,14 +327,14 @@ export default {
             if (this.asset && this.asset.resignationType) {
                 switch (this.asset.resignationType) {
                 case 1:
-                    return this.$t("TRANSACTION.DELEGATE_RESIGNATION.PERMANENT");
+                    return this.$t("TRANSACTION.RESIGNATION.PERMANENT");
                 case 2:
-                    return this.$t("TRANSACTION.DELEGATE_RESIGNATION.REVOKE");
+                    return this.$t("TRANSACTION.RESIGNATION.REVOKE");
                 default:
-                    return this.$t("TRANSACTION.DELEGATE_RESIGNATION.TEMPORARY");
+                    return this.$t("TRANSACTION.RESIGNATION.TEMPORARY");
                 }
             } else {
-                return this.$t("TRANSACTION.DELEGATE_RESIGNATION.TEMPORARY");
+                return this.$t("TRANSACTION.RESIGNATION.TEMPORARY");
             }
         },
 
@@ -350,24 +350,24 @@ export default {
             return "";
         },
 
-        votedDelegate () {
+        votedBlockProducer () {
             if (this.votePublicKeyOrUsername) {
                 if (this.votePublicKeyOrUsername.length === 66) {
-                    return this.$store.getters["delegate/byPublicKey"](this.votePublicKeyOrUsername);
+                    return this.$store.getters["blockProducer/byPublicKey"](this.votePublicKeyOrUsername);
                 } else {
-                    return this.$store.getters["delegate/byUsername"](this.votePublicKeyOrUsername);
+                    return this.$store.getters["blockProducer/byUsername"](this.votePublicKeyOrUsername);
                 }
             }
 
             return null;
         },
 
-        votedDelegateUsername () {
-            return this.votedDelegate ? this.votedDelegate.username : "";
+        votedBlockProducerUsername () {
+            return this.votedBlockProducer ? this.votedBlockProducer.username : "";
         },
 
-        votedDelegateAddress () {
-            return this.votedDelegate ? this.votedDelegate.address : "";
+        votedBlockProducerAddress () {
+            return this.votedBlockProducer ? this.votedBlockProducer.address : "";
         },
 
         verifiedAddressText () {
@@ -402,7 +402,7 @@ export default {
 
         openAddress () {
             if (this.votePublicKeyOrUsername) {
-                this.$router.push({ name: "wallet-show", params: { address: this.votedDelegateAddress } });
+                this.$router.push({ name: "wallet-show", params: { address: this.votedBlockProducerAddress } });
             } else {
                 let address = this.address;
                 if (!address) {

@@ -6,9 +6,9 @@ const wif = require("wif");
 const { Identities } = require("@solar-network/crypto");
 
 process.on("message", message => {
-    if (message.passphrase) {
+    if (message.mnemonic) {
         try {
-            const key = Identities.WIF.fromPassphrase(message.passphrase, { wif: message.wif });
+            const key = Identities.WIF.fromPassphrase(message.mnemonic, { wif: message.wif });
             const decoded = wif.decode(key);
 
             process.send({
@@ -16,7 +16,7 @@ process.on("message", message => {
             });
         } catch (error) {
             process.send({
-                error: `Failed to encrypt passphrase: ${error.message}`
+                error: `Failed to encrypt mnemonic: ${error.message}`
             });
         }
     } else if (message.bip38key) {
@@ -27,7 +27,7 @@ process.on("message", message => {
             });
         } catch (error) {
             process.send({
-                error: `Failed to decrypt passphrase: ${error.message}`
+                error: `Failed to decrypt mnemonic: ${error.message}`
             });
         }
     } else if (message === "quit") {

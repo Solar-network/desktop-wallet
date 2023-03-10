@@ -1,8 +1,8 @@
 <template>
   <div class="TransactionFormVote">
     <Collapse
-      :is-open="!isPassphraseStep"
-      class="TransactionFormVote__delegate-details"
+      :is-open="!isMnemonicStep"
+      class="TransactionFormVote__block-producer-details"
     >
       <ListDivided :is-floating-label="true">
         <ListDividedItem
@@ -20,7 +20,7 @@
           </span>
         </ListDividedItem>
         <ListDividedItem
-          v-if="Object.keys(votedDelegates).length"
+          v-if="Object.keys(votedBlockProducers).length"
           class="TransactionConfirmMultiPayment__recipients"
           :label="$t('TRANSACTION.VOTES')"
           item-value-class="items-center w-full"
@@ -36,16 +36,16 @@
       </ListDivided>
 
       <button
-        v-show="showVoteUnvoteButton"
+        v-show="showVoteButton"
         type="button"
         class="blue-button mt-5"
         @click="toggleStep"
       >
-        {{ Object.keys(votedDelegates).length === 0 ? $t('WALLET_DELEGATES.UNVOTE') : $t('WALLET_DELEGATES.VOTE') }}
+        {{ Object.keys(votedBlockProducers).length === 0 ? $t('WALLET_BLOCK_PRODUCERS.CANCEL_VOTE') : $t('WALLET_BLOCK_PRODUCERS.VOTE') }}
       </button>
     </Collapse>
 
-    <Collapse :is-open="isPassphraseStep">
+    <Collapse :is-open="isMnemonicStep">
       <div class="mt-12">
         <InputFee
           ref="fee"
@@ -66,7 +66,7 @@
         </div>
 
         <InputPassword
-          v-else-if="currentWallet.passphrase"
+          v-else-if="currentWallet.mnemonic"
           ref="password"
           v-model="$v.form.walletPassword.$model"
           :label="$t('TRANSACTION.PASSWORD')"
@@ -74,24 +74,24 @@
           class="TransactionFormVote__password mt-4"
         />
 
-        <PassphraseInput
+        <MnemonicInput
           v-else
-          ref="passphrase"
-          v-model="$v.form.passphrase.$model"
+          ref="mnemonic"
+          v-model="$v.form.mnemonic.$model"
           :address="currentWallet.address"
           :pub-key-hash="walletNetwork.version"
-          class="TransactionFormVote__passphrase mt-4"
+          class="TransactionFormVote__mnemonic mt-4"
         />
       </div>
 
-      <PassphraseInput
+      <MnemonicInput
         v-if="currentWallet.secondPublicKey"
-        ref="secondPassphrase"
-        v-model="$v.form.secondPassphrase.$model"
-        :label="$t('TRANSACTION.SECOND_PASSPHRASE')"
+        ref="extraMnemonic"
+        v-model="$v.form.extraMnemonic.$model"
+        :label="$t('TRANSACTION.EXTRA_MNEMONIC')"
         :pub-key-hash="walletNetwork.version"
         :public-key="currentWallet.secondPublicKey"
-        class="TransactionFormVote__second-passphrase mt-5"
+        class="TransactionFormVote__extra-mnemonic mt-5"
       />
 
       <button
@@ -123,7 +123,7 @@ import { InputFee, InputPassword } from "@/components/Input";
 import { ListDivided, ListDividedItem } from "@/components/ListDivided";
 import TransactionVotesList from "@/components/Transaction/TransactionVotesList";
 import { ModalLoader } from "@/components/Modal";
-import { PassphraseInput } from "@/components/Passphrase";
+import { MnemonicInput } from "@/components/Mnemonic";
 import mixin from "./mixin";
 
 export default {
@@ -138,14 +138,14 @@ export default {
         ListDivided,
         ListDividedItem,
         ModalLoader,
-        PassphraseInput,
+        MnemonicInput,
         TransactionVotesList
     },
 
     mixins: [mixin],
 
     props: {
-        votedDelegates: {
+        votedBlockProducers: {
             type: Object,
             required: false,
             default: null
@@ -153,20 +153,20 @@ export default {
     },
 
     data: () => ({
-        isPassphraseStep: false,
+        isMnemonicStep: false,
         form: {
             fee: 0,
-            passphrase: "",
+            mnemonic: "",
             walletPassword: ""
         }
     }),
 
     computed: {
         getVotes () {
-            return Object.entries(this.votedDelegates).map(vote => ({ address: this.$store.getters["delegate/byUsername"](vote[0]).address, delegate: vote[0], percent: vote[1] / 100 }));
+            return Object.entries(this.votedBlockProducers).map(vote => ({ address: this.$store.getters["blockProducer/byUsername"](vote[0]).address, blockProducer: vote[0], percent: vote[1] / 100 }));
         },
 
-        showVoteUnvoteButton () {
+        showVoteButton () {
             if (this.currentWallet.isContact) {
                 return false;
             }
@@ -176,17 +176,17 @@ export default {
     },
 
     watch: {
-        isPassphraseStep () {
+        isMnemonicStep () {
             // Ignore Ledger wallets
             if (this.currentWallet.isLedger || this.isMultiSignature) {
                 return;
             }
 
-            // The passphrase is stored: focus on the custom password input
-            if (this.currentWallet.passphrase) {
+            // The mnemonic is stored: focus on the custom password input
+            if (this.currentWallet.mnemonic) {
                 this.$refs.password.focus();
             } else {
-                this.$refs.passphrase.focus();
+                this.$refs.mnemonic.focus();
             }
         }
     },
@@ -194,12 +194,12 @@ export default {
     methods: {
         getTransactionData () {
             const votes = {};
-            for (const delegate in this.votedDelegates) {
-                votes[delegate] = this.votedDelegates[delegate] / 100;
+            for (const blockProducer in this.votedBlockProducers) {
+                votes[blockProducer] = this.votedBlockProducers[blockProducer] / 100;
             }
             const transactionData = {
                 address: this.currentWallet.address,
-                passphrase: this.form.passphrase,
+                mnemonic: this.form.mnemonic,
                 votes,
                 fee: this.getFee(),
                 wif: this.form.wif,
@@ -208,7 +208,7 @@ export default {
             };
 
             if (this.currentWallet.secondPublicKey) {
-                transactionData.secondPassphrase = this.form.secondPassphrase;
+                transactionData.extraMnemonic = this.form.extraMnemonic;
             }
 
             return transactionData;
@@ -227,15 +227,15 @@ export default {
         },
 
         toggleStep () {
-            this.isPassphraseStep = !this.isPassphraseStep;
+            this.isMnemonicStep = !this.isMnemonicStep;
         },
 
         reset () {
-            this.isPassphraseStep = false;
+            this.isMnemonicStep = false;
             if (!this.isMultiSignature) {
-                if (!this.currentWallet.passphrase && !this.currentWallet.isLedger) {
-                    this.$set(this.form, "passphrase", "");
-                    this.$refs.passphrase.reset();
+                if (!this.currentWallet.mnemonic && !this.currentWallet.isLedger) {
+                    this.$set(this.form, "mnemonic", "");
+                    this.$refs.mnemonic.reset();
                 } else if (!this.currentWallet.isLedger) {
                     this.$set(this.form, "walletPassword", "");
                     this.$refs.password.reset();
@@ -252,9 +252,9 @@ export default {
     validations: {
         form: {
             fee: mixin.validators.fee,
-            passphrase: mixin.validators.passphrase,
+            mnemonic: mixin.validators.mnemonic,
             walletPassword: mixin.validators.walletPassword,
-            secondPassphrase: mixin.validators.secondPassphrase
+            extraMnemonic: mixin.validators.extraMnemonic
         }
     }
 };

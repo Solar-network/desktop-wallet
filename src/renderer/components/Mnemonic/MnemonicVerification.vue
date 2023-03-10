@@ -1,22 +1,22 @@
 <template>
-  <div class="PassphraseVerification flex flex-col h-full w-full justify-around">
-    <div class="PassphraseVerification__inputs">
+  <div class="MnemonicVerification flex flex-col h-full w-full justify-around">
+    <div class="MnemonicVerification__inputs">
       <InputText
         v-for="(input, position) in inputs"
         :key="position"
         :ref="`input-${position}`"
         :is-disabled="isAccepted(position, input)"
-        :label="$t(`PASSPHRASE_VERIFICATION.WORD_LABEL_${position}`)"
+        :label="$t(`MNEMONIC_VERIFICATION.WORD_LABEL_${position}`)"
         :name="`input-${position}`"
-        :title="$t(`PASSPHRASE_VERIFICATION.WORD_LABEL_${position}`)"
+        :title="$t(`MNEMONIC_VERIFICATION.WORD_LABEL_${position}`)"
         :value="input"
-        class="PassphraseVerification__inputs__input"
+        class="MnemonicVerification__inputs__input"
         @focus="showSuggestions(position)"
         @input="updateCurrentWord($event)"
       />
     </div>
 
-    <div class="PassphraseVerification__suggestions">
+    <div class="MnemonicVerification__suggestions">
       <button
         v-for="suggestion in suggestions"
         :key="suggestion"
@@ -25,7 +25,7 @@
           : 'hover:text-theme-button-text'
         "
         :title="suggestion"
-        class="PassphraseVerification__suggestions__input cursor-pointer py-2 px-1 text-center text-theme-page-text"
+        class="MnemonicVerification__suggestions__input cursor-pointer py-2 px-1 text-center text-theme-page-text"
         @click="updateCurrentWord(suggestion)"
       >
         {{ suggestion }}
@@ -39,14 +39,14 @@ import { isEqual, shuffle, uniq } from "lodash";
 import { InputText } from "@/components/Input";
 
 export default {
-    name: "PassphraseVerification",
+    name: "MnemonicVerification",
 
     components: {
         InputText
     },
 
     props: {
-        passphrase: {
+        mnemonic: {
             type: [String, Array],
             required: true
         },
@@ -84,7 +84,7 @@ export default {
         availableSuggestions () {
             return this.additionalSuggestions.length >= (this.suggestionsPerWord - 1)
                 ? this.additionalSuggestions
-                : this.additionalSuggestions.concat(this.passphraseWords);
+                : this.additionalSuggestions.concat(this.mnemonicWords);
         },
         /**
      * Return the suggested words per each position
@@ -92,9 +92,9 @@ export default {
      */
         suggestedPerPosition () {
             return this.positions.reduce((acc, position) => {
-                const passphraseWord = this.words[position];
+                const mnemonicWord = this.words[position];
 
-                let suggestions = [passphraseWord].concat(shuffle(this.availableSuggestions));
+                let suggestions = [mnemonicWord].concat(shuffle(this.availableSuggestions));
                 suggestions = shuffle(uniq(suggestions).slice(0, this.suggestionsPerWord));
 
                 acc[position] = suggestions;
@@ -105,8 +105,8 @@ export default {
         /**
      * @return {Array}
      */
-        passphraseWords () {
-            return Array.isArray(this.passphrase) ? this.passphrase : this.passphrase.split(" ");
+        mnemonicWords () {
+            return Array.isArray(this.mnemonic) ? this.mnemonic : this.mnemonic.split(" ");
         },
         positions () {
             return this.wordPositions.map(p => p.toString());
@@ -115,7 +115,7 @@ export default {
      * @return {Object}
      */
         words () {
-            return this.passphraseWords.reduce((acc, word, i) => {
+            return this.mnemonicWords.reduce((acc, word, i) => {
                 acc[(i + 1).toString()] = word;
                 return acc;
             }, {});
@@ -124,9 +124,9 @@ export default {
 
     watch: {
     /**
-     * Reset the accepted words if the passphrase changes
+     * Reset the accepted words if the mnemonic changes
      */
-        passphrase () {
+        mnemonic () {
             this.resetData(this.$data);
         },
         wordPositions () {
@@ -240,11 +240,11 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.PassphraseVerification__inputs, .PassphraseVerification__suggestions {
+.MnemomnicVerification__inputs, .MnemonicVerification__suggestions {
   @apply flex flex-wrap
 },
 
-.PassphraseVerification__inputs__input, .PassphraseVerification__suggestions__input {
+.MnemonicVerification__inputs__input, .MnemonicVerification__suggestions__input {
   width: calc(config('width.1/3') - config('margin.2'));
   @apply mr-2
 }

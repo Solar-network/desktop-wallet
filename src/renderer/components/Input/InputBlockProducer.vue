@@ -4,7 +4,7 @@
     :items="suggestions"
     :value="dropdownValue"
     :pin-to-input-width="true"
-    class="InputDelegate__MenuDropdown"
+    class="InputBlockProducer__MenuDropdown"
     @select="onDropdownSelect"
     @click="focus"
   >
@@ -15,7 +15,7 @@
       :is-dirty="$v.model.$dirty"
       :is-focused="isFocused"
       :is-invalid="invalid"
-      class="InputDelegate text-left"
+      class="InputBlockProducer text-left"
     >
       <div
         slot-scope="{ inputClass }"
@@ -27,7 +27,7 @@
           v-model="model"
           :name="name"
           type="text"
-          class="InputDelegate__input flex flex-grow bg-transparent text-theme-page-text"
+          class="InputBlockProducer__input flex flex-grow bg-transparent text-theme-page-text"
           @blur="onBlur"
           @focus="onFocus"
           @click.self.stop
@@ -39,7 +39,7 @@
         <ButtonModal
           ref="button-qr"
           :label="''"
-          class="InputDelegate__qr-button flex flex-no-shrink text-grey-dark hover:text-blue"
+          class="InputBlockProducer__qr-button flex flex-no-shrink text-grey-dark hover:text-blue"
           icon="qr"
           view-box="0 0 20 20"
           @click.stop
@@ -69,7 +69,7 @@ import { MenuDropdown } from "@/components/Menu";
 import InputField from "./InputField";
 
 export default {
-    name: "InputDelegate",
+    name: "InputBlockProducer",
 
     components: {
         ButtonModal,
@@ -83,13 +83,13 @@ export default {
             type: String,
             required: false,
             default () {
-                return this.$t("SEARCH.DELEGATE");
+                return this.$t("SEARCH.BLOCK_PRODUCER");
             }
         },
         name: {
             type: String,
             required: false,
-            default: "delegate"
+            default: "blockProducer"
         },
         helperText: {
             type: String,
@@ -119,21 +119,21 @@ export default {
             return this.session_profile;
         },
 
-        delegates () {
-            return Object.values(this.$store.getters["delegate/bySessionNetwork"] || {});
+        blockProducers () {
+            return Object.values(this.$store.getters["blockProducer/bySessionNetwork"] || {});
         },
 
         error () {
             if (this.$v.model.$dirty && (!this.hasSuggestions || !this.$refs.dropdown.isOpen)) {
                 if (!this.$v.model.required) {
-                    return this.$t("INPUT_DELEGATE.ERROR.REQUIRED");
+                    return this.$t("INPUT_BLOCK_PRODUCER.ERROR.REQUIRED");
                 } else if (!this.$v.model.isValid) {
                     if (this.inputValue.length <= 20) {
-                        return this.$t("INPUT_DELEGATE.ERROR.USERNAME_NOT_FOUND", [this.inputValue]);
+                        return this.$t("INPUT_BLOCK_PRODUCER.ERROR.USERNAME_NOT_FOUND", [this.inputValue]);
                     } else if (this.inputValue.length <= 34) {
-                        return this.$t("INPUT_DELEGATE.ERROR.ADDRESS_NOT_FOUND", [this.wallet_truncate(this.inputValue)]);
+                        return this.$t("INPUT_BLOCK_PRODUCER.ERROR.ADDRESS_NOT_FOUND", [this.wallet_truncate(this.inputValue)]);
                     } else {
-                        return this.$t("INPUT_DELEGATE.ERROR.PUBLIC_KEY_NOT_FOUND", [this.wallet_truncate(this.inputValue)]);
+                        return this.$t("INPUT_BLOCK_PRODUCER.ERROR.PUBLIC_KEY_NOT_FOUND", [this.wallet_truncate(this.inputValue)]);
                     }
                 } else {
                     this.$emit("valid", true);
@@ -168,31 +168,31 @@ export default {
                 return [];
             }
 
-            const delegates = this.delegates.map(object => {
-                const delegate = {
+            const blockProducers = this.blockProducers.map(object => {
+                const blockProducer = {
                     name: null,
                     username: object.username,
                     address: object.address,
                     publicKey: object.publicKey
                 };
 
-                delegate.name = `${object.username} (${this.wallet_truncate(object.address)})`;
+                blockProducer.name = `${object.username} (${this.wallet_truncate(object.address)})`;
 
-                return delegate;
+                return blockProducer;
             });
 
-            const results = orderBy(delegates, (object) => {
+            const results = orderBy(blockProducers, (object) => {
                 return object.name || object.address.toLowerCase();
             });
 
-            return results.reduce((delegates, delegate) => {
-                Object.values(delegate).forEach(prop => {
+            return results.reduce((blockProducers, blockProducer) => {
+                Object.values(blockProducer).forEach(prop => {
                     if (prop.toLowerCase().includes(this.inputValue.toLowerCase())) {
-                        delegates[delegate.username] = delegate.name;
+                        blockProducers[blockProducer.username] = blockProducer.name;
                     }
                 });
 
-                return delegates;
+                return blockProducers;
             }, {});
         },
 
@@ -309,8 +309,8 @@ export default {
                 this.$error(this.$t("MODAL_QR_SCANNER.DECODE_FAILED", { data: value }));
             }
 
-            const delegate = this.$store.getters["delegate/byAddress"](address);
-            this.model = delegate ? delegate.username : address;
+            const blockProducer = this.$store.getters["blockProducer/byAddress"](address);
+            this.model = blockProducer ? blockProducer.username : address;
 
             this.$nextTick(() => {
                 this.closeDropdown();
@@ -348,7 +348,7 @@ export default {
         model: {
             required,
             isValid (value) {
-                return !!this.$store.getters["delegate/search"](value);
+                return !!this.$store.getters["blockProducer/search"](value);
             }
         }
     }
@@ -356,17 +356,17 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.InputDelegate__MenuDropdown .MenuDropdown__container {
+.InputBlockProducer__MenuDropdown .MenuDropdown__container {
   @apply .z-30
 }
-.InputDelegate__MenuDropdown .MenuDropdownItem__container {
+.InputBlockProducer__MenuDropdown .MenuDropdownItem__container {
   @apply .text-left
 }
-.InputDelegate__input::placeholder {
+.InputBlockProducer__input::placeholder {
   @apply .text-transparent
 }
 
-.InputField--invalid .InputDelegate__qr-button {
+.InputField--invalid .InputBlockProducer__qr-button {
   @apply .text-red-dark
 }
 </style>

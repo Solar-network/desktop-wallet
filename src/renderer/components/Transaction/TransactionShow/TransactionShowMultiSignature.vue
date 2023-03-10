@@ -117,7 +117,7 @@
         />
         <ButtonClipboard
           class="text-theme-page-text-light mx-2"
-          :value="votedDelegate ? votedDelegate.address : transaction.recipient"
+          :value="votedBlockProducer ? votedBlockProducer.address : transaction.recipient"
         />
         <button
           v-tooltip="{
@@ -125,7 +125,7 @@
             trigger: 'hover'
           }"
           class="flex items-center"
-          @click="openAddress(votedDelegate ? votedDelegate.address : transaction.recipient)"
+          @click="openAddress(votedBlockProducer ? votedBlockProducer.address : transaction.recipient)"
         >
           <SvgIcon
             name="open-external"
@@ -166,7 +166,7 @@
       <ListDividedItem
         v-if="transaction.memo"
         :value="transaction.memo"
-        :label="$t('TRANSACTION.VENDOR_FIELD')"
+        :label="$t('TRANSACTION.MEMO')"
         item-label-class="mb-auto"
         item-value-class="max-w-xs break-words text-justify"
       />
@@ -261,7 +261,7 @@ export default {
     },
 
     data: () => ({
-        votedDelegate: null
+        votedBlockProducer: null
     }),
 
     computed: {
@@ -339,9 +339,9 @@ export default {
 
         determineVote () {
             if (this.votePublicKeyOrUsername.length === 66) {
-                this.votedDelegate = this.$store.getters["delegate/byPublicKey"](this.votePublicKeyOrUsername);
+                this.votedBlockProducer = this.$store.getters["blockProducer/byPublicKey"](this.votePublicKeyOrUsername);
             } else {
-                this.votedDelegate = this.$store.getters["delegate/byUsername"](this.votePublicKeyOrUsername);
+                this.votedBlockProducer = this.$store.getters["blockProducer/byUsername"](this.votePublicKeyOrUsername);
             }
         },
 

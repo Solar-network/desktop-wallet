@@ -21,7 +21,7 @@ exports.ANNOUNCEMENTS = {
     rssUrl: "https://blog.solar.org/feed"
 };
 
-exports.VENDOR_FIELD = {
+exports.MEMO = {
     defaultMaxLength: 255
 };
 
@@ -56,13 +56,13 @@ exports.TRANSACTION_TYPES = {
 
     GROUP_1: {
         TRANSFER: 0,
-        SECOND_SIGNATURE: 1,
-        DELEGATE_REGISTRATION: 2,
+        EXTRA_SIGNATURE: 1,
+        REGISTRATION: 2,
         VOTE: 3,
         MULTI_SIGNATURE: 4,
         IPFS: 5,
         MULTI_PAYMENT: 6,
-        DELEGATE_RESIGNATION: 7,
+        RESIGNATION: 7,
         HTLC_LOCK: 8,
         HTLC_CLAIM: 9,
         HTLC_REFUND: 10
@@ -154,13 +154,13 @@ exports.V1 = {
     fees: {
         GROUP_1: [
             0.1 * 1e8, // Transfer
-            5 * 1e8, // Second signautre
-            25 * 1e8, // Delegate registration
+            5 * 1e8, // Extra signature
+            25 * 1e8, // Registration
             1 * 1e8, // Vote
             5 * 1e8, // Multisignature
             5 * 1e8, // IPFS
             1 * 1e8, // Multi-payment
-            25 * 1e8, // Delegate resignation
+            25 * 1e8, // Resignation
             1 * 1e8, // HTLC Lock
             0 * 1e8, // HTLC Claim
             0 * 1e8 // HTLC Refund

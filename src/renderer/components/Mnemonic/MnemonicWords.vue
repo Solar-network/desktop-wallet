@@ -1,7 +1,7 @@
 <template>
-  <div class="PassphraseWords h-full w-full flex flex-wrap">
+  <div class="MnemonicWords h-full w-full flex flex-wrap">
     <InputText
-      v-for="(word, index) in passphraseWords"
+      v-for="(word, index) in mnemonicWords"
       :key="index"
       :is-read-only="true"
       :label="(index + 1).toString()"
@@ -15,14 +15,14 @@
 import { InputText } from "@/components/Input";
 
 export default {
-    name: "PassphraseWords",
+    name: "MnemonicWords",
 
     components: {
         InputText
     },
 
     props: {
-        passphraseWords: {
+        mnemonicWords: {
             type: Array,
             required: true
         }
@@ -31,12 +31,12 @@ export default {
 </script>
 
 <style lang="postcss">
-.PassphraseWords .InputText {
+.MnemonicWords .InputText {
   width: calc(config('width.1/4') - config('margin.2'));
   @apply mr-2
 }
 
-.PassphraseWords .InputText__input[disabled] {
+.MnemonicWords .InputText__input[disabled] {
   @apply .bg-transparent
 }
 </style>

@@ -164,10 +164,10 @@ export default {
         },
 
         getUsername (address) {
-            const delegate = this.$store.getters["delegate/byAddress"](address);
+            const blockProducer = this.$store.getters["blockProducer/byAddress"](address);
 
-            if (delegate) {
-                return delegate.username;
+            if (blockProducer) {
+                return blockProducer.username;
             }
 
             return null;

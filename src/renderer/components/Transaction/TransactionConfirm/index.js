@@ -1,22 +1,22 @@
 import TransactionConfirm from "./TransactionConfirm";
-import TransactionConfirmDelegateRegistration from "./TransactionConfirmDelegateRegistration";
-import TransactionConfirmDelegateResignation from "./TransactionConfirmDelegateResignation";
+import TransactionConfirmRegistration from "./TransactionConfirmRegistration";
+import TransactionConfirmResignation from "./TransactionConfirmResignation";
 import TransactionConfirmIpfs from "./TransactionConfirmIpfs";
 import TransactionConfirmMultiPayment from "./TransactionConfirmMultiPayment";
 import TransactionConfirmMultiSignature from "./TransactionConfirmMultiSignature";
-import TransactionConfirmSecondSignature from "./TransactionConfirmSecondSignature";
+import TransactionConfirmExtraSignature from "./TransactionConfirmExtraSignature";
 import TransactionConfirmTransfer from "./TransactionConfirmTransfer";
 import TransactionConfirmVote from "./TransactionConfirmVote";
 
 export default TransactionConfirm;
 export {
     TransactionConfirm,
-    TransactionConfirmDelegateRegistration,
-    TransactionConfirmDelegateResignation,
+    TransactionConfirmRegistration,
+    TransactionConfirmResignation,
     TransactionConfirmIpfs,
     TransactionConfirmMultiPayment,
     TransactionConfirmMultiSignature,
-    TransactionConfirmSecondSignature,
+    TransactionConfirmExtraSignature,
     TransactionConfirmTransfer,
     TransactionConfirmVote
 };

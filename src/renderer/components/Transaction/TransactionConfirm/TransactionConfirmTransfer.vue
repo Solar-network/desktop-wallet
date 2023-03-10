@@ -44,8 +44,8 @@
 
     <ListDividedItem
       v-if="transaction.memo"
-      class="TransactionConfirmTransfer__vendorfield"
-      :label="$t('TRANSACTION.VENDOR_FIELD')"
+      class="TransactionConfirmTransfer__memo"
+      :label="$t('TRANSACTION.MEMO')"
       item-value-class="w-full break-words"
     >
       {{ transaction.memo }}

@@ -1,6 +1,6 @@
 <template>
   <form
-    class="TransactionFormSecondSignature"
+    class="TransactionFormExtraSignature"
     @submit.prevent
   >
     <template v-if="!currentWallet.secondPublicKey">
@@ -22,34 +22,34 @@
       </ListDivided>
 
       <div
-        v-if="!showPassphraseWords"
+        v-if="!showMnemonicWords"
         class="flex content-center"
       >
         <ButtonReload
           :is-refreshing="isGenerating"
-          :text="$t('WALLET_SECOND_SIGNATURE.NEW')"
+          :text="$t('WALLET_EXTRA_SIGNATURE.NEW')"
           color-class="blue-button"
           class="px-8 py-4 mx-auto mt-5"
-          @click="displayPassphraseWords"
+          @click="displayMnemonicWords"
         />
       </div>
 
       <Collapse
-        :is-open="!isPassphraseStep"
+        :is-open="!isMnemonicStep"
         :animation-duration="{ enter: 0, leave: 0 }"
-        class="TransactionFormSecondSignature__step-1"
+        class="TransactionFormExtraSignature__step-1"
       >
-        <PassphraseWords
-          v-show="showPassphraseWords"
-          :passphrase-words="passphraseWords"
-          class="TransactionFormSecondSignature__passphrase-words"
+        <MnemonicWords
+          v-show="showMnemonicWords"
+          :mnemonic-words="mnemonicWords"
+          class="TransactionFormExtraSignature__mnemonic-words"
         />
 
         <button
-          :disabled="isGenerating || !showPassphraseWords"
-          :class="{ 'hidden': !showPassphraseWords }"
+          :disabled="isGenerating || !showMnemonicWords"
+          :class="{ 'hidden': !showMnemonicWords }"
           type="button"
-          class="TransactionFormSecondSignature__step-1__next blue-button mt-5"
+          class="TransactionFormExtraSignature__step-1__next blue-button mt-5"
           @click="toggleStep"
         >
           {{ $t('COMMON.NEXT') }}
@@ -57,14 +57,14 @@
       </Collapse>
 
       <Collapse
-        :is-open="isPassphraseStep"
-        class="TransactionFormSecondSignature__step-2"
+        :is-open="isMnemonicStep"
+        class="TransactionFormExtraSignature__step-2"
       >
-        <PassphraseVerification
-          ref="passphraseVerification"
-          :passphrase="passphraseWords"
+        <MnemonicVerification
+          ref="mnemonicVerification"
+          :mnemonic="mnemonicWords"
           :word-positions="wordPositions"
-          class="TransactionFormSecondSignature__passphrase-verification mb-10"
+          class="TransactionFormExtraSignature__mnemonic-verification mb-10"
           @verified="onVerification"
         />
 
@@ -73,49 +73,49 @@
           :currency="walletNetwork.token"
           :transaction-type="$options.transactionType"
           :show-insufficient-funds="true"
-          class="TransactionFormSecondSignature__fee"
+          class="TransactionFormExtraSignature__fee"
           @input="onFee"
         />
 
         <div v-if="!isMultiSignature">
           <div
             v-if="currentWallet.isLedger"
-            class="TransactionFormSecondSignature__ledger-notice mt-10"
+            class="TransactionFormExtraSignature__ledger-notice mt-10"
           >
             {{ $t('TRANSACTION.LEDGER_SIGN_NOTICE') }}
           </div>
 
           <InputPassword
-            v-else-if="currentWallet.passphrase"
+            v-else-if="currentWallet.mnemonic"
             ref="password"
             v-model="$v.form.walletPassword.$model"
             :label="$t('TRANSACTION.PASSWORD')"
             :is-required="true"
-            class="TransactionFormSecondSignature__password mt-4"
+            class="TransactionFormExtraSignature__password mt-4"
           />
 
-          <PassphraseInput
+          <MnemonicInput
             v-else
-            ref="passphrase"
-            v-model="$v.form.passphrase.$model"
+            ref="mnemonic"
+            v-model="$v.form.mnemonic.$model"
             :address="currentWallet.address"
             :pub-key-hash="walletNetwork.version"
-            class="TransactionFormSecondSignature__passphrase mt-4"
+            class="TransactionFormExtraSignature__mnemonic mt-4"
           />
         </div>
 
         <button
           type="button"
-          class="TransactionFormSecondSignature__back blue-button mt-5 mr-4"
+          class="TransactionFormExtraSignature__back blue-button mt-5 mr-4"
           @click="toggleStep"
         >
           {{ $t('COMMON.BACK') }}
         </button>
 
         <button
-          :disabled="$v.form.$invalid || !isPassphraseVerified"
+          :disabled="$v.form.$invalid || !isMnemonicVerified"
           type="button"
-          class="TransactionFormSecondSignature__step-2__next blue-button mt-5"
+          class="TransactionFormExtraSignature__step-2__next blue-button mt-5"
           @click="onSubmit"
         >
           {{ $t('COMMON.NEXT') }}
@@ -133,24 +133,24 @@
       />
 
       <Portal
-        v-if="!isPassphraseStep && showPassphraseWords"
+        v-if="!isMnemonicStep && showMnemonicWords"
         to="transaction-footer"
       >
-        <footer class="TransactionFormSecondSignature__footer ModalWindow__container__footer--warning">
+        <footer class="TransactionFormExtraSignature__footer ModalWindow__container__footer--warning">
           <div class="flex w-80">
-            {{ $t('WALLET_SECOND_SIGNATURE.INSTRUCTIONS') }}
+            {{ $t('WALLET_EXTRA_SIGNATURE.INSTRUCTIONS') }}
           </div>
           <div class="flex flex-row justify-around ml-8">
             <ButtonReload
               :is-refreshing="isGenerating"
-              :title="$t('WALLET_SECOND_SIGNATURE.NEW')"
+              :title="$t('WALLET_EXTRA_SIGNATURE.NEW')"
               class="bg-theme-modal-footer-button mr-2"
               text-class="text-theme-modal-footer-button-text"
-              @click="generateNewPassphrase"
+              @click="generateNewMnemonic"
             />
 
             <ButtonClipboard
-              :value="secondPassphrase"
+              :value="extraMnemonic"
               class="flex py-2 px-4 rounded bg-theme-modal-footer-button text-theme-modal-footer-button-text"
             />
           </div>
@@ -158,7 +158,7 @@
       </Portal>
     </template>
     <template v-else>
-      {{ $t('WALLET_SECOND_SIGNATURE.ALREADY_REGISTERED') }}
+      {{ $t('WALLET_EXTRA_SIGNATURE.ALREADY_REGISTERED') }}
     </template>
   </form>
 </template>
@@ -170,14 +170,14 @@ import { Collapse } from "@/components/Collapse";
 import { InputFee, InputPassword } from "@/components/Input";
 import { ListDivided, ListDividedItem } from "@/components/ListDivided";
 import { ModalLoader } from "@/components/Modal";
-import { PassphraseInput, PassphraseVerification, PassphraseWords } from "@/components/Passphrase";
+import { MnemonicInput, MnemonicVerification, MnemonicWords } from "@/components/Mnemonic";
 import WalletService from "@/services/wallet";
 import mixin from "./mixin";
 
 export default {
-    name: "TransactionFormSecondSignature",
+    name: "TransactionFormExtraSignature",
 
-    transactionType: TRANSACTION_TYPES.GROUP_1.SECOND_SIGNATURE,
+    transactionType: TRANSACTION_TYPES.GROUP_1.EXTRA_SIGNATURE,
 
     components: {
         ButtonClipboard,
@@ -188,24 +188,24 @@ export default {
         ListDivided,
         ListDividedItem,
         ModalLoader,
-        PassphraseInput,
-        PassphraseVerification,
-        PassphraseWords
+        MnemonicInput,
+        MnemonicVerification,
+        MnemonicWords
     },
 
     mixins: [mixin],
 
     data: () => ({
         isGenerating: false,
-        isPassphraseStep: false,
-        isPassphraseVerified: false,
-        secondPassphrase: "",
+        isMnemonicStep: false,
+        isMnemonicVerified: false,
+        extraMnemonic: "",
         form: {
             fee: 0,
-            passphrase: "",
+            mnemonic: "",
             walletPassword: ""
         },
-        showPassphraseWords: false
+        showMnemonicWords: false
     }),
 
     computed: {
@@ -214,34 +214,34 @@ export default {
             return [3, 6, 9];
         },
 
-        passphraseWords () {
+        mnemonicWords () {
             // Check for Japanese "space"
-            if (/\u3000/.test(this.secondPassphrase)) {
-                return this.secondPassphrase.split("\u3000");
+            if (/\u3000/.test(this.extraMnemonic)) {
+                return this.extraMnemonic.split("\u3000");
             }
 
-            return this.secondPassphrase.split(" ");
+            return this.extraMnemonic.split(" ");
         }
     },
 
     watch: {
-        isPassphraseStep () {
-            if (this.isPassphraseStep) {
-                this.$refs.passphraseVerification.focusFirst();
+        isMnemonicStep () {
+            if (this.isMnemonicStep) {
+                this.$refs.mnemonicVerification.focusFirst();
             }
         }
     },
 
     created () {
-        this.secondPassphrase = WalletService.generateSecondPassphrase(this.session_profile.bip39Language);
+        this.extraMnemonic = WalletService.generateExtraMnemonic(this.session_profile.bip39Language);
     },
 
     methods: {
         getTransactionData () {
             return {
                 address: this.currentWallet.address,
-                passphrase: this.form.passphrase,
-                secondPassphrase: this.secondPassphrase,
+                mnemonic: this.form.mnemonic,
+                extraMnemonic: this.extraMnemonic,
                 fee: this.getFee(),
                 wif: this.form.wif,
                 networkWif: this.walletNetwork.wif,
@@ -250,54 +250,54 @@ export default {
         },
 
         async buildTransaction (transactionData, isAdvancedFee = false, returnObject = false) {
-            return this.$client.buildSecondSignatureRegistration(transactionData, isAdvancedFee, returnObject);
+            return this.$client.buildExtraSignatureRegistration(transactionData, isAdvancedFee, returnObject);
         },
 
         transactionError () {
-            this.$error(this.$t("TRANSACTION.ERROR.VALIDATION.SECOND_SIGNATURE"));
+            this.$error(this.$t("TRANSACTION.ERROR.VALIDATION.EXTRA_SIGNATURE"));
         },
 
         postSubmit () {
             this.reset();
 
-            // The current passphrase has been already verified
-            this.isPassphraseVerified = true;
+            // The current mnemonic has been already verified
+            this.isMnemonicVerified = true;
         },
 
         toggleStep () {
-            this.isPassphraseStep = !this.isPassphraseStep;
+            this.isMnemonicStep = !this.isMnemonicStep;
         },
 
         // TODO: must be a better way of doing this without a timeout?
-        displayPassphraseWords () {
+        displayMnemonicWords () {
             this.isGenerating = true;
             setTimeout(() => {
                 this.isGenerating = false;
-                this.showPassphraseWords = true;
+                this.showMnemonicWords = true;
             }, 300);
         },
 
         // TODO: must be a better way of doing this without a timeout?
-        generateNewPassphrase () {
+        generateNewMnemonic () {
             this.reset();
             this.isGenerating = true;
             setTimeout(() => {
-                this.secondPassphrase = WalletService.generateSecondPassphrase(this.session_profile.bip39Language);
+                this.extraMnemonic = WalletService.generateExtraMnemonic(this.session_profile.bip39Language);
                 this.isGenerating = false;
             }, 300);
         },
 
         onVerification () {
-            this.isPassphraseVerified = true;
+            this.isMnemonicVerified = true;
         },
 
         reset () {
-            this.isPassphraseStep = false;
-            this.isPassphraseVerified = false;
+            this.isMnemonicStep = false;
+            this.isMnemonicVerified = false;
             if (!this.isMultiSignature) {
-                if (!this.currentWallet.passphrase && !this.currentWallet.isLedger) {
-                    this.$set(this.form, "passphrase", "");
-                    this.$refs.passphrase.reset();
+                if (!this.currentWallet.mnemonic && !this.currentWallet.isLedger) {
+                    this.$set(this.form, "mnemonic", "");
+                    this.$refs.mnemonic.reset();
                 } else if (!this.currentWallet.isLedger) {
                     this.$set(this.form, "walletPassword", "");
                     this.$refs.password.reset();
@@ -310,7 +310,7 @@ export default {
     validations: {
         form: {
             fee: mixin.validators.fee,
-            passphrase: mixin.validators.passphrase,
+            mnemonic: mixin.validators.mnemonic,
             walletPassword: mixin.validators.walletPassword
         }
     }
@@ -318,15 +318,15 @@ export default {
 </script>
 
 <style scoped>
-.TransactionFormSecondSignature {
+.TransactionFormExtraSignature {
   min-width: 25em;
 }
 
-.TransactionFormSecondSignature /deep/ .Collapse__handler {
+.TransactionFormExtraSignature /deep/ .Collapse__handler {
   display: none
 }
 
-.TransactionFormSecondSignature__footer {
+.TransactionFormExtraSignature__footer {
   @apply .flex .flex-row .justify-between;
 }
 </style>

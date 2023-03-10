@@ -10,8 +10,8 @@ export class MultiPaymentBuilder {
         recipients,
         fee,
         memo,
-        passphrase,
-        secondPassphrase,
+        mnemonic,
+        extraMnemonic,
         wif,
         networkWif,
         multiSignature,
@@ -38,14 +38,14 @@ export class MultiPaymentBuilder {
             transaction.addPayment(recipient.address, recipient.amount);
         }
 
-        passphrase = CryptoUtils.normalizePassphrase(passphrase);
-        secondPassphrase = CryptoUtils.normalizePassphrase(secondPassphrase);
+        mnemonic = CryptoUtils.normalizeMnemonic(mnemonic);
+        extraMnemonic = CryptoUtils.normalizeMnemonic(extraMnemonic);
 
         return TransactionSigner.sign({
             address,
             transaction,
-            passphrase,
-            secondPassphrase,
+            mnemonic,
+            extraMnemonic,
             wif,
             networkWif,
             multiSignature,

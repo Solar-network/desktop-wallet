@@ -190,7 +190,7 @@ export default {
 
                 const trimmed = value.toLowerCase().split(" ").filter(word => !!word.length).join(" ");
 
-                return WalletService.isBip39Passphrase(trimmed, this.session_profile.bip39Language);
+                return WalletService.isBip39Mnemonic(trimmed, this.session_profile.bip39Language);
             }
         }
     }

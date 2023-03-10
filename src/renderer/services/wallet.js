@@ -13,29 +13,29 @@ export default class WalletService {
    * @return {Object}
    */
     static generate (pubKeyHash, language) {
-        const passphrase = bip39.generateMnemonic(null, null, bip39.wordlists[language]);
-        const publicKey = Identities.Keys.fromPassphrase(CryptoUtils.normalizePassphrase(passphrase)).publicKey;
+        const mnemonic = bip39.generateMnemonic(null, null, bip39.wordlists[language]);
+        const publicKey = Identities.Keys.fromPassphrase(CryptoUtils.normalizeMnemonic(mnemonic)).publicKey;
         return {
             address: Identities.Address.fromPublicKey(publicKey, pubKeyHash),
-            passphrase
+            mnemonic
         };
     }
 
     /**
-   * Generates a new passphrase to be used for a second passphrase
+   * Generates a new mnemonic to be used for a extra mnemonic
    */
-    static generateSecondPassphrase (language) {
+    static generateExtraMnemonic (language) {
         return bip39.generateMnemonic(null, null, bip39.wordlists[language]);
     }
 
     /**
-   * Returns the address that correspond to a passphrase
-   * @param {String} passphrase
+   * Returns the address that correspond to a mnemonic
+   * @param {String} mnemonic
    * @param {Number} pubKeyHash - also known as address or network version
    * @return {String}
    */
-    static getAddress (passphrase, pubKeyHash) {
-        return Identities.Address.fromPassphrase(CryptoUtils.normalizePassphrase(passphrase), pubKeyHash);
+    static getAddress (mnemonic, pubKeyHash) {
+        return Identities.Address.fromPassphrase(CryptoUtils.normalizeMnemonic(mnemonic), pubKeyHash);
     }
 
     static getAddressFromPublicKey (publicKey, pubKeyHash) {
@@ -69,12 +69,12 @@ export default class WalletService {
     }
 
     /**
-   * Generates the public key belonging to the given passphrase
-   * @param {String} passphrase
+   * Generates the public key belonging to the given mnemonic
+   * @param {String} mnemonic
    * @return {String}
    */
-    static getPublicKeyFromPassphrase (passphrase) {
-        return Identities.PublicKey.fromPassphrase(CryptoUtils.normalizePassphrase(passphrase));
+    static getPublicKeyFromMnemonic (mnemonic) {
+        return Identities.PublicKey.fromPassphrase(CryptoUtils.normalizeMnemonic(mnemonic));
     }
 
     /**
@@ -114,12 +114,12 @@ export default class WalletService {
     }
 
     /**
-   * Check if a wallet can resign as a delegate
+   * Check if a wallet can resign as a block producer
    * @param {Object} wallet
    * @returns {Boolean}
    */
-    static canResignDelegate (wallet, type) {
-        if (!wallet.isDelegate || wallet.resigned === "permanent") {
+    static canResign (wallet, type) {
+        if (!wallet.isBlockProducer || wallet.resigned === "permanent") {
             return false;
         }
 
@@ -135,13 +135,13 @@ export default class WalletService {
     }
 
     /**
-   * Signs a message by using the given passphrase.
+   * Signs a message by using the given mnemonic.
    * @param {String} message
-   * @param {String} passphrase
+   * @param {String} mnemonic
    * @return {String}
    */
-    static signMessage (message, passphrase) {
-        return Crypto.Message.sign(message, CryptoUtils.normalizePassphrase(passphrase));
+    static signMessage (message, mnemonic) {
+        return Crypto.Message.sign(message, CryptoUtils.normalizeMnemonic(mnemonic));
     }
 
     /**
@@ -176,25 +176,25 @@ export default class WalletService {
     }
 
     /**
-   * TODO: Is this necessary? A passphrase is always valid as long as it's a string.
+   * TODO: Is this necessary? A mnemonic is always valid as long as it's a string.
    *
-   * Check that a passphrase is valid.
-   * @param {String} passhrase
+   * Check that a mnemonic is valid.
+   * @param {String} mnemonic
    * @return {Boolean}
    */
-    static validatePassphrase (passphrase) {
-        const publicKey = Identities.Keys.fromPassphrase(CryptoUtils.normalizePassphrase(passphrase)).publicKey;
+    static validateMnemonic (mnemonic) {
+        const publicKey = Identities.Keys.fromPassphrase(CryptoUtils.normalizeMnemonic(mnemonic)).publicKey;
         return Identities.PublicKey.verify(publicKey);
     }
 
     /**
-   * Check that a passphrase is valid bip39 passphrase.
-   * @param {String} passhrase
+   * Check that a mnemonic is valid bip39 mnemonic.
+   * @param {String} mnemonic
    * @param {Number} language - bip39 wordlist language
    * @return {Boolean}
    */
-    static isBip39Passphrase (passphrase, language) {
-        return bip39.validateMnemonic(CryptoUtils.normalizePassphrase(passphrase), bip39.wordlists[language]);
+    static isBip39Mnemonic (mnemonic, language) {
+        return bip39.validateMnemonic(CryptoUtils.normalizeMnemonic(mnemonic), bip39.wordlists[language]);
     }
 
     /**
@@ -210,7 +210,7 @@ export default class WalletService {
             errors.push({ type: "empty" });
         } else if (username.length > 20) {
             errors.push({ type: "maxLength" });
-        } else if (store.getters["delegate/byUsername"](username)) {
+        } else if (store.getters["blockProducer/byUsername"](username)) {
             errors.push({ type: "exists" });
             // Regex from `@solar-network/crypto`
         } else if (!username.match(/^[a-z0-9!@$&_.]+$/)) {
@@ -224,13 +224,13 @@ export default class WalletService {
     }
 
     /**
-   * Check that a password match an address
+   * Check that a mnemonic matches an address
    * @param {String} address
-   * @param {String} passhrase
+   * @param {String} mnemonic
    * @param {Number} pubKeyHash - also known as address or network version
    * @return {Boolean}
    */
-    static verifyPassphrase (address, passphrase, pubKeyHash) {
-        return address === WalletService.getAddress(CryptoUtils.normalizePassphrase(passphrase), pubKeyHash);
+    static verifyMnemonic (address, mnemonic, pubKeyHash) {
+        return address === WalletService.getAddress(CryptoUtils.normalizeMnemonic(mnemonic), pubKeyHash);
     }
 }

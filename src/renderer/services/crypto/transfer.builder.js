@@ -12,8 +12,8 @@ export class TransferBuilder {
             fee,
             recipientId,
             memo,
-            passphrase,
-            secondPassphrase,
+            mnemonic,
+            extraMnemonic,
             wif,
             networkWif,
             networkId,
@@ -39,15 +39,15 @@ export class TransferBuilder {
             .recipientId(recipientId)
             .memo(memo);
 
-        passphrase = CryptoUtils.normalizePassphrase(passphrase);
-        secondPassphrase = CryptoUtils.normalizePassphrase(secondPassphrase);
+        mnemonic = CryptoUtils.normalizeMnemonic(mnemonic);
+        extraMnemonic = CryptoUtils.normalizeMnemonic(extraMnemonic);
 
         return TransactionSigner.sign(
             {
                 address,
                 transaction,
-                passphrase,
-                secondPassphrase,
+                mnemonic,
+                extraMnemonic,
                 wif,
                 networkWif,
                 networkId,

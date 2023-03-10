@@ -30,7 +30,7 @@
       </div>
 
       <InputPassword
-        v-else-if="wallet.passphrase"
+        v-else-if="wallet.mnemonic"
         ref="password"
         v-model="$v.form.walletPassword.$model"
         :label="$t('TRANSACTION.PASSWORD')"
@@ -38,11 +38,11 @@
         class="mt-5"
       />
 
-      <PassphraseInput
+      <MnemonicInput
         v-else
-        ref="passphrase"
-        v-model="$v.form.passphrase.$model"
-        :is-invalid="$v.form.passphrase.$error"
+        ref="mnemonic"
+        v-model="$v.form.mnemonic.$model"
+        :is-invalid="$v.form.mnemonic.$error"
         :address="wallet.address"
         :pub-key-hash="session_network.version"
         class="mt-5"
@@ -73,7 +73,7 @@
 import { required, minLength } from "vuelidate/lib/validators";
 import { InputPassword, InputText } from "@/components/Input";
 import { ModalLoader, ModalWindow } from "@/components/Modal";
-import { PassphraseInput } from "@/components/Passphrase";
+import { MnemonicInput } from "@/components/Mnemonic";
 import Bip38 from "@/services/bip38";
 import TransactionService from "@/services/transaction";
 import WalletService from "@/services/wallet";
@@ -86,7 +86,7 @@ export default {
         InputText,
         ModalLoader,
         ModalWindow,
-        PassphraseInput
+        MnemonicInput
     },
 
     props: {
@@ -99,7 +99,7 @@ export default {
     data: () => ({
         form: {
             message: "",
-            passphrase: "",
+            mnemonic: "",
             walletPassword: ""
         },
         showEncryptLoader: false,
@@ -121,7 +121,7 @@ export default {
                 this.showEncryptLoader = true;
 
                 const dataToDecrypt = {
-                    bip38key: this.wallet.passphrase,
+                    bip38key: this.wallet.mnemonic,
                     password: this.form.walletPassword,
                     wif: this.session_network.wif
                 };
@@ -129,7 +129,7 @@ export default {
                 const bip38 = new Bip38();
                 try {
                     const { encodedWif } = await bip38.decrypt(dataToDecrypt);
-                    this.form.passphrase = null;
+                    this.form.mnemonic = null;
                     this.form.wif = encodedWif;
                 } catch (_error) {
                     this.$error(this.$t("ENCRYPTION.FAILED_DECRYPT"));
@@ -157,7 +157,7 @@ export default {
                             }
                         );
                     } else {
-                        message = WalletService.signMessage(this.form.message, this.form.passphrase);
+                        message = WalletService.signMessage(this.form.message, this.form.mnemonic);
                     }
                 } else {
                     this.showLedgerLoader = true;
@@ -201,16 +201,16 @@ export default {
                 required,
                 minLength: minLength(1)
             },
-            passphrase: {
+            mnemonic: {
                 isValid () {
-                    if (this.wallet.passphrase) {
+                    if (this.wallet.mnemonic) {
                         return true;
-                    } else if (this.wallet && (this.wallet.isLedger || this.wallet.passphrase)) {
+                    } else if (this.wallet && (this.wallet.isLedger || this.wallet.mnemonic)) {
                         return true;
                     }
 
-                    if (this.$refs.passphrase) {
-                        return !this.$refs.passphrase.$v.$invalid;
+                    if (this.$refs.mnemonic) {
+                        return !this.$refs.mnemonic.$v.$invalid;
                     }
 
                     return false;
@@ -218,9 +218,9 @@ export default {
             },
             walletPassword: {
                 isValid () {
-                    if (!this.wallet.passphrase) {
+                    if (!this.wallet.mnemonic) {
                         return true;
-                    } else if (this.wallet && (this.wallet.isLedger || !this.wallet.passphrase)) {
+                    } else if (this.wallet && (this.wallet.isLedger || !this.wallet.mnemonic)) {
                         return true;
                     }
 

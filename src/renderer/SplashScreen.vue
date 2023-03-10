@@ -3,7 +3,7 @@
     <div class="flex flex-1 justify-center">
       <div class="flex rounded-lg mb-3 p-5 bg-solar m-auto">
         <img
-          src="@/assets/images/ark-logo.png"
+          src="@/assets/images/sxp-logo.png"
           class="h-12"
         >
       </div>
@@ -11,7 +11,7 @@
 
     <div class="flex-inline">
       <div class="text-4xl mb-4">
-        <span class="font-semibold">{{ $t('COMMON.ARK') }}</span>
+        <span class="font-semibold">{{ $t('COMMON.SOLAR') }}</span>
         {{ $t('COMMON.DESKTOP_WALLET') }}
       </div>
 

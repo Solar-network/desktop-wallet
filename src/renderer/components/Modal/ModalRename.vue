@@ -173,7 +173,7 @@ export default {
 
     validations: {
         step1: ["schema.address"],
-        step3: ["isPassphraseVerified"],
+        step3: ["isMnemonicVerified"],
         schema: {
             name: {
                 contactDoesNotExist (value) {

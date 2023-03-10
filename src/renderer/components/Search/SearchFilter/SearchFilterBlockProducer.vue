@@ -1,6 +1,6 @@
 <template>
-  <SearchFilterItem :label="$t('SEARCH.DELEGATE')">
-    Delegate
+  <SearchFilterItem :label="$t('SEARCH.BLOCK_PRODUCER')">
+    BlockProducer
   </SearchFilterItem>
 </template>
 
@@ -8,7 +8,7 @@
 import SearchFilterItem from "./SearchFilterItem";
 
 export default {
-    name: "SearchFilterDelegate",
+    name: "SearchFilterBlockProducer",
 
     components: {
         SearchFilterItem

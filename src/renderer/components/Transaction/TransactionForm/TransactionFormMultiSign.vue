@@ -12,7 +12,7 @@
       </div>
 
       <InputPassword
-        v-else-if="currentWallet.passphrase"
+        v-else-if="currentWallet.mnemonic"
         ref="password"
         v-model="$v.form.walletPassword.$model"
         :label="$t('TRANSACTION.PASSWORD')"
@@ -20,23 +20,23 @@
         class="TransactionFormMultiSign__password"
       />
 
-      <PassphraseInput
+      <MnemonicInput
         v-else
-        ref="passphrase"
-        v-model="$v.form.passphrase.$model"
+        ref="mnemonic"
+        v-model="$v.form.mnemonic.$model"
         :address="currentWallet.address"
         :pub-key-hash="walletNetwork.version"
-        class="TransactionFormMultiSign__passphrase"
+        class="TransactionFormMultiSign__mnemonic"
       />
 
-      <PassphraseInput
+      <MnemonicInput
         v-if="currentWallet.secondPublicKey"
-        ref="secondPassphrase"
-        v-model="$v.form.secondPassphrase.$model"
-        :label="$t('TRANSACTION.SECOND_PASSPHRASE')"
+        ref="extraMnemonic"
+        v-model="$v.form.extraMnemonic.$model"
+        :label="$t('TRANSACTION.EXTRA_MNEMONIC')"
         :pub-key-hash="walletNetwork.version"
         :public-key="currentWallet.secondPublicKey"
-        class="TransactionFormMultiSign__second-passphrase mt-5"
+        class="TransactionFormMultiSign__extra-mnemonic mt-5"
       />
 
       <button
@@ -64,7 +64,7 @@
 import { TRANSACTION_TYPES } from "@config";
 import { InputPassword } from "@/components/Input";
 import { ModalLoader } from "@/components/Modal";
-import { PassphraseInput } from "@/components/Passphrase";
+import { MnemonicInput } from "@/components/Mnemonic";
 import mixin from "./mixin";
 
 export default {
@@ -75,7 +75,7 @@ export default {
     components: {
         InputPassword,
         ModalLoader,
-        PassphraseInput
+        MnemonicInput
     },
 
     mixins: [mixin],
@@ -89,7 +89,7 @@ export default {
 
     data: () => ({
         form: {
-            passphrase: "",
+            mnemonic: "",
             walletPassword: ""
         }
     }),
@@ -98,14 +98,14 @@ export default {
         getTransactionData () {
             const transactionData = {
                 publicKey: this.currentWallet.publicKey,
-                passphrase: this.form.passphrase,
+                mnemonic: this.form.mnemonic,
                 wif: this.form.wif,
                 networkWif: this.walletNetwork.wif,
                 multiSignature: this.transaction.multiSignature
             };
 
             if (this.currentWallet.secondPublicKey) {
-                transactionData.secondPassphrase = this.form.secondPassphrase;
+                transactionData.extraMnemonic = this.form.extraMnemonic;
             }
 
             return transactionData;
@@ -122,9 +122,9 @@ export default {
 
     validations: {
         form: {
-            passphrase: mixin.validators.passphrase,
+            mnemonic: mixin.validators.mnemonic,
             walletPassword: mixin.validators.walletPassword,
-            secondPassphrase: mixin.validators.secondPassphrase
+            extraMnemonic: mixin.validators.extraMnemonic
         }
     }
 };

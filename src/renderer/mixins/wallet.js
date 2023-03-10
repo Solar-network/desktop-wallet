@@ -76,9 +76,9 @@ export default {
                 return networkWallet;
             }
 
-            const delegateWallet = this.$store.getters["delegate/byAddress"](address);
-            if (delegateWallet) {
-                return delegateWallet.username;
+            const blockProducerWallet = this.$store.getters["blockProducer/byAddress"](address);
+            if (blockProducerWallet) {
+                return blockProducerWallet.username;
             }
 
             return null;
@@ -115,9 +115,9 @@ export default {
                 return networkWallet;
             }
 
-            const delegate = this.$store.getters["delegate/byAddress"](address);
-            if (delegate) {
-                return delegate.username;
+            const blockProducer = this.$store.getters["blockProducer/byAddress"](address);
+            if (blockProducer) {
+                return blockProducer.username;
             }
 
             return Number.isFinite(truncateLength) ? truncateMiddle(address, truncateLength) : address;

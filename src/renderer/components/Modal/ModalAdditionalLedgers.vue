@@ -27,7 +27,7 @@
         class="mt-4 border-theme-button-text border-l-4 pl-2"
       >
         <span class="text-theme-button-text font-bold">
-          {{ $t('WALLET_DELEGATES.VOTE_INFO') }}
+          {{ $t('WALLET_BLOCK_PRODUCERS.VOTE_INFO') }}
         </span>
         <strong>
           {{ quantityWarning }}

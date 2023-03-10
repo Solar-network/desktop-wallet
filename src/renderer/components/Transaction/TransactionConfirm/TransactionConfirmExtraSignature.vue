@@ -1,10 +1,10 @@
 <template>
   <ListDivided
-    class="TransactionConfirmSecondSignature"
+    class="TransactionConfirmExtraSignature"
     :is-floating-label="true"
   >
     <ListDividedItem
-      class="TransactionConfirmSecondSignature__sender"
+      class="TransactionConfirmExtraSignature__sender"
       :label="$t('TRANSACTION.SENDER')"
       item-value-class="w-full"
     >
@@ -26,9 +26,9 @@ import { TRANSACTION_TYPES } from "@config";
 import { ListDivided, ListDividedItem } from "@/components/ListDivided";
 
 export default {
-    name: "TransactionConfirmSecondSignature",
+    name: "TransactionConfirmExtraSignature",
 
-    transactionType: TRANSACTION_TYPES.GROUP_1.SECOND_SIGNATURE,
+    transactionType: TRANSACTION_TYPES.GROUP_1.EXTRA_SIGNATURE,
 
     inject: ["currentWallet"],
 

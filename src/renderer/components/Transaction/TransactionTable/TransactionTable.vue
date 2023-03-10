@@ -26,7 +26,7 @@
                 trigger: 'hover',
                 container: '.TransactionTable'
               }"
-              :name="data.formattedRow['memo'] ? 'vendorfield' : 'vendorfield-empty'"
+              :name="data.formattedRow['memo'] ? 'memo' : 'memo-empty'"
               view-box="0 0 18 18"
               class="mr-2"
             />
@@ -242,7 +242,7 @@ export default {
                         thClass: "no-sort"
                     },
                     {
-                        label: this.$t("TRANSACTION.VENDOR_FIELD"),
+                        label: this.$t("TRANSACTION.MEMO"),
                         field: "memo",
                         formatFn: this.formatSmartbridge,
                         tdClass: memoClass.join(" "),
