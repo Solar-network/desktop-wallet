@@ -1277,7 +1277,7 @@ export default {
         NO_VOTE: "This wallet is not voting. To view more information and vote, use the search or click on any block producer",
         AWAITING_VOTE_CONFIRMATION: "Your transaction is awaiting confirmation",
         LOADING_VOTE: "Loading vote details...",
-        SEARCH_BLOCK_PRODUCER: "Search block producers",
+        SEARCH_BLOCK_PRODUCER: "Search",
         TOTAL_REMAINING: "Remaining: {percentage}%",
         NUMBER_OF_BLOCK_PRODUCERS_VOTED: "Votes: {n}"
     },

@@ -58,7 +58,7 @@
         <input
           ref="search"
           v-model="search"
-          class="WalletDetails__button rounded-l"
+          class="WalletDetails__button rounded-l search-input-container-placeholder-text"
           :placeholder="$t('WALLET_BLOCK_PRODUCERS.SEARCH_BLOCK_PRODUCER')"
         >
       </span>
@@ -522,6 +522,9 @@ export default {
 
 .search-input-container {
   padding-left: 1rem;
+}
+.search-input-container-placeholder-text {
+  padding-right: 2rem;
 }
 
 .vote-button {
