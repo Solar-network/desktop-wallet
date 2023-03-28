@@ -799,7 +799,7 @@ export default {
 
         WALLET: {
             TRANSACTIONS: "Transactions",
-            BLOCK_PRODUCERS: "Block producers",
+            BLOCK_PRODUCERS: "Block Producers",
             IPFS: "IPFS",
             MULTI_SIGNATURE: "Multisignature",
             MULTI_SIGNATURE_WALLET: "Multisignature wallet",
