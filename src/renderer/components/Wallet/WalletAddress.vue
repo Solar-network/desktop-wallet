@@ -57,7 +57,7 @@
         v-else-if="!isUnvote"
         class="text-green"
       >
-        {{ $t("TRANSACTION.TYPE.VOTE") }} ({{ countVotes }} BlockProducers)
+        {{ $t("TRANSACTION.TYPE.VOTE") }} ({{ countVotes }} {{ $t("COMMON.BLOCK_PRODUCERS") }})
       </span>
       <span
         v-else

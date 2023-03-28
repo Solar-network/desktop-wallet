@@ -15,6 +15,7 @@ export default {
         CURRENCY: "Currency",
         DATE: "Date",
         BLOCK_PRODUCER: "Block Producer",
+        BLOCK_PRODUCERS: "Block Producers",
         DESKTOP_WALLET: "Desktop Wallet",
         DONE: "Done",
         ENABLE_ADVANCED_MODE: "Enable Advanced Mode to use this feature",
