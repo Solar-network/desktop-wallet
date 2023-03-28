@@ -1,10 +1,10 @@
 <template>
   <ListDivided
-    class="TransactionConfirmDelegateRegistration"
+    class="TransactionConfirmResignation"
     :is-floating-label="true"
   >
     <ListDividedItem
-      class="TransactionConfirmDelegateRegistration__sender"
+      class="TransactionConfirmResignation__sender"
       :label="$t('TRANSACTION.SENDER')"
       item-value-class="w-full"
     >
@@ -18,13 +18,6 @@
         {{ currentWallet.address }}
       </span>
     </ListDividedItem>
-
-    <ListDividedItem
-      class="TransactionConfirmDelegateRegistration__username"
-      :label="$t('WALLET_DELEGATES.USERNAME')"
-    >
-      {{ username }}
-    </ListDividedItem>
   </ListDivided>
 </template>
 
@@ -33,11 +26,11 @@ import { TRANSACTION_TYPES } from "@config";
 import { ListDivided, ListDividedItem } from "@/components/ListDivided";
 
 export default {
-    name: "TransactionConfirmDelegateRegistration",
+    name: "TransactionConfirmResignation",
 
-    transactionType: TRANSACTION_TYPES.GROUP_1.DELEGATE_REGISTRATION,
+    transactionType: TRANSACTION_TYPES.GROUP_1.RESIGNATION,
 
-    inject: ["currentWallet", "transaction"],
+    inject: ["currentWallet"],
 
     components: {
         ListDivided,
@@ -47,14 +40,6 @@ export default {
     computed: {
         senderLabel () {
             return this.wallet_formatAddress(this.currentWallet.address);
-        },
-
-        username () {
-            if (this.transaction.asset && this.transaction.asset.delegate) {
-                return this.transaction.asset.delegate.username;
-            }
-
-            return "";
         }
     }
 };

@@ -40,16 +40,16 @@
               />
 
               <InputSwitch
-                :label="$t('PAGES.WALLET_IMPORT.STEP1.ONLY_PASSPHRASE')"
-                :text="$t('PAGES.WALLET_IMPORT.STEP1.ONLY_PASSPHRASE')"
-                :is-active="useOnlyPassphrase"
+                :label="$t('PAGES.WALLET_IMPORT.STEP1.ONLY_MNEMONIC')"
+                :text="$t('PAGES.WALLET_IMPORT.STEP1.ONLY_MNEMONIC')"
+                :is-active="useOnlyMnemonic"
                 class="my-3"
-                @change="setOnlyPassphrase"
+                @change="setOnlyMnemonic"
               />
 
               <!-- TODO check duplicate here when db store is available -->
               <InputAddress
-                v-show="!useOnlyPassphrase"
+                v-show="!useOnlyMnemonic"
                 ref="addressInput"
                 v-model="schema.address"
                 :is-invalid="$v.schema.address.$invalid"
@@ -58,11 +58,11 @@
                 class="my-3"
               />
 
-              <PassphraseInput
+              <MnemonicInput
                 v-show="!useOnlyAddress"
-                ref="passphrase"
-                v-model="schema.passphrase"
-                :address="useOnlyPassphrase ? null : schema.address"
+                ref="mnemonic"
+                v-model="schema.mnemonic"
+                :address="useOnlyMnemonic ? null : schema.address"
                 :pub-key-hash="session_network.version"
                 :not-bip39-warning="true"
                 class="my-3"
@@ -157,7 +157,7 @@ import { required } from "vuelidate/lib/validators";
 import { InputAddress, InputPassword, InputSwitch, InputText } from "@/components/Input";
 import { MenuStep, MenuStepItem } from "@/components/Menu";
 import { ModalLoader } from "@/components/Modal";
-import { PassphraseInput } from "@/components/Passphrase";
+import { MnemonicInput } from "@/components/Mnemonic";
 import WalletService from "@/services/wallet";
 import Wallet from "@/models/wallet";
 import onCreate from "./mixin-on-create";
@@ -173,7 +173,7 @@ export default {
         MenuStep,
         MenuStepItem,
         ModalLoader,
-        PassphraseInput
+        MnemonicInput
     },
 
     mixins: [onCreate],
@@ -181,10 +181,10 @@ export default {
     schema: Wallet.schema,
 
     data: () => ({
-        ensureEntirePassphrase: false,
+        ensureEntireMnemonic: false,
         step: 1,
         useOnlyAddress: false,
-        useOnlyPassphrase: false,
+        useOnlyMnemonic: false,
         wallet: {},
         walletPassword: null,
         walletConfirmPassword: null,
@@ -231,8 +231,8 @@ export default {
         step () {
             if (this.step === 2 && !this.useOnlyAddress) {
                 // Important: .normalize('NFD') is needed to properly work with Korean bip39 words
-                // It alters the passphrase string, so no need to normalize again in the onCreate function
-                this.schema.address = WalletService.getAddress(this.schema.passphrase, this.session_network.version);
+                // It alters the mnemonic string, so no need to normalize again in the onCreate function
+                this.schema.address = WalletService.getAddress(this.schema.mnemonic, this.session_network.version);
             }
         }
     },
@@ -268,18 +268,18 @@ export default {
         },
 
         setOnlyAddress (useOnlyAddress) {
-            this.useOnlyPassphrase = false;
+            this.useOnlyMnemonic = false;
             this.useOnlyAddress = useOnlyAddress;
         },
 
-        setOnlyPassphrase (useOnlyPassphrase) {
+        setOnlyMnemonic (useOnlyMnemonic) {
             this.useOnlyAddress = false;
-            this.useOnlyPassphrase = useOnlyPassphrase;
+            this.useOnlyMnemonic = useOnlyMnemonic;
         }
     },
 
     validations: {
-        step1: ["schema.address", "schema.passphrase"],
+        step1: ["schema.address", "schema.mnemonic"],
         step2: ["walletPassword", "walletConfirmPassword"],
         step3: ["schema.name"],
         walletPassword: {
@@ -311,10 +311,10 @@ export default {
         schema: {
             address: {
                 isRequired (value) {
-                    return this.useOnlyPassphrase || required(value);
+                    return this.useOnlyMnemonic || required(value);
                 },
                 isValid () {
-                    if (this.useOnlyPassphrase) {
+                    if (this.useOnlyMnemonic) {
                         return true;
                     }
 
@@ -343,7 +343,7 @@ export default {
                     return value === "" || !(wallet && !wallet.isContact);
                 }
             },
-            passphrase: {
+            mnemonic: {
                 isRequired (value) {
                     return this.useOnlyAddress || required(value);
                 },
@@ -352,8 +352,8 @@ export default {
                         return true;
                     }
 
-                    if (this.$refs.passphrase) {
-                        return !this.$refs.passphrase.$v.$invalid;
+                    if (this.$refs.mnemonic) {
+                        return !this.$refs.mnemonic.$v.$invalid;
                     }
 
                     return false;

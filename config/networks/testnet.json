@@ -4,7 +4,7 @@
     "title": "Solar Testnet",
     "server": "https://tapi.solar.org",
     "description": "The SXP Testnet is usually used for R&D.",
-    "imagePath": "networks/ark.devnet.svg",
+    "imagePath": "networks/sxp.testnet.svg",
     "apiVersion": 2,
     "slip44": "1",
     "market": {

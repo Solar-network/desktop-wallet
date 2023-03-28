@@ -295,12 +295,12 @@ class Action {
                     this.displayNewTransaction(latestTransaction, wallet);
 
                     const types = [
-                        TRANSACTION_TYPES.GROUP_1.DELEGATE_REGISTRATION,
-                        TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION
+                        TRANSACTION_TYPES.GROUP_1.REGISTRATION,
+                        TRANSACTION_TYPES.GROUP_1.RESIGNATION
                     ];
 
                     if (types.includes(latestTransaction.type)) {
-                        this.$dispatch("delegate/load");
+                        this.$dispatch("blockProducer/load");
                     }
                 }
 
@@ -344,16 +344,16 @@ class Action {
         let message = {};
         switch (transaction.type) {
         case TRANSACTION_TYPES.GROUP_2.VOTE: {
-            const type = Object.keys(transaction.asset.votes).length > 0 ? "VOTE" : "UNVOTE";
-            const voteUnvote = this.$t(`SYNCHRONIZER.GROUP_1.${type}`);
+            const type = Object.keys(transaction.asset.votes).length > 0 ? "VOTE" : "CANCEL_VOTE";
+            const vote = this.$t(`SYNCHRONIZER.GROUP_1.${type}`);
             const numberOfVotes = Object.keys(transaction.asset.votes).length;
             message = {
                 translation: type === "VOTE" ? "SYNCHRONIZER.GROUP_1.NEW_VOTE" : "SYNCHRONIZER.GROUP_1.CANCELLED_VOTE",
                 options: {
                     address: truncateMiddle(wallet.address),
-                    voteUnvote,
+                    vote,
                     publicKey: type === "VOTE"
-                        ? (numberOfVotes > 1 ? `${numberOfVotes} delegates` : Object.keys(transaction.asset.votes)[0])
+                        ? (numberOfVotes > 1 ? `${numberOfVotes} block producers` : Object.keys(transaction.asset.votes)[0])
                         : undefined
                 }
             };
@@ -368,18 +368,18 @@ class Action {
         let message = {};
 
         switch (transaction.type) {
-        case TRANSACTION_TYPES.GROUP_1.SECOND_SIGNATURE: {
+        case TRANSACTION_TYPES.GROUP_1.EXTRA_SIGNATURE: {
             message = {
-                translation: "SYNCHRONIZER.GROUP_1.NEW_SECOND_SIGNATURE",
+                translation: "SYNCHRONIZER.GROUP_1.NEW_EXTRA_SIGNATURE",
                 options: {
                     address: truncateMiddle(wallet.address)
                 }
             };
             break;
         }
-        case TRANSACTION_TYPES.GROUP_1.DELEGATE_REGISTRATION: {
+        case TRANSACTION_TYPES.GROUP_1.REGISTRATION: {
             message = {
-                translation: "SYNCHRONIZER.GROUP_1.NEW_DELEGATE_REGISTRATION",
+                translation: "SYNCHRONIZER.GROUP_1.NEW_REGISTRATION",
                 options: {
                     address: truncateMiddle(wallet.address),
                     username: transaction.asset.delegate.username
@@ -388,13 +388,13 @@ class Action {
             break;
         }
         case TRANSACTION_TYPES.GROUP_1.VOTE: {
-            const type = transaction.asset.votes[0].substring(0, 1) === "+" ? "VOTE" : "UNVOTE";
-            const voteUnvote = this.$t(`SYNCHRONIZER.GROUP_1.${type}`);
+            const type = transaction.asset.votes[0].substring(0, 1) === "+" ? "VOTE" : "CANCEL_VOTE";
+            const vote = this.$t(`SYNCHRONIZER.GROUP_1.${type}`);
             message = {
                 translation: "SYNCHRONIZER.GROUP_1.NEW_VOTE",
                 options: {
                     address: truncateMiddle(wallet.address),
-                    voteUnvote,
+                    vote,
                     publicKey: truncateMiddle(transaction.asset.votes[0].substring(1))
                 }
             };
@@ -445,9 +445,9 @@ class Action {
             };
             break;
         }
-        case TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION: {
+        case TRANSACTION_TYPES.GROUP_1.RESIGNATION: {
             message = {
-                translation: "SYNCHRONIZER.GROUP_1.NEW_DELEGATE_RESIGNATION",
+                translation: "SYNCHRONIZER.GROUP_1.NEW_RESIGNATION",
                 options: {
                     address: truncateMiddle(wallet.address)
                 }

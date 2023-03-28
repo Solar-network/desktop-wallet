@@ -75,14 +75,14 @@
               name="WalletNew__wallets--transition"
               tag="ul"
             >
-              <template v-for="(passphrase, address) in wallets">
+              <template v-for="(mnemonic, address) in wallets">
                 <li
                   :key="address"
                   :class="[
                     isSelected(address) ? 'WalletNew__wallets__address--selected' : 'WalletNew__wallets__address--unselected',
                   ]"
                   class="WalletNew__wallets__address py-4 w-full truncate cursor-pointer"
-                  @click="selectWallet(address, passphrase)"
+                  @click="selectWallet(address, mnemonic)"
                 >
                   <div class="WalletNew__wallets__address__mask flex items-center">
                     <div class="relative">
@@ -135,12 +135,12 @@
               <!-- Hide it when the step is collapse -->
               <ButtonClipboard
                 v-if="step === 2"
-                :value="schema.passphrase"
+                :value="schema.mnemonic"
                 class="text-theme-button-light-text py-2 px-4 rounded bg-theme-button-light"
               />
             </div>
 
-            <PassphraseWords :passphrase-words="passphraseWords" />
+            <MnemonicWords :mnemonic-words="mnemonicWords" />
           </MenuStepItem>
 
           <MenuStepItem
@@ -153,16 +153,16 @@
           >
             <div class="flex flex-col h-full w-full justify-around">
               <InputSwitch
-                v-model="ensureEntirePassphrase"
-                :label="$t('PAGES.WALLET_NEW.STEP3.CHECK_ENTIRE_PASSPHRASE')"
+                v-model="ensureEntireMnemonic"
+                :label="$t('PAGES.WALLET_NEW.STEP3.CHECK_ENTIRE_MNEMONIC')"
                 :text="$t('PAGES.WALLET_NEW.STEP3.VERIFY_ALL_WORDS')"
                 class="my-3"
                 @change="onSwitch"
               />
 
-              <PassphraseVerification
+              <MnemonicVerification
                 :additional-suggestions="additionalSuggestions"
-                :passphrase="passphraseWords"
+                :mnemonic="mnemonicWords"
                 :word-positions="wordPositions"
                 @verified="onVerification"
               />
@@ -272,7 +272,7 @@ import { ButtonClipboard, ButtonReload } from "@/components/Button";
 import { InputPassword, InputSwitch, InputText } from "@/components/Input";
 import { MenuStep, MenuStepItem } from "@/components/Menu";
 import { ModalLoader } from "@/components/Modal";
-import { PassphraseVerification, PassphraseWords } from "@/components/Passphrase";
+import { MnemonicVerification, MnemonicWords } from "@/components/Mnemonic";
 import { SvgIcon } from "@/components/SvgIcon";
 import WalletIdenticon from "@/components/Wallet/WalletIdenticon";
 import WalletService from "@/services/wallet";
@@ -291,8 +291,8 @@ export default {
         MenuStep,
         MenuStepItem,
         ModalLoader,
-        PassphraseVerification,
-        PassphraseWords,
+        MnemonicVerification,
+        MnemonicWords,
         SvgIcon,
         WalletIdenticon
     },
@@ -303,8 +303,8 @@ export default {
 
     data: () => ({
         isRefreshing: false,
-        isPassphraseVerified: false,
-        ensureEntirePassphrase: false,
+        isMnemonicVerified: false,
+        ensureEntireMnemonic: false,
         step: 1,
         wallets: {},
         walletPassword: null,
@@ -313,7 +313,7 @@ export default {
         backgroundImages: {
             1: "pages/wallet-new/choose-wallet.svg",
             2: "pages/wallet-new/backup-wallet.svg",
-            3: "pages/wallet-new/verify-passphrase.svg",
+            3: "pages/wallet-new/verify-mnemonic.svg",
             4: "pages/wallet-new/encrypt-wallet.svg",
             5: "pages/wallet-new/protect-wallet.svg"
         }
@@ -321,33 +321,33 @@ export default {
 
     computed: {
     /**
-     * Mixes words from the passphrases of all the generated wallets
+     * Mixes words from the mnemonics of all the generated wallets
      * @return {Array}
      */
         additionalSuggestions () {
-            const passphrases = Object.values(this.wallets);
+            const mnemonics = Object.values(this.wallets);
 
             // Check for Japanese "space"
-            return flatten(passphrases.map(passphrase =>
-                /\u3000/.test(passphrase) ? passphrase.split("\u3000") : passphrase.split(" ")
+            return flatten(mnemonics.map(mnemonic =>
+                /\u3000/.test(mnemonic) ? mnemonic.split("\u3000") : mnemonic.split(" ")
             ));
         },
-        passphraseWords () {
-            const passphrase = this.schema.passphrase;
-            if (passphrase) {
+        mnemonicWords () {
+            const mnemonic = this.schema.mnemonic;
+            if (mnemonic) {
                 // Check for Japanese "space"
-                if (/\u3000/.test(passphrase)) {
-                    return this.schema.passphrase.split("\u3000");
+                if (/\u3000/.test(mnemonic)) {
+                    return this.schema.mnemonic.split("\u3000");
                 }
-                return this.schema.passphrase.split(" ");
+                return this.schema.mnemonic.split(" ");
             }
             return [];
         },
         wordPositions () {
-            return this.ensureEntirePassphrase ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] : [3, 6, 9];
+            return this.ensureEntireMnemonic ? [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] : [3, 6, 9];
         },
         wordPositionLabel () {
-            return this.ensureEntirePassphrase
+            return this.ensureEntireMnemonic
                 ? this.$t("PAGES.WALLET_NEW.STEP3.INSTRUCTIONS.ALL_WORDS")
                 : this.$t("PAGES.WALLET_NEW.STEP3.INSTRUCTIONS.WORDS", { words: this.wordPositions.join(", ") });
         },
@@ -390,25 +390,25 @@ export default {
         },
 
         onSwitch () {
-            this.isPassphraseVerified = false;
+            this.isMnemonicVerified = false;
         },
 
         onVerification () {
-            this.isPassphraseVerified = true;
+            this.isMnemonicVerified = true;
         },
 
-        selectWallet (address, passphrase) {
+        selectWallet (address, mnemonic) {
             this.schema.address = address;
-            this.schema.passphrase = passphrase;
-            this.isPassphraseVerified = false;
+            this.schema.mnemonic = mnemonic;
+            this.isMnemonicVerified = false;
         },
 
         refreshAddresses () {
             this.isRefreshing = true;
 
             this.schema.address = null;
-            this.schema.passphrase = null;
-            this.isPassphraseVerified = false;
+            this.schema.mnemonic = null;
+            this.isMnemonicVerified = false;
 
             for (const [address] of Object.entries(this.wallets)) {
                 this.$delete(this.wallets, address);
@@ -417,11 +417,11 @@ export default {
             // Delay the generation to play an animation
             setTimeout(() => {
                 for (let i = 0; i < 3; i++) {
-                    const { address, passphrase } = WalletService.generate(
+                    const { address, mnemonic } = WalletService.generate(
                         this.session_network.version,
                         this.session_profile.bip39Language
                     );
-                    this.$set(this.wallets, address, passphrase);
+                    this.$set(this.wallets, address, mnemonic);
                 }
 
                 this.isRefreshing = false;
@@ -435,7 +435,7 @@ export default {
 
     validations: {
         step1: ["schema.address"],
-        step3: ["isPassphraseVerified"],
+        step3: ["isMnemonicVerified"],
         step4: ["walletPassword", "walletConfirmPassword"],
         step5: ["schema.name"],
         schema: {
@@ -450,7 +450,7 @@ export default {
                 }
             }
         },
-        isPassphraseVerified: {
+        isMnemonicVerified: {
             required,
             isVerified: value => value
         },

@@ -7,7 +7,7 @@
     :is-focused="isFocused"
     :is-invalid="isInvalid"
     :warning-text="warning"
-    class="PassphraseInput"
+    class="MnemonicInput"
   >
     <div
       slot-scope="{ inputClass }"
@@ -19,20 +19,20 @@
         v-model="model"
         :name="name"
         :disabled="isDisabled"
-        :type="passphraseIsVisible ? 'text' : 'password'"
-        class="PassphraseInput__input flex flex-grow bg-transparent text-theme-page-text mr-2"
+        :type="mnemonicIsVisible ? 'text' : 'password'"
+        class="MnemonicInput__input flex flex-grow bg-transparent text-theme-page-text mr-2"
         @blur="onBlur"
         @focus="onFocus"
       >
 
       <button
-        :title="$t(passphraseIsVisible ? 'PASSPHRASE_INPUT.HIDE' : 'PASSPHRASE_INPUT.SHOW')"
-        class="PassphraseInput__visibility-button flex flex-no-shrink text-grey-dark hover:text-blue focus:text-blue mr-2"
+        :title="$t(mnemonicIsVisible ? 'MNEMONIC_INPUT.HIDE' : 'MNEMONIC_INPUT.SHOW')"
+        class="MnemonicInput__visibility-button flex flex-no-shrink text-grey-dark hover:text-blue focus:text-blue mr-2"
         type="button"
         @click="toggleVisible"
       >
         <SvgIcon
-          :name="passphraseIsVisible ? 'passphrase-hide' : 'passphrase-show'"
+          :name="mnemonicIsVisible ? 'mnemonic-hide' : 'mnemonic-show'"
           view-box="0 0 20 20"
         />
       </button>
@@ -40,7 +40,7 @@
       <ButtonModal
         ref="button-qr"
         :label="''"
-        class="PassphraseInput__qr-button flex flex-no-shrink text-grey-dark hover:text-blue focus:text-blue"
+        class="MnemonicInput__qr-button flex flex-no-shrink text-grey-dark hover:text-blue focus:text-blue"
         icon="qr"
         view-box="0 0 20 20"
       >
@@ -66,7 +66,7 @@ import SvgIcon from "@/components/SvgIcon";
 import WalletService from "@/services/wallet";
 
 export default {
-    name: "PassphraseInput",
+    name: "MnemonicInput",
 
     components: {
         ButtonModal,
@@ -105,13 +105,13 @@ export default {
             type: String,
             required: false,
             default () {
-                return this.$t("PASSPHRASE_INPUT.LABEL");
+                return this.$t("MNEMONIC_INPUT.LABEL");
             }
         },
         name: {
             type: String,
             required: false,
-            default: "passphrase"
+            default: "mnemonic"
         },
         pubKeyHash: {
             type: Number,
@@ -132,7 +132,7 @@ export default {
     data: vm => ({
         inputValue: vm.value,
         isFocused: false,
-        passphraseIsVisible: vm.isVisible
+        mnemonicIsVisible: vm.isVisible
     }),
 
     computed: {
@@ -164,7 +164,7 @@ export default {
             return this.$v.model.$dirty && !!this.error;
         },
         isBip39 () {
-            return this.notBip39Warning && WalletService.isBip39Passphrase(this.inputValue, this.session_profile.bip39Language);
+            return this.notBip39Warning && WalletService.isBip39Mnemonic(this.inputValue, this.session_profile.bip39Language);
         },
         model: {
             get () {
@@ -211,9 +211,9 @@ export default {
         },
 
         onDecode (value, toggle) {
-            this.model = this.qr_getPassphrase(value);
+            this.model = this.qr_getMnemonic(value);
 
-            // Check if we were unable to retrieve a passphrase from the qr
+            // Check if we were unable to retrieve a mnemonic from the qr
             if ((this.inputValue === "" || this.inputValue === undefined) && this.inputValue !== value) {
                 this.$error(this.$t("MODAL_QR_SCANNER.DECODE_FAILED", { data: value }));
             }
@@ -227,7 +227,7 @@ export default {
         },
 
         async toggleVisible () {
-            this.passphraseIsVisible = !this.passphraseIsVisible;
+            this.mnemonicIsVisible = !this.mnemonicIsVisible;
             await this.focus();
         }
     },
@@ -236,17 +236,17 @@ export default {
         model: {
             required,
             isValid (value) {
-                return WalletService.validatePassphrase(value);
+                return WalletService.validateMnemonic(value);
             },
             matchAddress (value) {
                 if (this.address) {
-                    return WalletService.verifyPassphrase(this.address, value, this.pubKeyHash);
+                    return WalletService.verifyMnemonic(this.address, value, this.pubKeyHash);
                 }
                 return true;
             },
             matchPublicKey (value) {
                 if (this.publicKey) {
-                    const generatedPublicKey = WalletService.getPublicKeyFromPassphrase(value);
+                    const generatedPublicKey = WalletService.getPublicKeyFromMnemonic(value);
                     return generatedPublicKey === this.publicKey;
                 }
                 return true;
@@ -257,15 +257,15 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.PassphraseInput__input::placeholder {
+.MnemonicInput__input::placeholder {
   @apply .text-transparent
 }
-.InputField--invalid .PassphraseInput__qr-button,
-.InputField--invalid .PassphraseInput__visibility-button {
+.InputField--invalid .MnemonicInput__qr-button,
+.InputField--invalid .MnenomicInput__visibility-button {
   @apply .text-red-dark
 }
-.InputField--warning .PassphraseInput__qr-button,
-.InputField--warning .PassphraseInput__visibility-button {
+.InputField--warning .MnemonicInput__qr-button,
+.InputField--warning .MnemonicInput__visibility-button {
   @apply .text-orange-dark
 }
 </style>

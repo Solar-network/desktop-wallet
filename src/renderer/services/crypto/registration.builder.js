@@ -4,12 +4,13 @@ import store from "@/store";
 import { CryptoUtils } from "./utils";
 import { TransactionSigner } from "./transaction-signer";
 
-export class SecondSignatureRegistrationBuilder {
+export class RegistrationBuilder {
     static async build ({
         address,
+        username,
         fee,
-        passphrase,
-        secondPassphrase,
+        mnemonic,
+        extraMnemonic,
         wif,
         networkWif,
         multiSignature,
@@ -19,25 +20,27 @@ export class SecondSignatureRegistrationBuilder {
     returnObject = false
     ) {
         const staticFee = store.getters["transaction/staticFee"](
-            TRANSACTION_TYPES.GROUP_1.SECOND_SIGNATURE,
+            TRANSACTION_TYPES.GROUP_1.REGISTRATION,
             1
         );
         if (!isAdvancedFee && fee.gt(staticFee)) {
             throw new Error(
-                `Second signature fee should be smaller than ${staticFee}`
+                `Registration fee should be smaller than ${staticFee}`
             );
         }
 
-        const transaction = Transactions.BuilderFactory.secondSignature()
-            .signatureAsset(secondPassphrase)
+        const transaction = Transactions.BuilderFactory.delegateRegistration()
+            .usernameAsset(username)
             .fee(fee);
 
-        passphrase = CryptoUtils.normalizePassphrase(passphrase);
+        mnemonic = CryptoUtils.normalizeMnemonic(mnemonic);
+        extraMnemonic = CryptoUtils.normalizeMnemonic(extraMnemonic);
 
         return TransactionSigner.sign({
             address,
             transaction,
-            passphrase,
+            mnemonic,
+            extraMnemonic,
             wif,
             networkWif,
             multiSignature,

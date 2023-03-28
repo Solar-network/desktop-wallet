@@ -1,6 +1,6 @@
 import InputAddress from "./InputAddress";
 import InputCurrency from "./InputCurrency";
-import InputDelegate from "./InputDelegate";
+import InputBlockProducer from "./InputBlockProducer";
 import InputEditableList from "./InputEditableList";
 import InputFee from "./InputFee";
 import InputField from "./InputField";
@@ -17,7 +17,7 @@ export * from "./InputToggle";
 export {
     InputAddress,
     InputCurrency,
-    InputDelegate,
+    InputBlockProducer,
     InputEditableList,
     InputFee,
     InputField,

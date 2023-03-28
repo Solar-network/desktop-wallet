@@ -40,7 +40,7 @@ export default class Synchronizer {
                 default: { interval: longest, delay: loop * 6 },
                 focus: { interval: medium }
             },
-            delegates: {
+            blockProducers: {
                 default: { interval: longer, delay: loop * 3 },
                 focus: { interval: longer }
             },
@@ -250,8 +250,8 @@ export default class Synchronizer {
         // })
 
         // NOTE: not used currently
-        // this.define('delegates', this.config.delegates, async () => {
-        //   await delegates(this)
+        // this.define('blockProducers', this.config.blockProducers, async () => {
+        //   await blockProducers(this)
         // })
 
         this.define("fees", this.config.fees, async () => {

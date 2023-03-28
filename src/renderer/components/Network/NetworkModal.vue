@@ -156,13 +156,13 @@
             />
 
             <InputText
-              ref="input-activeDelegates"
-              v-model="$v.form.activeDelegates.$model"
-              :label="$t('MODAL_NETWORK.ACTIVE_DELEGATES')"
-              :is-invalid="$v.form.activeDelegates.$dirty && $v.form.activeDelegates.$invalid"
-              :helper-text="activeDelegatesError"
+              ref="input-activeBlockProducers"
+              v-model="$v.form.activeBlockProducers.$model"
+              :label="$t('MODAL_NETWORK.ACTIVE_BLOCK_PRODUCERS')"
+              :is-invalid="$v.form.activeBlockProducers.$dirty && $v.form.activeBlockProducers.$invalid"
+              :helper-text="activeBlockProducersError"
               class="mt-5"
-              name="activeDelegates"
+              name="activeBlockProducers"
             />
           </div>
         </div>
@@ -265,7 +265,7 @@ export default {
             epoch: "",
             wif: "",
             slip44: "",
-            activeDelegates: "",
+            activeBlockProducers: "",
             ticker: ""
         },
         configChoices: [
@@ -327,8 +327,8 @@ export default {
             return this.requiredNumericFieldError(this.$v.form.wif, this.$refs["input-wif"]);
         },
 
-        activeDelegatesError () {
-            return this.requiredNumericFieldError(this.$v.form.activeDelegates, this.$refs["input-activeDelegates"]);
+        activeBlockProducersError () {
+            return this.requiredNumericFieldError(this.$v.form.activeBlockProducers, this.$refs["input-activeBlockProducers"]);
         },
 
         serverError () {
@@ -393,7 +393,7 @@ export default {
             // Default advanced values: ?
             this.form.wif = this.getStringOrDefault(this.network.wif, "170");
             this.form.slip44 = this.getStringOrDefault(this.network.slip44, "1");
-            this.form.activeDelegates = this.getStringOrDefault(this.network.activeDelegates, "51");
+            this.form.activeBlockProducers = this.getStringOrDefault(this.network.activeBlockProducers, "51");
             this.form.ticker = this.network.market.ticker || "";
 
             this.showFull = true;
@@ -499,7 +499,7 @@ export default {
 
             const customNetwork = this.form;
             customNetwork.constants = {
-                activeDelegates: parseInt(this.form.activeDelegates),
+                activeBlockProducers: parseInt(this.form.activeBlockProducers),
                 epoch: this.form.epoch
             };
             delete customNetwork.epoch;
@@ -557,7 +557,7 @@ export default {
                 // Default values during the core API transition stage
                 wif: "170",
                 slip44: "1",
-                activeDelegates: "51"
+                activeBlockProducers: "51"
             };
 
             const fetchAndFill = async (callback = null) => {
@@ -590,8 +590,8 @@ export default {
             try {
                 await fetchAndFill(network => {
                     this.form.epoch = network.constants.epoch;
-                    if (network.constants.activeDelegates) {
-                        this.form.activeDelegates = network.constants.activeDelegates.toString();
+                    if (network.constants.activeBlockProducers) {
+                        this.form.activeBlockProducers = network.constants.activeBlockProducers.toString();
                     }
                 });
             } catch (error) {
@@ -687,7 +687,7 @@ export default {
             slip44: {
                 requiredIfFull
             },
-            activeDelegates: {
+            activeBlockProducers: {
                 requiredIfFull,
                 numeric
             },

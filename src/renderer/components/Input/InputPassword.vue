@@ -31,7 +31,7 @@
         @click="toggleVisible"
       >
         <SvgIcon
-          :name="passwordIsVisible ? 'passphrase-hide' : 'passphrase-show'"
+          :name="passwordIsVisible ? 'mnemonic-hide' : 'mnemonic-show'"
           view-box="0 0 20 20"
         />
       </button>

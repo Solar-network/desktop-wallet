@@ -24,16 +24,16 @@ export default {
             }
         },
 
-        // Tries to retrieve a passphrase from a given string
-        // Note that no checks are done on the return value and might be undefined or an incorrect passphrase
-        qr_getPassphrase (value) {
+        // Tries to retrieve a mnemonic from a given string
+        // Note that no checks are done on the return value and might be undefined or an incorrect mnemonic
+        qr_getMnemonic (value) {
             // Possible options:
-            // 1. Object { passphrase: "passphrase words" }
+            // 1. Object { mnemonic: "mnemonic words" }
             try {
-                const passphraseObj = JSON.parse(value);
-                return passphraseObj.passphrase;
+                const mnemonicObj = JSON.parse(value);
+                return mnemonicObj.mnemonic;
             } catch (error) {
-                // 2. Plain string, assume it's a passphrase
+                // 2. Plain string, assume it's a mnemonic
                 return value;
             }
         }

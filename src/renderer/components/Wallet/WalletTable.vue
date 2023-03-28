@@ -76,7 +76,7 @@
           v-else-if="data.column.field === 'vote'"
         >
           <span class="flex items-center">
-            {{ data.row.vote && Object.keys(data.row.vote).length > 1 ? $t('PAGES.WALLET_SHOW.VOTING_FOR_SHORT', { n: Object.keys(data.row.vote).length }) : getDelegateProperty(Object.keys(data.row.vote || {})[0], 'username') }}
+            {{ data.row.vote && Object.keys(data.row.vote).length > 1 ? $t('PAGES.WALLET_SHOW.VOTING_FOR_SHORT', { n: Object.keys(data.row.vote).length }) : getBlockProducerProperty(Object.keys(data.row.vote || {})[0], 'username') }}
           </span>
         </div>
 
@@ -158,7 +158,7 @@ export default {
     },
 
     props: {
-        showVotedDelegates: {
+        showVotedBlockProducers: {
             type: Boolean,
             default: false,
             required: false
@@ -169,7 +169,7 @@ export default {
         columns () {
             const columns = [
                 {
-                    // label: this.$t('WALLET_DELEGATES.RANK'),
+                    // label: this.$t('WALLET_BLOCK_PRODUCERS.RANK'),
                     label: this.$t("PAGES.WALLET_ALL.ADDRESS"),
                     field: "address"
                 },
@@ -177,8 +177,8 @@ export default {
                     label: this.$t("PAGES.WALLET_ALL.NAME"),
                     field: "name",
                     sortFn: this.sortByName,
-                    thClass: !this.showVotedDelegates ? "w-full" : "",
-                    tdClass: !this.showVotedDelegates ? "w-full" : ""
+                    thClass: !this.showVotedBlockProducers ? "w-full" : "",
+                    tdClass: !this.showVotedBlockProducers ? "w-full" : ""
                 },
                 {
                     label: "",
@@ -209,8 +209,8 @@ export default {
                 }
             ];
 
-            if (!this.showVotedDelegates) {
-                const index = columns.findIndex(el => el.field === "delegate");
+            if (!this.showVotedBlockProducers) {
+                const index = columns.findIndex(el => el.field === "blockProducer");
                 columns.splice(index, 1);
             }
 
@@ -235,26 +235,26 @@ export default {
         },
 
         sortByVote (x, y) {
-            const a = x ? this.getDelegateProperty(x, "username") : "";
-            const b = y ? this.getDelegateProperty(y, "username") : "";
+            const a = x ? this.getBlockProducerProperty(x, "username") : "";
+            const b = y ? this.getBlockProducerProperty(y, "username") : "";
 
             return a.localeCompare(b, undefined, { sensitivity: "base", numeric: true });
         },
 
-        getDelegate (username) {
-            return this.$store.getters["delegate/byUsername"](username);
+        getBlockProducer (username) {
+            return this.$store.getters["blockProducer/byUsername"](username);
         },
 
-        getDelegateProperty (username, property) {
-            const delegate = this.getDelegate(username);
-            return delegate && property ? delegate[property] : null;
+        getBlockProducerProperty (username, property) {
+            const blockProducer = this.getBlockProducer(username);
+            return blockProducer && property ? blockProducer[property] : null;
         },
 
-        isActiveDelegate (username) {
-            const rank = this.getDelegateProperty(username, "rank");
+        isActiveBlockProducer (username) {
+            const rank = this.getBlockProducerProperty(username, "rank");
 
             if (rank) {
-                return rank <= (this.session_network.constants.activeDelegates || 51);
+                return rank <= (this.session_network.constants.activeDelegates || 53);
             }
 
             return false;

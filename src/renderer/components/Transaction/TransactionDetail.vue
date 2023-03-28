@@ -86,9 +86,9 @@ export default {
         iconName () {
             switch (this.type) {
             case 1:
-                return "2nd-passphrase";
+                return "extra-mnemonic";
             case 2:
-                return "register-delegate";
+                return "registration";
             case 3:
                 return "vote";
             default:
@@ -98,9 +98,9 @@ export default {
         backgroundColor () {
             switch (this.type) {
             case 1:
-                return "bg-theme-send-circle-second-signature";
+                return "bg-theme-send-circle-extra-signature";
             case 2:
-                return "bg-theme-send-circle-register-delegate";
+                return "bg-theme-send-circle-registration";
             case 3:
                 return "bg-theme-send-circle-vote";
             default:
@@ -110,9 +110,9 @@ export default {
         textColor () {
             switch (this.type) {
             case 1:
-                return "text-theme-send-circle-second-signature-text";
+                return "text-theme-send-circle-extra-signature-text";
             case 2:
-                return "text-theme-send-circle-register-delegate-text";
+                return "text-theme-send-circle-registration-text";
             case 3:
                 return "text-theme-send-circle-vote-text";
             default:

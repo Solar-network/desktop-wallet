@@ -10,12 +10,12 @@ export class CryptoUtils {
     }
 
     /*
-   * Normalizes the passphrase by decomposing any characters (if applicable)
-   * This is mainly used for the korean language where characters are combined while the passphrase was based on the decomposed consonants
+   * Normalizes the mnemonic by decomposing any characters (if applicable)
+   * This is mainly used for the korean language where characters are combined while the mnemonic was based on the decomposed consonants
    */
-    static normalizePassphrase (passphrase) {
-        if (passphrase) {
-            return passphrase.normalize("NFD");
+    static normalizeMnemonic (mnemonic) {
+        if (mnemonic) {
+            return mnemonic.normalize("NFD");
         }
     }
 }

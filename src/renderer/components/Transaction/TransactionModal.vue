@@ -110,10 +110,10 @@ export default {
 
             if (key === "VOTE" && this.transaction.asset.votes.length) {
                 if (this.transaction.asset.votes[0].substring(0, 1) === "-") {
-                    return "UNVOTE";
+                    return "CANCEL_VOTE";
                 }
             } else if (key === "VOTE" && Object.keys(this.transaction.asset.votes).length === 0) {
-                return "UNVOTE";
+                return "CANCEL_VOTE";
             }
             return key;
         },
@@ -128,16 +128,16 @@ export default {
             return `TransactionModal${upperFirst(camelCase(type))}`;
         },
         typeName () {
-            if (this.type === TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION) {
+            if (this.type === TRANSACTION_TYPES.GROUP_1.RESIGNATION) {
                 switch (this.$attrs.meta) {
                 case 1: {
-                    return this.$t("WALLET_HEADING.ACTIONS.RESIGN_DELEGATE_PERMANENT");
+                    return this.$t("WALLET_HEADING.ACTIONS.RESIGN_PERMANENT");
                 }
                 case 2: {
-                    return this.$t("WALLET_HEADING.ACTIONS.RESIGN_DELEGATE_REVOKE");
+                    return this.$t("WALLET_HEADING.ACTIONS.RESIGN_REVOKE");
                 }
                 default: {
-                    return this.$t("WALLET_HEADING.ACTIONS.RESIGN_DELEGATE_TEMPORARY");
+                    return this.$t("WALLET_HEADING.ACTIONS.RESIGN_TEMPORARY");
                 }
                 }
             }

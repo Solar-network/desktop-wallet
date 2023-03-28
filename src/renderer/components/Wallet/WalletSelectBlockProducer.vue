@@ -1,15 +1,15 @@
 <template>
   <ModalWindow
-    :title="$t('WALLET_DELEGATES.SEARCH_DELEGATE')"
-    container-classes="SelectDelegateModal"
+    :title="$t('WALLET_BLOCK_PRODUCERS.SEARCH_BLOCK_PRODUCER')"
+    container-classes="SelectBlockProducerModal"
     @close="emitCancel"
   >
     <div class="flex flex-col justify-center">
-      <InputDelegate
-        ref="delegate"
-        v-model="$v.form.delegate.$model"
+      <InputBlockProducer
+        ref="blockProducer"
+        v-model="$v.form.blockProducer.$model"
         class="mt-5"
-        :helper-text="$t('INPUT_DELEGATE.SEARCH_HINT')"
+        :helper-text="$t('INPUT_BLOCK_PRODUCER.SEARCH_HINT')"
         @valid="onValid"
         @keyup.esc.native="emitCancel"
         @keyup.enter.native="emitConfirm"
@@ -28,20 +28,20 @@
 </template>
 
 <script>
-import { InputDelegate } from "@/components/Input";
+import { InputBlockProducer } from "@/components/Input";
 import { ModalWindow } from "@/components/Modal";
 
 export default {
-    name: "ModalSelectDelegate",
+    name: "ModalSelectBlockProducer",
 
     components: {
-        InputDelegate,
+        InputBlockProducer,
         ModalWindow
     },
 
     data: () => ({
         form: {
-            delegate: ""
+            blockProducer: ""
         },
         isValid: false
     }),
@@ -52,7 +52,7 @@ export default {
         },
 
         emitConfirm () {
-            this.$emit("confirm", this.$v.form.delegate.$model);
+            this.$emit("confirm", this.$v.form.blockProducer.$model);
         },
 
         onValid (value) {
@@ -62,7 +62,7 @@ export default {
 
     validations: {
         form: {
-            delegate: {
+            blockProducer: {
                 isValid () {
                     return this.isValid;
                 }
@@ -73,11 +73,11 @@ export default {
 </script>
 
 <style lang="postcss">
-.SelectDelegateModal {
+.SelectBlockProducerModal {
   @apply .overflow-visible;
   min-width: 35rem;
 }
-.SelectDelegateModal .ModalWindow__container__content {
+.SelectBlockProducerModal .ModalWindow__container__content {
   @apply .overflow-visible;
 }
 </style>

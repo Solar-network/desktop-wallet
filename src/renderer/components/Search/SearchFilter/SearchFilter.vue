@@ -47,7 +47,7 @@ import { MenuOptions, MenuDropdown, MenuDropdownAlternativeHandler } from "@/com
 import SearchFilterItem from "./SearchFilterItem";
 import SvgIcon from "@/components/SvgIcon";
 import SearchFilterTransaction from "./SearchFilterTransaction";
-import SearchFilterDelegate from "./SearchFilterDelegate";
+import SearchFilterBlockProducer from "./SearchFilterBlockProducer";
 
 export default {
     name: "SearchFilter",
@@ -58,7 +58,7 @@ export default {
         MenuDropdownAlternativeHandler,
         SearchFilterItem,
         SearchFilterTransaction,
-        SearchFilterDelegate,
+        SearchFilterBlockProducer,
         SvgIcon
     },
 
@@ -78,7 +78,7 @@ export default {
         filterComponents () {
             return {
                 SearchFilterTransaction: this.$t("TRANSACTION.TRANSACTION"),
-                SearchFilterDelegate: this.$t("SEARCH.DELEGATE")
+                SearchFilterBlockProducer: this.$t("SEARCH.BLOCK_PRODUCER")
             };
         }
     },

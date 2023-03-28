@@ -1,6 +1,6 @@
 <template>
   <form
-    class="TransactionFormDelegateResignation flex flex-col"
+    class="TransactionFormResignation flex flex-col"
     @submit.prevent
   >
     <template v-if="canResign">
@@ -30,50 +30,50 @@
         :currency="walletNetwork.token"
         :transaction-type="$options.transactionType"
         :show-insufficient-funds="true"
-        class="TransactionFormDelegateResignation__fee"
+        class="TransactionFormResignation__fee"
         @input="onFee"
       />
 
       <div v-if="!isMultiSignature">
         <div
           v-if="currentWallet.isLedger"
-          class="TransactionFormDelegateResignation__ledger-notice mt-10"
+          class="TransactionFormResignation__ledger-notice mt-10"
         >
           {{ $t('TRANSACTION.LEDGER_SIGN_NOTICE') }}
         </div>
 
         <InputPassword
-          v-else-if="currentWallet.passphrase"
+          v-else-if="currentWallet.mnemonic"
           ref="password"
           v-model="$v.form.walletPassword.$model"
           :label="$t('TRANSACTION.PASSWORD')"
           :is-required="true"
-          class="TransactionFormDelegateResignation__password mt-4"
+          class="TransactionFormResignation__password mt-4"
         />
 
-        <PassphraseInput
+        <MnemonicInput
           v-else
-          ref="passphrase"
-          v-model="$v.form.passphrase.$model"
+          ref="mnemonic"
+          v-model="$v.form.mnemonic.$model"
           :address="currentWallet.address"
           :pub-key-hash="walletNetwork.version"
-          class="TransactionFormDelegateResignation__passphrase mt-4"
+          class="TransactionFormResignation__mnemonic mt-4"
         />
       </div>
 
-      <PassphraseInput
+      <MnemonicInput
         v-if="currentWallet.secondPublicKey"
-        ref="secondPassphrase"
-        v-model="$v.form.secondPassphrase.$model"
-        :label="$t('TRANSACTION.SECOND_PASSPHRASE')"
+        ref="extraMnemonic"
+        v-model="$v.form.extraMnemonic.$model"
+        :label="$t('TRANSACTION.EXTRA_MNEMONIC')"
         :pub-key-hash="walletNetwork.version"
         :public-key="currentWallet.secondPublicKey"
-        class="TransactionFormDelegateResignation__second-passphrase mt-5"
+        class="TransactionFormResignation__extra_mnemonic mt-5"
       />
 
       <button
         :disabled="$v.form.$invalid"
-        class="TransactionFormDelegateResignation__next blue-button mt-10 ml-0"
+        class="TransactionFormResignation__next blue-button mt-10 ml-0"
         @click="onSubmit"
       >
         {{ $t('COMMON.NEXT') }}
@@ -91,12 +91,12 @@
 
       <Portal to="transaction-footer">
         <footer class="ModalWindow__container__footer--warning">
-          {{ $t('TRANSACTION.FOOTER_TEXT.DELEGATE_RESIGNATION_REVOKE') }}
+          {{ $t('TRANSACTION.FOOTER_TEXT.RESIGNATION_TEMPORARY') }}
         </footer>
       </Portal>
     </template>
     <template v-else>
-      {{ $t('WALLET_DELEGATES.NOT_REGISTERED') }}
+      {{ $t('WALLET_BLOCK_PRODUCERS.NOT_REGISTERED') }}
     </template>
   </form>
 </template>
@@ -106,14 +106,14 @@ import { TRANSACTION_TYPES } from "@config";
 import { InputFee, InputPassword } from "@/components/Input";
 import { ListDivided, ListDividedItem } from "@/components/ListDivided";
 import { ModalLoader } from "@/components/Modal";
-import { PassphraseInput } from "@/components/Passphrase";
+import { MnemonicInput } from "@/components/Mnemonic";
 import mixin from "./mixin";
 
 export default {
-    name: "TransactionFormDelegateResignationRevoke",
+    name: "TransactionFormResignationTemporary",
 
-    transactionType: TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION,
-    meta: 2,
+    transactionType: TRANSACTION_TYPES.GROUP_1.RESIGNATION,
+    meta: 0,
 
     components: {
         InputFee,
@@ -121,7 +121,7 @@ export default {
         ListDivided,
         ListDividedItem,
         ModalLoader,
-        PassphraseInput
+        MnemonicInput
     },
 
     mixins: [mixin],
@@ -129,7 +129,7 @@ export default {
     data: () => ({
         form: {
             fee: 0,
-            passphrase: "",
+            mnemonic: "",
             walletPassword: ""
         }
     }),
@@ -140,17 +140,17 @@ export default {
                 return false;
             }
 
-            return this.currentWallet.isDelegate;
+            return this.currentWallet.isBlockProducer;
         },
 
         username () {
-            const delegate = this.$store.getters["delegate/byAddress"](this.currentWallet.address);
+            const blockProducer = this.$store.getters["blockProducer/byAddress"](this.currentWallet.address);
 
-            if (!delegate || !delegate.username) {
+            if (!blockProducer || !blockProducer.username) {
                 return null;
             }
 
-            return this.$store.getters["delegate/byAddress"](this.currentWallet.address).username;
+            return this.$store.getters["blockProducer/byAddress"](this.currentWallet.address).username;
         }
     },
 
@@ -158,8 +158,8 @@ export default {
         getTransactionData () {
             const transactionData = {
                 address: this.currentWallet.address,
-                resignationType: 2,
-                passphrase: this.form.passphrase,
+                resignationType: 0,
+                mnemonic: this.form.mnemonic,
                 fee: this.getFee(),
                 wif: this.form.wif,
                 networkWif: this.walletNetwork.wif,
@@ -167,27 +167,27 @@ export default {
             };
 
             if (this.currentWallet.secondPublicKey) {
-                transactionData.secondPassphrase = this.form.secondPassphrase;
+                transactionData.extraMnemonic = this.form.extraMnemonic;
             }
 
             return transactionData;
         },
 
         async buildTransaction (transactionData, isAdvancedFee = false, returnObject = false) {
-            return this.$client.buildDelegateResignation(transactionData, isAdvancedFee, returnObject);
+            return this.$client.buildResignation(transactionData, isAdvancedFee, returnObject);
         },
 
         transactionError () {
-            this.$error(this.$t("TRANSACTION.ERROR.VALIDATION.DELEGATE_RESIGNATION"));
+            this.$error(this.$t("TRANSACTION.ERROR.VALIDATION.RESIGNATION"));
         }
     },
 
     validations: {
         form: {
             fee: mixin.validators.fee,
-            passphrase: mixin.validators.passphrase,
+            mnemonic: mixin.validators.mnemonic,
             walletPassword: mixin.validators.walletPassword,
-            secondPassphrase: mixin.validators.secondPassphrase
+            extraMnemonic: mixin.validators.extraMnemonic
         }
     }
 };

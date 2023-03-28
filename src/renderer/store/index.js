@@ -10,7 +10,7 @@ import vuexPersistReady from "@/store/plugins/vuex-persist-ready";
 import VuexPersistMigrations from "@/store/plugins/vuex-persist-migrations";
 import AnnouncementsModule from "@/store/modules/announcements";
 import AppModule from "@/store/modules/app";
-import DelegateModule from "@/store/modules/delegate";
+import BlockProducerModule from "@/store/modules/block-producer";
 import LedgerModule from "@/store/modules/ledger";
 import MarketModule from "@/store/modules/market";
 import NetworkModule from "@/store/modules/network";
@@ -27,7 +27,7 @@ Vue.use(Vuex);
 const modules = {
     announcements: AnnouncementsModule,
     app: AppModule,
-    delegate: DelegateModule,
+    blockProducer: BlockProducerModule,
     ledger: LedgerModule,
     market: MarketModule,
     network: NetworkModule,
@@ -48,7 +48,7 @@ const vuexMigrations = new VuexPersistMigrations({
     }
 });
 
-const modulesWithoutPersistence = pullAll(Object.keys(modules), ["delegate", "market", "updater"]);
+const modulesWithoutPersistence = pullAll(Object.keys(modules), ["blockProducer", "market", "updater"]);
 
 const vuexPersist = new VuexPersistence({
     key: "solar-desktop",

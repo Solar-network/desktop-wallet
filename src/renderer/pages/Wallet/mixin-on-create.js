@@ -4,7 +4,7 @@ import WalletService from "@/services/wallet";
 export default {
     methods: {
     /**
-     * Encrypt the wallet passphrase if has a password and store it
+     * Encrypt the wallet mnemonic if has a password and store it
      */
         async onCreate () {
             this.wallet = {
@@ -13,14 +13,14 @@ export default {
             };
             // NOTE: this property is only used on `WalletImport`
             if (!this.useOnlyAddress) {
-                this.wallet.publicKey = WalletService.getPublicKeyFromPassphrase(this.wallet.passphrase);
+                this.wallet.publicKey = WalletService.getPublicKeyFromMnemonic(this.wallet.mnemonic);
             }
 
             if (!this.useOnlyAddress && this.walletPassword && this.walletPassword.length) {
                 this.showEncryptLoader = true;
 
                 const dataToEncrypt = {
-                    passphrase: this.wallet.passphrase,
+                    mnemonic: this.wallet.mnemonic,
                     password: this.walletPassword,
                     wif: this.session_network.wif
                 };
@@ -29,7 +29,7 @@ export default {
                 const bip38 = new Bip38();
                 try {
                     const { bip38key } = await bip38.encrypt(dataToEncrypt);
-                    this.wallet.passphrase = bip38key;
+                    this.wallet.mnemonic = bip38key;
                 } catch (_error) {
                     this.$error(this.$t("ENCRYPTION.FAILED_ENCRYPT"));
                     failed = true;
@@ -43,7 +43,7 @@ export default {
                     return;
                 }
             } else {
-                this.wallet.passphrase = null;
+                this.wallet.mnemonic = null;
             }
 
             this.createWallet();

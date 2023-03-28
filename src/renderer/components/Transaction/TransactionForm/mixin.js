@@ -15,16 +15,16 @@ export default {
             }
         },
 
-        passphrase: {
+        mnemonic: {
             isValid () {
                 if (this.isMultiSignature) {
                     return true;
-                } else if (this.currentWallet && (this.currentWallet.isLedger || this.currentWallet.passphrase)) {
+                } else if (this.currentWallet && (this.currentWallet.isLedger || this.currentWallet.mnemonic)) {
                     return true;
                 }
 
-                if (this.$refs.passphrase) {
-                    return !this.$refs.passphrase.$v.$invalid;
+                if (this.$refs.mnemonic) {
+                    return !this.$refs.mnemonic.$v.$invalid;
                 }
 
                 return false;
@@ -35,7 +35,7 @@ export default {
             isValid () {
                 if (this.isMultiSignature) {
                     return true;
-                } else if (this.currentWallet && (this.currentWallet.isLedger || !this.currentWallet.passphrase)) {
+                } else if (this.currentWallet && (this.currentWallet.isLedger || !this.currentWallet.mnemonic)) {
                     return true;
                 }
 
@@ -51,14 +51,14 @@ export default {
             }
         },
 
-        secondPassphrase: {
+        extraMnemonic: {
             isValid () {
                 if (!this.currentWallet.secondPublicKey) {
                     return true;
                 }
 
-                if (this.$refs.secondPassphrase) {
-                    return !this.$refs.secondPassphrase.$v.$invalid;
+                if (this.$refs.extraMnemonic) {
+                    return !this.$refs.extraMnemonic.$v.$invalid;
                 }
                 return false;
             }
@@ -105,7 +105,7 @@ export default {
                 this.showEncryptLoader = true;
 
                 const dataToDecrypt = {
-                    bip38key: this.currentWallet.passphrase,
+                    bip38key: this.currentWallet.mnemonic,
                     password: this.form.walletPassword,
                     wif: this.walletNetwork.wif
                 };
@@ -113,7 +113,7 @@ export default {
                 const bip38 = new Bip38();
                 try {
                     const { encodedWif } = await bip38.decrypt(dataToDecrypt);
-                    this.form.passphrase = null;
+                    this.form.mnemonic = null;
                     this.form.wif = encodedWif;
                 } catch (_error) {
                     this.$error(this.$t("ENCRYPTION.FAILED_DECRYPT"));

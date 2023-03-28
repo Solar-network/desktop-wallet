@@ -48,7 +48,7 @@
         </div>
 
         <InputPassword
-          v-else-if="currentWallet.passphrase"
+          v-else-if="currentWallet.mnemonic"
           ref="password"
           v-model="$v.form.walletPassword.$model"
           :label="$t('TRANSACTION.PASSWORD')"
@@ -56,24 +56,24 @@
           class="TransactionFormIpfs__password mt-4"
         />
 
-        <PassphraseInput
+        <MnemonicInput
           v-else
-          ref="passphrase"
-          v-model="$v.form.passphrase.$model"
+          ref="mnemonic"
+          v-model="$v.form.mnemonic.$model"
           :address="currentWallet.address"
           :pub-key-hash="walletNetwork.version"
-          class="TransactionFormIpfs__passphrase mt-4"
+          class="TransactionFormIpfs__mnemonic mt-4"
         />
       </div>
 
-      <PassphraseInput
+      <MnemonicInput
         v-if="currentWallet.secondPublicKey"
-        ref="secondPassphrase"
-        v-model="$v.form.secondPassphrase.$model"
-        :label="$t('TRANSACTION.SECOND_PASSPHRASE')"
+        ref="extraMnemonic"
+        v-model="$v.form.extraMnemonic.$model"
+        :label="$t('TRANSACTION.EXTRA_MNEMONIC')"
         :pub-key-hash="walletNetwork.version"
         :public-key="currentWallet.secondPublicKey"
-        class="TransactionFormIpfs__second-passphrase mt-5"
+        class="TransactionFormIpfs__extra-mnemonic mt-5"
       />
 
       <button
@@ -102,7 +102,7 @@ import { TRANSACTION_TYPES } from "@config";
 import { InputFee, InputPassword, InputText } from "@/components/Input";
 import { ListDivided, ListDividedItem } from "@/components/ListDivided";
 import { ModalLoader } from "@/components/Modal";
-import { PassphraseInput } from "@/components/Passphrase";
+import { MnemonicInput } from "@/components/Mnemonic";
 import mixin from "./mixin";
 
 export default {
@@ -117,7 +117,7 @@ export default {
         ListDivided,
         ListDividedItem,
         ModalLoader,
-        PassphraseInput
+        MnemonicInput
     },
 
     mixins: [mixin],
@@ -126,7 +126,7 @@ export default {
         form: {
             fee: 0,
             hash: "",
-            passphrase: "",
+            mnemonic: "",
             walletPassword: ""
         }
     }),
@@ -146,7 +146,7 @@ export default {
             const transactionData = {
                 address: this.currentWallet.address,
                 hash: this.form.hash,
-                passphrase: this.form.passphrase,
+                mnemonic: this.form.mnemonic,
                 fee: this.getFee(),
                 wif: this.form.wif,
                 networkWif: this.walletNetwork.wif,
@@ -154,7 +154,7 @@ export default {
             };
 
             if (this.currentWallet.secondPublicKey) {
-                transactionData.secondPassphrase = this.form.secondPassphrase;
+                transactionData.extraMnemonic = this.form.extraMnemonic;
             }
 
             return transactionData;
@@ -172,9 +172,9 @@ export default {
     validations: {
         form: {
             fee: mixin.validators.fee,
-            passphrase: mixin.validators.passphrase,
+            mnemonic: mixin.validators.mnemonic,
             walletPassword: mixin.validators.walletPassword,
-            secondPassphrase: mixin.validators.secondPassphrase,
+            extraMnemonic: mixin.validators.extraMnemonic,
 
             hash: {
                 isValid (value) {

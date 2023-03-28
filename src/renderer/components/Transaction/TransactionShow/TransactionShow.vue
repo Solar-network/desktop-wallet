@@ -209,7 +209,7 @@
       <ListDividedItem
         v-if="transaction.memo"
         :value="transaction.memo"
-        :label="$t('TRANSACTION.VENDOR_FIELD')"
+        :label="$t('TRANSACTION.MEMO')"
         item-label-class="mb-auto"
         item-value-class="max-w-xs break-words text-justify"
       />
@@ -296,7 +296,7 @@ export default {
     },
 
     data: () => ({
-        votedDelegate: null
+        votedBlockProducer: null
     }),
 
     computed: {
@@ -308,13 +308,13 @@ export default {
         },
         getVotes () {
             if (!Array.isArray(this.transaction.asset.votes)) {
-                return Object.entries(this.transaction.asset.votes).map(vote => ({ address: this.$store.getters["delegate/byUsername"](vote[0]).address, delegate: vote[0], percent: vote[1] }));
+                return Object.entries(this.transaction.asset.votes).map(vote => ({ address: this.$store.getters["blockProducer/byUsername"](vote[0]).address, blockProducer: vote[0], percent: vote[1] }));
             }
-            const delegate = this.transaction.asset.votes.filter(vote => vote.charAt(0) === "+")[0].slice(1);
-            return [{ address: this.$store.getters["delegate/byUsername"](delegate).address, delegate, percent: 100 }];
+            const blockProducer = this.transaction.asset.votes.filter(vote => vote.charAt(0) === "+")[0].slice(1);
+            return [{ address: this.$store.getters["blockProducer/byUsername"](blockProducer).address, blockProducer, percent: 100 }];
         },
         isWellConfirmed () {
-            return this.transaction.confirmations >= (this.numberOfActiveDelegates || 51);
+            return this.transaction.confirmations >= (this.numberOfActiveBlockProducers || 51);
         },
         isMultiPayment () {
             return this.transaction.asset && (this.transaction.asset.payments || this.transaction.asset.transfers);
@@ -322,8 +322,8 @@ export default {
         isVote () {
             return this.transaction.asset && this.transaction.asset.votes;
         },
-        numberOfActiveDelegates () {
-            return at(this, "session_network.constants.activeDelegates") || 51;
+        numberOfActiveBlockProducers () {
+            return at(this, "session_network.constants.activeDelegates") || 53;
         },
         votePublicKeyOrUsername () {
             const transaction = this.getTransaction();
@@ -412,7 +412,7 @@ export default {
         },
 
         openAddress (address) {
-            this.network_openExplorer("wallets", address);
+            this.network_openExplorer("wallet", address);
         },
 
         openBlock () {
@@ -444,9 +444,9 @@ export default {
 
         determineVote () {
             if (this.votePublicKeyOrUsername.length === 66) {
-                this.votedDelegate = this.$store.getters["delegate/byPublicKey"](this.votePublicKeyOrUsername);
+                this.votedBlockProducer = this.$store.getters["blockProducer/byPublicKey"](this.votePublicKeyOrUsername);
             } else {
-                this.votedDelegate = this.$store.getters["delegate/byUsername"](this.votePublicKeyOrUsername);
+                this.votedBlockProducer = this.$store.getters["blockProducer/byUsername"](this.votePublicKeyOrUsername);
             }
         }
     }

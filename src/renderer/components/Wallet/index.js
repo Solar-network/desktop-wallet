@@ -4,14 +4,14 @@ import WalletIdenticon from "./WalletIdenticon";
 import WalletIdenticonPlaceholder from "./WalletIdenticonPlaceholder";
 import WalletRemovalConfirmation from "./WalletRemovalConfirmation";
 import WalletRenameModal from "./WalletRenameModal";
-import WalletSelectDelegate from "./WalletSelectDelegate";
+import WalletSelectBlockProducer from "./WalletSelectBlockProducer";
 import WalletSelection from "./WalletSelection";
 import WalletSignModal from "./WalletSignModal";
 import WalletVerifyDetail from "./WalletVerifyDetail";
 import WalletVerifyModal from "./WalletVerifyModal";
 
 export * from "./WalletButtons";
-export * from "./WalletDelegates";
+export * from "./WalletBlockProducers";
 export * from "./WalletHeading";
 export * from "./WalletIpfs";
 export * from "./WalletSidebar";
@@ -30,7 +30,7 @@ export {
     WalletIdenticonPlaceholder,
     WalletRemovalConfirmation,
     WalletRenameModal,
-    WalletSelectDelegate,
+    WalletSelectBlockProducer,
     WalletSelection,
     WalletSignModal,
     WalletVerifyDetail,

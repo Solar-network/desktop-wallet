@@ -149,15 +149,15 @@ export default {
             if (!this.currentWallet.isLedger && !this.currentWallet.multiSignature) {
                 if (!this.currentWallet.secondPublicKey) {
                     types.push({
-                        label: this.$t("WALLET_HEADING.ACTIONS.SECOND_PASSPHRASE"),
-                        type: TRANSACTION_TYPES.GROUP_1.SECOND_SIGNATURE
+                        label: this.$t("WALLET_HEADING.ACTIONS.EXTRA_MNEMONIC"),
+                        type: TRANSACTION_TYPES.GROUP_1.EXTRA_SIGNATURE
                     });
                 }
 
-                if (!this.currentWallet.isDelegate) {
+                if (!this.currentWallet.isBlockProducer) {
                     types.push({
-                        label: this.$t("WALLET_HEADING.ACTIONS.REGISTER_DELEGATE"),
-                        type: TRANSACTION_TYPES.GROUP_1.DELEGATE_REGISTRATION
+                        label: this.$t("WALLET_HEADING.ACTIONS.REGISTER"),
+                        type: TRANSACTION_TYPES.GROUP_1.REGISTRATION
                     });
                 }
             }
@@ -167,25 +167,25 @@ export default {
                 return types;
             }
 
-            if (!this.currentWallet.isLedger && WalletService.canResignDelegate(this.currentWallet, 0)) {
+            if (!this.currentWallet.isLedger && WalletService.canResign(this.currentWallet, 0)) {
                 types.push({
-                    label: this.$t("WALLET_HEADING.ACTIONS.RESIGN_DELEGATE_TEMPORARY"),
-                    type: TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION
+                    label: this.$t("WALLET_HEADING.ACTIONS.RESIGN_TEMPORARY"),
+                    type: TRANSACTION_TYPES.GROUP_1.RESIGNATION
                 });
             }
 
-            if (!this.currentWallet.isLedger && WalletService.canResignDelegate(this.currentWallet, 1)) {
+            if (!this.currentWallet.isLedger && WalletService.canResign(this.currentWallet, 1)) {
                 types.push({
-                    label: this.$t("WALLET_HEADING.ACTIONS.RESIGN_DELEGATE_PERMANENT"),
-                    type: TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION,
+                    label: this.$t("WALLET_HEADING.ACTIONS.RESIGN_PERMANENT"),
+                    type: TRANSACTION_TYPES.GROUP_1.RESIGNATION,
                     meta: 1
                 });
             }
 
-            if (!this.currentWallet.isLedger && WalletService.canResignDelegate(this.currentWallet, 2)) {
+            if (!this.currentWallet.isLedger && WalletService.canResign(this.currentWallet, 2)) {
                 types.push({
-                    label: this.$t("WALLET_HEADING.ACTIONS.RESIGN_DELEGATE_REVOKE"),
-                    type: TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION,
+                    label: this.$t("WALLET_HEADING.ACTIONS.RESIGN_REVOKE"),
+                    type: TRANSACTION_TYPES.GROUP_1.RESIGNATION,
                     meta: 2
                 });
             }

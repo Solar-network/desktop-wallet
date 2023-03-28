@@ -18,7 +18,7 @@
       }"
       :class="isVoting ? 'bg-theme-button-special-choice' : 'bg-transparent'"
       class=" cursor-pointer border border-theme-button-special-choice rounded-full w-2 h-2 m-3 transition"
-      @click="goToDelegates"
+      @click="goToBlockProducers"
     />
 
     <ButtonReload
@@ -125,8 +125,8 @@ export default {
     },
 
     methods: {
-        goToDelegates () {
-            this.switchToTab("WalletDelegates");
+        goToBlockProducers () {
+            this.switchToTab("WalletBlockProducers");
         },
 
         async refreshWallet () {

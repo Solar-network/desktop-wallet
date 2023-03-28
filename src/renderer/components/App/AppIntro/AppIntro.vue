@@ -122,8 +122,8 @@
             class="mb-5"
           >
             <span
-              v-t="'INTRODUCTION.RESPONSIBILITY.STORAGE.PASSPHRASE'"
-              place="PASSPHRASE"
+              v-t="'INTRODUCTION.RESPONSIBILITY.STORAGE.MNEMONIC'"
+              place="MNEMONIC"
               class="font-bold"
             />
             <span

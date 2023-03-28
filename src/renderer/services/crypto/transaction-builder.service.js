@@ -1,10 +1,10 @@
-import { DelegateResignationBuilder } from "./delegate-resignation.builder";
+import { ResignationBuilder } from "./resignation.builder";
 import { MultiPaymentBuilder } from "./multi-payment.builder";
 import { IpfsBuilder } from "./ipfs.builder";
 import { MultiSignatureBuilder } from "./multi-signature.builder";
-import { SecondSignatureRegistrationBuilder } from "./second-signature-registration.builder";
+import { ExtraSignatureRegistrationBuilder } from "./extra-signature-registration.builder";
 import { TransferBuilder } from "./transfer.builder";
-import { DelegateRegistrationBuilder } from "./delegate-registration.builder";
+import { RegistrationBuilder } from "./registration.builder";
 import { VoteBuilder } from "./vote.builder";
 
 export class TransactionBuilderService {
@@ -12,24 +12,24 @@ export class TransactionBuilderService {
         return TransferBuilder.build(data, isAdvancedFee, returnObject);
     }
 
-    static async buildSecondSignatureRegistration (
+    static async buildExtraSignatureRegistration (
         data,
         isAdvancedFee = false,
         returnObject = false
     ) {
-        return SecondSignatureRegistrationBuilder.build(
+        return ExtraSignatureRegistrationBuilder.build(
             data,
             isAdvancedFee,
             returnObject
         );
     }
 
-    static async buildDelegateRegistration (
+    static async buildRegistration (
         data,
         isAdvancedFee = false,
         returnObject = false
     ) {
-        return DelegateRegistrationBuilder.build(data, isAdvancedFee, returnObject);
+        return RegistrationBuilder.build(data, isAdvancedFee, returnObject);
     }
 
     static async buildVote (data, isAdvancedFee = false, returnObject = false) {
@@ -48,11 +48,11 @@ export class TransactionBuilderService {
         return MultiPaymentBuilder.build(data, isAdvancedFee, returnObject);
     }
 
-    static async buildDelegateResignation (
+    static async buildResignation (
         data,
         isAdvancedFee = false,
         returnObject = false
     ) {
-        return DelegateResignationBuilder.build(data, isAdvancedFee, returnObject);
+        return ResignationBuilder.build(data, isAdvancedFee, returnObject);
     }
 }

@@ -9,8 +9,8 @@ import semver from "semver";
 export class TransactionSigner {
     static async sign ({
         transaction,
-        passphrase,
-        secondPassphrase,
+        mnemonic,
+        extraMnemonic,
         wif,
         networkWif,
         networkId,
@@ -36,8 +36,8 @@ export class TransactionSigner {
         const now = dayjs().valueOf();
         transaction.data.timestamp = Math.floor((now - epochTime) / 1000);
 
-        if (passphrase) {
-            passphrase = CryptoUtils.normalizePassphrase(passphrase);
+        if (mnemonic) {
+            mnemonic = CryptoUtils.normalizeMnemonic(mnemonic);
         }
 
         if (network.constants.bip340) {
@@ -48,9 +48,9 @@ export class TransactionSigner {
 
         if (multiSignature) {
             let senderPublicKey = null;
-            if (passphrase) {
-                senderPublicKey = WalletService.getPublicKeyFromPassphrase(
-                    passphrase
+            if (mnemonic) {
+                senderPublicKey = WalletService.getPublicKeyFromMnemonic(
+                    mnemonic
                 );
             } else if (wif) {
                 senderPublicKey = WalletService.getPublicKeyFromWIF(wif);
@@ -61,8 +61,8 @@ export class TransactionSigner {
             );
             transaction.senderPublicKey(senderPublicKey);
             if (publicKeyIndex > -1) {
-                if (passphrase) {
-                    transaction.multiSign(passphrase, publicKeyIndex);
+                if (mnemonic) {
+                    transaction.multiSign(mnemonic, publicKeyIndex);
                 } else if (wif) {
                     transaction.multiSignWithWif(publicKeyIndex, wif, networkWif);
                 }
@@ -73,15 +73,15 @@ export class TransactionSigner {
                 transaction.data.signatures = [];
             }
         } else {
-            if (passphrase) {
-                transaction.sign(passphrase);
+            if (mnemonic) {
+                transaction.sign(mnemonic);
             } else if (wif) {
                 transaction.signWithWif(wif, networkWif);
             }
 
-            if (secondPassphrase) {
+            if (extraMnemonic) {
                 transaction.secondSign(
-                    CryptoUtils.normalizePassphrase(secondPassphrase)
+                    CryptoUtils.normalizeMnemonic(extraMnemonic)
                 );
             }
         }
@@ -144,17 +144,17 @@ export class TransactionSigner {
 
     // todo: why is this async? it doesn't make any use of promises or await
     static async multiSign (
-        transaction, { multiSignature, networkWif, passphrase, secondPassphrase, wif }
+        transaction, { multiSignature, networkWif, mnemonic, extraMnemonic, wif }
     ) {
-        if (!passphrase && !wif) {
-            throw new Error("No passphrase or wif provided");
+        if (!mnemonic && !wif) {
+            throw new Error("No mnemonic or wif provided");
         }
 
         transaction = CryptoUtils.transactionFromData(transaction);
 
         let keys;
-        if (passphrase) {
-            keys = Identities.Keys.fromPassphrase(passphrase);
+        if (mnemonic) {
+            keys = Identities.Keys.fromPassphrase(mnemonic);
         } else {
             keys = Identities.Keys.fromWIF(wif, { wif: networkWif });
         }
@@ -178,7 +178,7 @@ export class TransactionSigner {
                 );
             } else {
                 throw new Error(
-                    "passphrase/wif is not used to sign this transaction"
+                    "mnemonic/wif is not used to sign this transaction"
                 );
             }
         } else if (
@@ -189,9 +189,9 @@ export class TransactionSigner {
         ) {
             Transactions.Signer.sign(transaction, keys);
 
-            if (secondPassphrase) {
+            if (extraMnemonic) {
                 const secondaryKeys = Identities.Keys.fromPassphrase(
-                    secondPassphrase
+                    extraMnemonic
                 );
                 Transactions.Signer.secondSign(transaction, secondaryKeys);
             }

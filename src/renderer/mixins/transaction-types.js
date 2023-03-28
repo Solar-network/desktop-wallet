@@ -13,16 +13,16 @@ export default {
             return isStandardTypeGroup(typeGroup) && type === TRANSACTION_TYPES.GROUP_1.TRANSFER;
         },
 
-        transaction_isSecondSignature (type, typeGroup) {
+        transaction_isExtraSignature (type, typeGroup) {
             return (
-                isStandardTypeGroup(typeGroup) && type === TRANSACTION_TYPES.GROUP_1.SECOND_SIGNATURE
+                isStandardTypeGroup(typeGroup) && type === TRANSACTION_TYPES.GROUP_1.EXTRA_SIGNATURE
             );
         },
 
-        transaction_isDelegateRegistration (type, typeGroup) {
+        transaction_isRegistration (type, typeGroup) {
             return (
                 isStandardTypeGroup(typeGroup) &&
-        type === TRANSACTION_TYPES.GROUP_1.DELEGATE_REGISTRATION
+        type === TRANSACTION_TYPES.GROUP_1.REGISTRATION
             );
         },
 
@@ -50,10 +50,10 @@ export default {
             );
         },
 
-        transaction_isDelegateResignation (type, typeGroup) {
+        transaction_isResignation (type, typeGroup) {
             return (
                 isStandardTypeGroup(typeGroup) &&
-        type === TRANSACTION_TYPES.GROUP_1.DELEGATE_RESIGNATION
+        type === TRANSACTION_TYPES.GROUP_1.RESIGNATION
             );
         },
 

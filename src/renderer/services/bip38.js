@@ -14,9 +14,9 @@ export default class {
         return onMessage;
     }
 
-    encrypt ({ passphrase, password, wif }) {
+    encrypt ({ mnemonic, password, wif }) {
         const onMessage = this.onMessage();
-        this.worker.send({ passphrase, password, wif });
+        this.worker.send({ mnemonic, password, wif });
         return onMessage;
     }
 

@@ -1,24 +1,24 @@
 import TransactionForm from "./TransactionForm";
-import TransactionFormDelegateRegistration from "./TransactionFormDelegateRegistration";
-import TransactionFormDelegateResignationTemporary from "./TransactionFormDelegateResignationTemporary";
-import TransactionFormDelegateResignationPermanent from "./TransactionFormDelegateResignationPermanent";
-import TransactionFormDelegateResignationRevoke from "./TransactionFormDelegateResignationRevoke";
+import TransactionFormRegistration from "./TransactionFormRegistration";
+import TransactionFormResignationTemporary from "./TransactionFormResignationTemporary";
+import TransactionFormResignationPermanent from "./TransactionFormResignationPermanent";
+import TransactionFormResignationRevoke from "./TransactionFormResignationRevoke";
 import TransactionFormIpfs from "./TransactionFormIpfs";
 import TransactionFormMultiSign from "./TransactionFormMultiSign";
 import TransactionFormMultiSignature from "./TransactionFormMultiSignature";
-import TransactionFormSecondSignature from "./TransactionFormSecondSignature";
+import TransactionFormExtraSignature from "./TransactionFormExtraSignature";
 import TransactionFormTransfer from "./TransactionFormTransfer";
 
 export default TransactionForm;
 export {
     TransactionForm,
-    TransactionFormDelegateRegistration,
-    TransactionFormDelegateResignationTemporary,
-    TransactionFormDelegateResignationPermanent,
-    TransactionFormDelegateResignationRevoke,
+    TransactionFormRegistration,
+    TransactionFormResignationTemporary,
+    TransactionFormResignationPermanent,
+    TransactionFormResignationRevoke,
     TransactionFormIpfs,
     TransactionFormMultiSign,
     TransactionFormMultiSignature,
-    TransactionFormSecondSignature,
+    TransactionFormExtraSignature,
     TransactionFormTransfer
 };

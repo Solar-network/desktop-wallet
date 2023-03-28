@@ -124,7 +124,7 @@
       :helper-text="memoHelperText"
       :maxlength="memoMaxLength"
       name="memo"
-      class="TransactionFormTransfer__vendorfield mb-5"
+      class="TransactionFormTransfer__memo mb-5"
     />
 
     <div class="mt-4">
@@ -159,7 +159,7 @@
       </div>
 
       <InputPassword
-        v-else-if="currentWallet && currentWallet.passphrase"
+        v-else-if="currentWallet && currentWallet.mnemonic"
         ref="password"
         v-model="$v.form.walletPassword.$model"
         :label="$t('TRANSACTION.PASSWORD')"
@@ -167,25 +167,25 @@
         class="TransactionFormTransfer__password mt-4"
       />
 
-      <PassphraseInput
+      <MnemonicInput
         v-else
-        ref="passphrase"
-        v-model="$v.form.passphrase.$model"
+        ref="mnemonic"
+        v-model="$v.form.mnemonic.$model"
         :address="currentWallet && currentWallet.address"
         :pub-key-hash="walletNetwork.version"
         :is-disabled="!currentWallet"
-        class="TransactionFormTransfer__passphrase mt-4"
+        class="TransactionFormTransfer__mnemonic mt-4"
       />
     </div>
 
-    <PassphraseInput
+    <MnemonicInput
       v-if="currentWallet && currentWallet.secondPublicKey"
-      ref="secondPassphrase"
-      v-model="$v.form.secondPassphrase.$model"
-      :label="$t('TRANSACTION.SECOND_PASSPHRASE')"
+      ref="extraMnemonic"
+      v-model="$v.form.extraMnemonic.$model"
+      :label="$t('TRANSACTION.EXTRA_MNEMONIC')"
       :pub-key-hash="walletNetwork.version"
       :public-key="currentWallet.secondPublicKey"
-      class="TransactionFormTransfer__second-passphrase mt-5"
+      class="TransactionFormTransfer__extra-mnemonic mt-5"
     />
 
     <footer class="mt-10 flex justify-between items-center">
@@ -239,12 +239,12 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
-import { TRANSACTION_TYPES, VENDOR_FIELD } from "@config";
+import { TRANSACTION_TYPES, MEMO } from "@config";
 import { ButtonGeneric } from "@/components/Button";
 import { InputAddress, InputCurrency, InputPassword, InputSwitch, InputText, InputToggle, InputFee } from "@/components/Input";
 import { ListDivided, ListDividedItem } from "@/components/ListDivided";
 import { ModalConfirmation, ModalLoader } from "@/components/Modal";
-import { PassphraseInput } from "@/components/Passphrase";
+import { MnemonicInput } from "@/components/Mnemonic";
 import SvgIcon from "@/components/SvgIcon";
 import TransactionRecipientList from "@/components/Transaction/TransactionRecipientList";
 import WalletSelection from "@/components/Wallet/WalletSelection";
@@ -269,7 +269,7 @@ export default {
         ListDividedItem,
         ModalConfirmation,
         ModalLoader,
-        PassphraseInput,
+        MnemonicInput,
         SvgIcon,
         TransactionRecipientList,
         WalletSelection
@@ -300,7 +300,7 @@ export default {
         form: {
             recipients: [],
             fee: 0,
-            passphrase: "",
+            mnemonic: "",
             walletPassword: "",
             memo: ""
         }
@@ -458,16 +458,16 @@ export default {
         },
 
         memoLabel () {
-            return `${this.$t("TRANSACTION.VENDOR_FIELD")} ${this.$t("TRANSACTION.OPTIONAL")} - ${this.$t("VALIDATION.MAX_LENGTH_CHARACTERS", [this.memoMaxLength])}`;
+            return `${this.$t("TRANSACTION.MEMO")} ${this.$t("TRANSACTION.OPTIONAL")} - ${this.$t("VALIDATION.MAX_LENGTH_CHARACTERS", [this.memoMaxLength])}`;
         },
 
         memoHelperText () {
             const memoLength = this.form.memo.length;
 
             if (memoLength === this.memoMaxLength) {
-                return this.$t("VALIDATION.VENDOR_FIELD.LIMIT_REACHED", [this.memoMaxLength]);
+                return this.$t("VALIDATION.MEMO.LIMIT_REACHED", [this.memoMaxLength]);
             } else if (memoLength) {
-                return this.$t("VALIDATION.VENDOR_FIELD.LIMIT_REMAINING", [
+                return this.$t("VALIDATION.MEMO.LIMIT_REMAINING", [
                     this.memoMaxLength - memoLength,
                     this.memoMaxLength
                 ]);
@@ -483,7 +483,7 @@ export default {
                 return memo.maxLength;
             }
 
-            return VENDOR_FIELD.defaultMaxLength;
+            return MEMO.defaultMaxLength;
         },
 
         recipientWarning () {
@@ -560,7 +560,7 @@ export default {
             const transactionData = {
                 address: this.currentWallet.address,
                 memo: this.form.memo,
-                passphrase: this.form.passphrase,
+                mnemonic: this.form.mnemonic,
                 fee: this.getFee(),
                 wif: this.form.wif,
                 networkWif: this.walletNetwork.wif,
@@ -576,7 +576,7 @@ export default {
             }
 
             if (this.currentWallet.secondPublicKey) {
-                transactionData.secondPassphrase = this.form.secondPassphrase;
+                transactionData.extraMnemonic = this.form.extraMnemonic;
             }
 
             return transactionData;
@@ -886,8 +886,8 @@ export default {
                 }
             },
             fee: mixin.validators.fee,
-            passphrase: mixin.validators.passphrase,
-            secondPassphrase: mixin.validators.secondPassphrase,
+            mnemonic: mixin.validators.mnemonic,
+            extraMnemonic: mixin.validators.extraMnemonic,
             memo: {},
             walletPassword: mixin.validators.walletPassword
         }

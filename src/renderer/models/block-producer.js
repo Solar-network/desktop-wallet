@@ -37,12 +37,12 @@ export default new BaseModel({
                 }
             }
         },
-        forged: {
+        produced: {
             type: "object",
             format: (data) => ({
-                fees: toString(get(data, "forged.fees", 0)),
-                rewards: toString(get(data, "forged.rewards", 0)),
-                total: toString(get(data, "forged.total", 0))
+                fees: toString(get(data, "produced.fees", 0)),
+                rewards: toString(get(data, "produced.rewards", 0)),
+                total: toString(get(data, "produced.total", 0))
             })
         },
         rank: {

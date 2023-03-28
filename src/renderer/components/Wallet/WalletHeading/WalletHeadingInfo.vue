@@ -67,8 +67,8 @@
 
         <SvgIcon
           v-if="secondPublicKey"
-          v-tooltip="$t('WALLET_HEADING.SECOND_PASSPHRASE_ENABLED')"
-          name="2nd-passphrase"
+          v-tooltip="$t('WALLET_HEADING.EXTRA_MNEMONIC_ENABLED')"
+          name="extra-mnemonic"
           view-box="0 0 18 18"
           class="ml-1"
         />

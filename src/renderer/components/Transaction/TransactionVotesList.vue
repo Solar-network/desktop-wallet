@@ -24,7 +24,7 @@
       <div class="flex-1 px-4">
         <div class="TransactionVotesList__recipient flex py-1">
           <span class="font-bold mr-1">
-            {{ $t('COMMON.DELEGATE') }}:
+            {{ $t('COMMON.BLOCK_PRODUCER') }}:
           </span>
 
           <WalletAddress
