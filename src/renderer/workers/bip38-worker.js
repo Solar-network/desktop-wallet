@@ -8,9 +8,8 @@ const { Identities } = require("@solar-network/crypto");
 process.on("message", message => {
     if (message.mnemonic) {
         try {
-            const key = Identities.WIF.fromPassphrase(message.mnemonic, { wif: message.wif });
+            const key = Identities.WIF.fromPassphrase(message.mnemonic.normalize("NFD"), { wif: message.wif });
             const decoded = wif.decode(key);
-
             process.send({
                 bip38key: bip38.encrypt(decoded.privateKey, decoded.compressed, message.password)
             });
