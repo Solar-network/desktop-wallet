@@ -420,6 +420,15 @@ export default {
         }
     },
 
+    INPUT_TOGGLE: {
+        ADVANCED: "Advanced",
+        BASIC: "Basic",
+        MULTIPLE: "Multiple",
+        SINGLE: "Single",
+        VERIFY: "Verify",
+        VERIFY_TEXT: "Verify text"
+    },
+
     WALLET_SELECTION: {
         PROFILE: "Sender Profile",
         WALLET: "Sender Wallet"

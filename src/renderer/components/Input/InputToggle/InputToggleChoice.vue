@@ -10,7 +10,7 @@
     type="button"
     @click="emitSelect(choice)"
   >
-    {{ choice }}
+    {{ $te('INPUT_TOGGLE.' + choice.toUpperCase().replace(' ', '_')) ? $t('INPUT_TOGGLE.' + choice.toUpperCase().replace(' ', '_')) : choice }}
   </button>
 </template>
 
