@@ -1195,6 +1195,7 @@ export default {
     },
 
     TRANSACTION_FORM: {
+        TRANSFER_SUBTITLE: "Select a Single or Multiple Recipient Transaction",
         ERROR: {
             NOT_ENOUGH_BALANCE: "The balance is too low ({balance})"
         }

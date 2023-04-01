@@ -5,7 +5,7 @@
   >
     <div>
       <div class="text-sm text-theme-page-text-light">
-        Select a Single or Multiple Recipient Transaction
+       {{ $t('TRANSACTION_FORM.TRANSFER_SUBTITLE') }}
       </div>
 
       <div class="flex items-center mt-2">
