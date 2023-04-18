@@ -420,6 +420,15 @@ export default {
         }
     },
 
+    INPUT_TOGGLE: {
+        ADVANCED: "Advanced",
+        BASIC: "Basic",
+        MULTIPLE: "Multiple",
+        SINGLE: "Single",
+        VERIFY: "Verify",
+        VERIFY_TEXT: "Verify text"
+    },
+
     WALLET_SELECTION: {
         PROFILE: "Sender Profile",
         WALLET: "Sender Wallet"
@@ -1186,6 +1195,7 @@ export default {
     },
 
     TRANSACTION_FORM: {
+        TRANSFER_SUBTITLE: "Select a Single or Multiple Recipient Transaction",
         ERROR: {
             NOT_ENOUGH_BALANCE: "The balance is too low ({balance})"
         }
