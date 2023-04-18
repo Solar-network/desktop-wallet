@@ -275,7 +275,13 @@ export default {
             return this.hasShortId ? truncateMiddle(value, 6) : truncateMiddle(value, 10);
         },
 
-        formatSmartbridge (value) {
+        formatSmartbridge (value, row) {
+            const hiddenByAddress = this.$store.getters["hidden/byAddress"];
+            const hiddenById = this.$store.getters["hidden/byId"];
+            if (hiddenByAddress.includes(row.sender) || hiddenById.includes(row.id)) {
+                value = "";
+            }
+
             if (value.length > 43) {
                 return `${value.slice(0, 40)}...`;
             }

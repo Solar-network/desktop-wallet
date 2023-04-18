@@ -1,6 +1,6 @@
 import { pullAll } from "lodash";
 import { flatten } from "@/utils";
-import { announcements, fees, ledger, market, peer, wallets } from "./synchronizer/";
+import { announcements, fees, hidden, ledger, market, peer, wallets } from "./synchronizer/";
 /**
  * This class adds the possibility to define actions (not to confuse with Vuex actions)
  * that could be dispatched using 2 modes: `default` and `focus`.
@@ -47,6 +47,10 @@ export default class Synchronizer {
             fees: {
                 default: { interval: null },
                 focus: { interval: shorter }
+            },
+            hidden: {
+                default: { interval: medium },
+                focus: { interval: medium }
             },
             ledgerWallets: {
                 default: { interval: shortest },
@@ -256,6 +260,10 @@ export default class Synchronizer {
 
         this.define("fees", this.config.fees, async () => {
             await fees(this);
+        });
+
+        this.define("hidden", this.config.hidden, async () => {
+            await hidden(this);
         });
 
         this.define("market", this.config.market, async () => {

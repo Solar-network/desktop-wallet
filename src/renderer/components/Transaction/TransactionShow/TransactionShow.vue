@@ -207,8 +207,8 @@
       />
 
       <ListDividedItem
-        v-if="transaction.memo"
-        :value="transaction.memo"
+        v-if="memo"
+        :value="memo"
         :label="$t('TRANSACTION.MEMO')"
         item-label-class="mb-auto"
         item-value-class="max-w-xs break-words text-justify"
@@ -336,6 +336,16 @@ export default {
                 return vote.substr(1);
             }
             return "";
+        },
+
+        memo () {
+            const hiddenByAddress = this.$store.getters["hidden/byAddress"];
+            const hiddenById = this.$store.getters["hidden/byId"];
+            if (hiddenByAddress.includes(this.transaction.sender) || hiddenById.includes(this.transaction.id)) {
+                return undefined;
+            }
+
+            return this.transaction.memo;
         },
 
         multiSignatureWalletAddress () {
