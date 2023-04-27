@@ -47,6 +47,9 @@ export default new BaseModel({
         },
         rank: {
             type: "integer"
+        },
+        version: {
+            type: "string"
         }
     }
 });

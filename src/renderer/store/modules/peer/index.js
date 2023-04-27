@@ -1,4 +1,5 @@
 import { random, shuffle } from "lodash";
+import { gte } from "semver";
 import { PeerDiscovery } from "@solar-network/peers";
 import ClientService from "@/services/client";
 import config from "@config";
@@ -17,25 +18,16 @@ const getBaseUrl = (peer) => {
 const discoverPeers = async (peerDiscovery) => {
     peerDiscovery.withLatency(300).sortBy("latency");
 
-    const peers = await peerDiscovery.findPeersWithPlugin("api", {
+    const peers = (await peerDiscovery.findPeersWithPlugin("api", {
         additional: [
             "height",
-            "latency"
+            "latency",
+            "version"
         ]
-    });
-
+    })).filter((peer) => peer.version === undefined || gte(peer.version, "4.3.0-next.2", { includePrerelease: true }));
     if (peers && peers.length) {
         return peers;
     }
-
-    const legacyPeers = await peerDiscovery.findPeersWithPlugin("core-api", {
-        additional: [
-            "height",
-            "latency"
-        ]
-    });
-
-    return legacyPeers;
 };
 
 export default {

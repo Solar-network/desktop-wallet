@@ -114,7 +114,7 @@
       </div>
       <button
         v-if="!isAwaitingConfirmation && !isLoadingVote"
-        :disabled="!areVotesUpdated || !(totalRemaining === 0 || totalRemaining === 10000) || totalNewVotes > activeBlockProducers"
+        :disabled="!areVotesUpdated || !(totalRemaining === 0 || totalRemaining === 10000) || totalNewVotes > activeBlockProducers || isVotingForOffline"
         class="WalletDetails__button blue-button vote-button"
         type="button"
         @click="openVote"
@@ -197,6 +197,10 @@ export default {
             return this.session_network.constants.activeDelegates || 53;
         },
 
+        blockProducers () {
+            return Object.values(this.$store.getters["blockProducer/bySessionNetwork"] || {});
+        },
+
         pluginTabs () {
             return this.$store.getters["plugin/walletTabs"];
         },
@@ -276,6 +280,13 @@ export default {
                 ...this.$store.getters["wallet/byProfileId"](this.session_profile.id),
                 ...this.$store.getters["ledger/wallets"]
             ].some(wallet => wallet.address === this.currentWallet.address);
+        },
+
+        isVotingForOffline () {
+            const votes = Object.keys(this.newVotes);
+            return this.blockProducers.filter((blockProducer) =>
+                blockProducer.version === undefined && !blockProducer.isResigned && votes.includes(blockProducer.username))
+                .map((blockProducer) => blockProducer.username).length > 0;
         },
 
         unconfirmedVote () {
@@ -434,13 +445,12 @@ export default {
                 const walletVotes = await this.$client.fetchWalletVote(this.currentWallet.address);
                 if (walletVotes) {
                     for (const blockProducer in walletVotes) {
-                        const blockProducerInfo = this.$store.getters["blockProducer/byUsername"](blockProducer);
                         const percentage = Math.round(walletVotes[blockProducer].percent * 100);
                         if (percentage !== this.walletVotes[blockProducer]) {
                             this.$delete(this.walletVotes, blockProducer);
                             this.$delete(this.newVotes, blockProducer);
                             this.$set(this.walletVotes, blockProducer, percentage);
-                            if (blockProducerInfo.rank !== undefined) this.$set(this.newVotes, blockProducer, percentage);
+                            this.$set(this.newVotes, blockProducer, percentage);
                         }
                         currentBlockProducers = currentBlockProducers.filter(curr => curr !== blockProducer);
                     }

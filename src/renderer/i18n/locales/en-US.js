@@ -1290,7 +1290,8 @@ export default {
         LOADING_VOTE: "Loading vote details...",
         SEARCH_BLOCK_PRODUCER: "Search",
         TOTAL_REMAINING: "Remaining: {percentage}%",
-        NUMBER_OF_BLOCK_PRODUCERS_VOTED: "Votes: {n}"
+        NUMBER_OF_BLOCK_PRODUCERS_VOTED: "Votes: {n}",
+        OFFLINE: "Offline - remove votes to proceed"
     },
 
     WALLET_IPFS: {

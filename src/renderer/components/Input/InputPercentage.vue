@@ -53,6 +53,11 @@ export default {
             required: false,
             default: false
         },
+        isOffline: {
+            type: Boolean,
+            required: false,
+            default: false
+        },
         value: {
             type: [Number, String],
             required: true
@@ -74,7 +79,7 @@ export default {
     computed: {
 
         isInvalid () {
-            return this.inputValue < 0 || this.inputValue > 10000;
+            return (this.isOffline && this.inputValue !== 0) || (!this.isOffline && (this.inputValue < 0 || this.inputValue > 10000));
         },
 
         model: {

@@ -56,6 +56,18 @@
             >
               {{ `${$t('WALLET_BLOCK_PRODUCERS.VOTE')} ${formatPercentage(data.row.votePercent)}%` }}
             </span>
+            <span
+              v-if="offline(data.row.username)"
+              class="error-badge"
+            >
+              {{ $t('WALLET_BLOCK_PRODUCERS.OFFLINE') }}
+            </span>
+            <span
+              v-if="resigned(data.row.username)"
+              class="error-badge"
+            >
+              {{ $t('WALLET_BLOCK_PRODUCERS.STATUS.RESIGNED') }}
+            </span>
           </div>
         </div>
 
@@ -66,6 +78,7 @@
             :ref="'percentageInput-' + data.row.username"
             :value="data.row.newVotePercent"
             :helper-text="formatter_networkCurrency(data.row.voteBalance)"
+            :is-offline="offline(data.row.username)"
             @percent-input="(value) => emitNewPercentage(value, data.formattedRow['username'])"
           />
         </span>
@@ -210,6 +223,16 @@ export default {
             this.$emit("on-block-producer-percentage-change", value, blockProducer);
         },
 
+        offline (username) {
+            const blockProducer = this.blockProducers.find(blockProducer => blockProducer.username === username) ?? {};
+            return blockProducer.version === undefined && !blockProducer.isResigned;
+        },
+
+        resigned (username) {
+            const blockProducer = this.blockProducers.find(blockProducer => blockProducer.username === username) ?? {};
+            return blockProducer.isResigned;
+        },
+
         async fetchBlockProducers () {
             if (this.isLoading) {
                 return;
@@ -218,7 +241,8 @@ export default {
             try {
                 this.isLoading = true;
 
-                const walletVotes = this.currentVotes;
+                const walletVotes = this.currentVotes ?? [];
+                const votedUsernames = Object.keys(walletVotes);
 
                 const allBlockProducers = [];
                 let page = 1;
@@ -237,7 +261,7 @@ export default {
                     blockProducer.votePercent = walletVotes[blockProducer.username] || 0;
                     blockProducer.newVotePercent = this.newVotesProp[blockProducer.username] || 0;
                     return blockProducer;
-                }).filter((del) => del.rank !== undefined);
+                }).filter((blockProducer) => votedUsernames.includes(blockProducer.username) || blockProducer.version !== undefined || blockProducer.isResigned);
 
                 this.updateVotes();
 
@@ -282,7 +306,7 @@ export default {
         },
 
         filter () {
-            this.shownBlockProducers = this.blockProducers.filter((del) => !this.filterSearch || del.username.includes(this.filterSearch));
+            this.shownBlockProducers = this.blockProducers.filter((blockProducer) => !this.filterSearch || blockProducer.username.includes(this.filterSearch));
             this.totalCount = this.shownBlockProducers.length;
         },
 
