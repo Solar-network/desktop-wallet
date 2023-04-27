@@ -4,7 +4,7 @@ const path = require("path");
 
 exports.APP = {
     website: "https://solar.org",
-    transactionExpiryMinutes: 45
+    transactionExpiryMinutes: 3
 };
 
 exports.NETWORKS = [

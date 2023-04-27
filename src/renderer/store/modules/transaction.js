@@ -230,7 +230,7 @@ export default {
                     return false;
                 }
 
-                return !dayjs().isAfter(dayjs(vote.timestamp).add(6, "hour"));
+                return !dayjs().isAfter(dayjs(vote.timestamp).add(APP.transactionExpiryMinutes, "minute"));
             });
 
             await dispatch("session/setUnconfirmedVotes", pendingVotes, { root: true });
