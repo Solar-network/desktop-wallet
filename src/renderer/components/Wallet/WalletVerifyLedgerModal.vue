@@ -5,69 +5,46 @@
     @close="emitCancel"
   >
     <div
-      class="w-80 flex flex-col w-full justify-center items-center"
+      class="w-85 h-80 flex flex-col justify-center items-center space-y-4"
     >
       {{ $t('WALLET_ADDRESS_VERIFY.REVIEW') }}
       <br><br><br>
       {{ $t('WALLET_ADDRESS_VERIFY.MATCH') }}
-      <br><br>
       <b>{{ $t(wallet.address) }}</b>
-      <br>
       <div
-        class="flex flex-col w-full justify-center items-center"
+        class="flex flex-col w-full justify-center items-center space-y-4"
       >
         <div
-          class="flex flex-col w-full justify-center content-center"
+          class="flex flex-col w-full mt-5 items-center justify-center content-center space-y-4"
         >
-          <br>
-          <div
+          <Loader
             v-if="showLedgerLoader"
-          >
-            <br>
-            <Loader />
-          </div>
-
-          <div
+          />
+          <img
             v-if="!showLedgerLoader"
-            class="flex flex-col w-full mt-8 justify-center items-center"
+            :src="statusImage"
+            class="md:w-3/5"
           >
-            <img
-              v-if="showSuccess"
-              :src="assets_loadImage('pages/ledger-verify/success.svg')"
-              class="md:w-2/5"
-            >
-            <img
-              v-else-if="showFailed"
-              :src="assets_loadImage('pages/ledger-verify/fail.svg')"
-              class="md:w-2/5"
-            >
-          </div>
-
-          <br>
-
           <div
             v-if="showLedgerLoader"
-            class="flex flex-col justify-center"
+            class="flex flex-col justify-center space-y-4"
           >
             <br>
             {{ $t('WALLET_ADDRESS_VERIFY.CONFIRM_FOOTER_MESSAGE') }}
           </div>
-
+        </div>
+        <div
+          class="flex flex-col justify-center items-center text-center"
+        >
           <div
-            class="flex flex-col justify-center items-center text-center"
+            v-if="showSuccess"
           >
-            <div
-              v-if="showSuccess"
-            >
-              <br><br>
-              {{ $t('WALLET_ADDRESS_VERIFY.CONFIRM_FOOTER_SUCCESS') }}
-            </div>
-            <div
-              v-if="showFailed"
-            >
-              <br><br>
-              {{ $t('WALLET_ADDRESS_VERIFY.CONFIRM_FOOTER_FAILED') }}
-            </div>
+            {{ $t('WALLET_ADDRESS_VERIFY.CONFIRM_FOOTER_SUCCESS') }}
+          </div>
+          <div
+            v-if="showFailed"
+          >
+            {{ $t('WALLET_ADDRESS_VERIFY.CONFIRM_FOOTER_FAILED') }}
           </div>
         </div>
       </div>
@@ -101,11 +78,28 @@ export default {
         showFailed: false
     }),
 
+    computed: {
+        statusImage () {
+            return this.getStatusImage();
+        }
+    },
+
     mounted () {
         this.verifyAddress();
     },
 
     methods: {
+        getStatusImage () {
+            switch (true) {
+            case this.showSuccess:
+                return this.assets_loadImage("pages/ledger-verify/success.svg");
+            case this.showFailed:
+                return this.assets_loadImage("pages/ledger-verify/fail.svg");
+            default:
+                return "";
+            }
+        },
+
         async verifyAddress () {
             try {
                 const ledgerAddress = await TransactionService.ledgerGetAddressApproval(this.wallet, this);
@@ -128,3 +122,9 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.space-y-4 {
+    gap: 1rem;
+}
+</style>
