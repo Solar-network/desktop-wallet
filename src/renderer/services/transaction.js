@@ -167,6 +167,17 @@ export default class TransactionService {
         return signature;
     }
 
+    /*
+     * Get a Ledger address with on-device user approval.
+     * @param {Object} wallet
+     * @return {Object}
+    */
+    static async ledgerGetAddressApproval (wallet, vm) {
+        const address = await vm.$store.dispatch("ledger/getAddressApproval", wallet.ledgerIndex);
+
+        return address;
+    }
+
     static isMultiSignature (transaction) {
         return !!transaction.multiSignature;
     }

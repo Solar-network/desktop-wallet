@@ -9,6 +9,7 @@ import WalletSelection from "./WalletSelection";
 import WalletSignModal from "./WalletSignModal";
 import WalletVerifyDetail from "./WalletVerifyDetail";
 import WalletVerifyModal from "./WalletVerifyModal";
+import WalletVerifyLedgerModal from "./WalletVerifyLedgerModal";
 
 export * from "./WalletButtons";
 export * from "./WalletBlockProducers";
@@ -18,6 +19,7 @@ export * from "./WalletSidebar";
 export * from "./WalletSignVerify";
 export * from "./WalletStatistics";
 export * from "./WalletTransactions";
+export * from "./WalletVerifyLedger";
 
 // Needs exporting after the rest
 export * from "./WalletMultiSignature";
@@ -34,5 +36,6 @@ export {
     WalletSelection,
     WalletSignModal,
     WalletVerifyDetail,
-    WalletVerifyModal
+    WalletVerifyModal,
+    WalletVerifyLedgerModal
 };

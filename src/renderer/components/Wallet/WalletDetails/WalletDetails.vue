@@ -150,7 +150,8 @@ import {
     WalletSelectBlockProducer,
     WalletSignVerify,
     WalletStatistics,
-    WalletTransactions
+    WalletTransactions,
+    WalletVerifyLedger
 } from "../";
 import { MenuTab, MenuTabItem } from "@/components/Menu";
 import SvgIcon from "@/components/SvgIcon";
@@ -169,6 +170,7 @@ export default {
         WalletSignVerify,
         WalletStatistics,
         WalletTransactions,
+        WalletVerifyLedger,
         SvgIcon
     },
 
@@ -242,6 +244,14 @@ export default {
                 });
             }
 
+            if (this.isOwned && this.isLedger) {
+                tabs.push({
+                    component: "WalletVerifyLedger",
+                    componentName: "WalletVerifyLedger",
+                    text: this.$t("PAGES.WALLET.LEDGER_VERIFY")
+                });
+            }
+
             // TODO enable when there is something to show
             // if (this.session_network.market && this.session_network.market.enabled) {
             //   tabs.push({
@@ -273,6 +283,10 @@ export default {
 
         isBlockProducersTab () {
             return this.currentTab === "WalletBlockProducers";
+        },
+
+        isLedger () {
+            return this.currentWallet.isLedger === true;
         },
 
         isOwned () {

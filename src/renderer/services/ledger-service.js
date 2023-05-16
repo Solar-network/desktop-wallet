@@ -139,6 +139,19 @@ class LedgerService {
     }
 
     /**
+   * Get an address from a ledger wallet given a path.
+   * @param  {string} path derivation path.
+   * @param  {boolean} userApproval whether to prompt the user for approval
+   * @param  {boolean} useMainnet if false, uses testnet for address construction
+   * @return {Promise<string>}
+   */
+    async getAddress (path, userApproval, useMainnet) {
+        return this.__performAction(async () => {
+            return this.ledger.getAddress(path, userApproval, useMainnet);
+        });
+    }
+
+    /**
    * Sign a transaction using a ledger wallet.
    * @param  {string} path Path for wallet location.
    * @param  {Buffer} transactionBytes bytes of transaction.
