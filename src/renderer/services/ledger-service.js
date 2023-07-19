@@ -17,12 +17,15 @@ class LedgerService {
             try {
                 resolve(await action());
             } catch (error) {
+                // user has rejected confirmation
                 if (error.statusText === "CONDITIONS_OF_USE_NOT_SATISFIED") {
                     resolve(false);
+                } else {
+                    this.transport = null;
+                    this.ledger = null;
+                    this.listenForLedger();
                 }
 
-                this.transport = null;
-                this.ledger = null;
                 resolve(null);
             }
             callback();
@@ -70,7 +73,7 @@ class LedgerService {
    * @return {void}
    */
     async disconnect () {
-    // Disconnect ledger in case this is called manually
+        // Disconnect ledger in case this is called manually
         try {
             if (this.transport) {
                 await this.transport.close();
@@ -132,6 +135,19 @@ class LedgerService {
     async getExtPublicKey (path) {
         return this.__performAction(async () => {
             return this.ledger.getExtPublicKey(path);
+        });
+    }
+
+    /**
+   * Get an address from a ledger wallet given a path.
+   * @param  {string} path derivation path.
+   * @param  {boolean} userApproval whether to prompt the user for approval
+   * @param  {boolean} useMainnet if false, uses testnet for address construction
+   * @return {Promise<string>}
+   */
+    async getAddress (path, userApproval, useMainnet) {
+        return this.__performAction(async () => {
+            return this.ledger.getAddress(path, userApproval, useMainnet);
         });
     }
 

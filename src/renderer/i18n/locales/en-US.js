@@ -813,6 +813,7 @@ export default {
             IPFS: "IPFS",
             MULTI_SIGNATURE: "Multisignature",
             MULTI_SIGNATURE_WALLET: "Multisignature wallet",
+            LEDGER_VERIFY: "Verify Address",
             STATISTICS: "Statistics",
             SIGN_VERIFY: "Sign",
             PURCHASE: "Purchase {ticker}"
@@ -1292,6 +1293,17 @@ export default {
         TOTAL_REMAINING: "Remaining: {percentage}%",
         NUMBER_OF_BLOCK_PRODUCERS_VOTED: "Votes: {n}",
         OFFLINE: "Offline - remove votes to proceed"
+    },
+
+    WALLET_ADDRESS_VERIFY: {
+        HEADER: "Verify Address",
+        DESCRIPTION: "Verify your Ledger address",
+        REVIEW: "Review the address displayed on your Ledger.",
+        MATCH: "It should match the following address exactly:",
+        BUTTON_VERIFY: "Verify",
+        CONFIRM_FOOTER_MESSAGE: "Confirm or reject using your Ledger device",
+        CONFIRM_FOOTER_SUCCESS: "Your Ledger address has been verified!",
+        CONFIRM_FOOTER_FAILED: "Verification failed!"
     },
 
     WALLET_IPFS: {

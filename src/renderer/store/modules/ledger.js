@@ -552,6 +552,23 @@ export default {
         },
 
         /**
+         * Get address from ledger wallet with user approval.
+         * @param  {Number} addressIndex Index of wallet to get address for.
+         * @return {(String|Boolean)}
+         */
+        async getAddressApproval ({ dispatch }, addressIndex) {
+            try {
+                return await dispatch("action", {
+                    action: "getAddressApproval",
+                    addressIndex
+                });
+            } catch (error) {
+                logger.error(error);
+                throw new Error(`Could not get address: ${error}`);
+            }
+        },
+
+        /**
          * Get address and public key from ledger wallet.
          * @param  {Number} addressIndex Index of wallet to get data for.
          * @return {(String|Boolean)}
@@ -641,6 +658,11 @@ export default {
                     const network = rootGetters["session/network"];
 
                     return Identities.Address.fromPublicKey(publicKey, network.version);
+                },
+                async getAddressApproval () {
+                    const network = rootGetters["session/network"];
+
+                    return await ledgerService.getAddress(path, true, network.id === "solar.mainnet");
                 },
                 async getWallet () {
                     const publicKey = await ledgerService.getPublicKey(path);
