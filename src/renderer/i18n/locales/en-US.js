@@ -1301,7 +1301,7 @@ export default {
         REVIEW: "Review the address displayed on your Ledger.",
         MATCH: "It should match the following address exactly:",
         BUTTON_VERIFY: "Verify",
-        CONFIRM_FOOTER_MESSAGE: "confirm or reject using your ledger device",
+        CONFIRM_FOOTER_MESSAGE: "Confirm or reject using your Ledger device",
         CONFIRM_FOOTER_SUCCESS: "Your Ledger address has been verified!",
         CONFIRM_FOOTER_FAILED: "Verification failed!"
     },
