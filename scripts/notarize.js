@@ -1,6 +1,6 @@
 /* eslint-disable no-return-await */
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { notarize } = require("electron-notarize");
+const { notarize } = require("@electron/notarize");
 
 exports.default = async function notarizing (context) {
     // We intentionally skip notarisation.
@@ -28,7 +28,8 @@ exports.default = async function notarizing (context) {
     return await notarize({
         appBundleId: "org.solar.desktop-wallet",
         appPath: `${appOutDir}/${appName}.app`,
-        appleApiKey: process.env.APPLE_API_KEY_ID,
+        appleApiKey: process.env.APPLE_API_KEY,
+        appleApiKeyId: process.env.APPLE_API_KEY_ID,
         appleApiIssuer: process.env.APPLE_API_KEY_ISSUER_ID
     });
 };
